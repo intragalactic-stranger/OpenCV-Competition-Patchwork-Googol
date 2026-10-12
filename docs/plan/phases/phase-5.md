@@ -3,7 +3,7 @@
 **Goal:** the Ward Engineer's Assistant proposes grounded work packages, waits for a human, and demonstrably changes its plan when the vision output changes.
 
 ## 5a: midpoint slice (SHOULD for the checkpoint)
-- [ ] Load the `claude-api` skill reference; confirm the Bedrock model ID / APAC inference profile in ap-south-1
+- [ ] Confirm the **Amazon Nova** model ID / APAC inference profile in ap-south-1 (`aws bedrock list-inference-profiles`); smoke-test tool use via the Converse API
 - [ ] Tool Lambdas: `query_defects`, `cluster_into_packages`, `estimate_materials`, `draft_work_order`, `request_human_approval`
 - [ ] Shared `grounding.py` guard (reject unknown IDs → `UNGROUNDED_ID`), used by every tool
 - [ ] Exposure score + priority (deterministic, in `estimate_materials`/`cluster` outputs)

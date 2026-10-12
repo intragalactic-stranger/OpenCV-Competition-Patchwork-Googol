@@ -26,15 +26,17 @@ Download scripts live in `scripts/data/` and write to `data/raw/<dataset>/` with
 ### 3.1 What it produces per pass
 ```
 data/synth/<world_seed>/pass_<k>/
-  clip_<n>.mp4          1920×1080, 30 fps (60 optional), H.264, lens distortion applied
-  clip_<n>.gpx          GNSS 1 Hz with realistic noise (worse in "urban canyon" and tunnel segments)
-  clip_<n>.imu.csv      100 Hz accel + gyro (speed changes, stops, bumps over defects)
-  clip_<n>.meta.json    camera id, calibration id, pass id, start time, route segment ids
-  truth/
-    defects.json        every defect: world position, polygon in road-plane metres, exact area m², type, state this pass
-    frames/<idx>.png    per-frame ground-truth masks (sampled frames only, to save disk)
-    events.json         state transitions since the previous pass (repaired / degraded / new)
-calib/charuco_<cam>/    rendered ChArUco views through the same camera (for calibration)
+data/synth/seed<NN>/
+  world.json, truth/camera.json           world summary; TRUE intrinsics (evaluation only, never read by perception)
+  calib/charuco_cam01/view_*.png          20 rendered ChArUco views through the distorted camera
+  pass_<k>/clip_<n>/clip.mp4              1920×1080, 15 fps (D-12), mp4v, lens distortion applied
+  pass_<k>/clip_<n>/gnss.csv              1 Hz: t, lat, lon, hdop, fix (NaN + fix=0 in tunnels)
+  pass_<k>/clip_<n>/imu.csv               100 Hz: t, ax, ay, az, gx, gy, gz
+  pass_<k>/clip_<n>/frames.csv            TRUE per-frame pose: s, lateral, speed, pitch, roll, yaw, lat, lon (evaluation only)
+  pass_<k>/clip_<n>/meta.json             pass/clip ids, camera id, fps, mount height, nominal pitch, chainage range
+  pass_<k>/truth/defects.json             every defect: kind, state, exact area m², polygon (s, d), lat/lon, road, attributes
+  pass_<k>/truth/events.json              transitions since the previous pass (unchanged / repaired / degraded / new)
+  pass_<k>/truth/masks/clip<n>_<frame>.png  uint16 instance masks (defect index + 1) every 5th frame
 ```
 
 ### 3.2 How a frame is rendered (physically consistent, so IPM is exact)
@@ -70,8 +72,9 @@ Expected counts for a 25 km corridor with about 12 defects/km on arterials: roug
 - GNSS: a random-walk bias (σ 2 m, τ 60 s) + white noise (σ 1.5 m), ×2.5 in "urban canyon" segments (tall buildings from OSM building heights where available, otherwise tagged manually). Outage in the Coastal Road tunnel (tunnel segments are excluded from the register, as in the proposal).
 - IMU: speed profile derivative + gravity + noise; bumps when wheels cross defects (lets triage use the IMU as in the proposal).
 
-### 3.5 Scale and compute budget
-- 25 km at an average of 40 km/h ≈ 37 min ≈ 67k frames at 30 fps. Rendering is about 15–25 ms/frame on 4 vCPU → **about 20–30 min per pass** locally. Passes can also be rendered as parallel Batch array jobs.
+### 3.5 Scale and compute budget (measured)
+- The 28.6 km loop takes about 40 min of simulated driving (mean 42 km/h, 7% of frames stopped at signals) → **≈ 36.5k frames per pass at 15 fps**.
+- Rendering costs **≈ 0.2 s/frame** on this 4-vCPU dev box (≈ 2 h per full pass), and ≈ 58 MB of video per km (≈ 1.7 GB per pass). Full passes therefore run as **parallel Batch jobs, one per 3 km clip, in ap-south-1** (D-13): about 15 min per pass.
 - For quick iteration: `--segment worli-seaface` renders a 2–3 km sub-route in under 3 minutes.
 
 ## 4. Evaluation datasets (proposal D1–D4)

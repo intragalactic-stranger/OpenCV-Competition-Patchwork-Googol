@@ -15,11 +15,17 @@
 | D-09 | 2026-10-12 | `file_complaint` targets a **mock endpoint** | Never send fabricated complaints to a real authority | Real BMC portal |
 | D-10 | 2026-10-12 | Python **3.12** via uv (system has 3.14) | Wheel availability for OpenCV 5, PyTorch, SageMaker SDK | 3.14 |
 | D-11 | 2026-10-12 | Terraform (not CDK) | Owner's existing skill set; plain state | CDK, SAM |
-| D-12 | 2026-10-12 | Within-pass video rendered at **30 fps** (proposal: 60) | Halves rendering and storage; triage keeps one frame per ~4 m anyway | 60 fps |
+| D-12 | 2026-10-12 | Synthetic video rendered at **15 fps** (proposal: 60) | At 70 km/h that is still 5 frames per 4 m, and triage keeps about one per 4 m. Renders 4× faster than 60 fps. | 30/60 fps |
 | D-13 | 2026-10-12 | Dev box is in **us-east-1**; all project resources stay in **ap-south-1**. Full-corridor synthetic passes are **rendered on Batch in ap-south-1**, so we don't pay cross-region transfer for multi-GB clips. Small demo clips may be uploaded from the dev box. | Cross-region transfer costs about $0.02/GB | Moving the dev box |
 | D-14 | 2026-10-12 | Terraform remote state uses **S3 native locking** (`use_lockfile`, Terraform ≥ 1.10); no DynamoDB lock table | One less resource | DynamoDB lock table |
 | D-15 | 2026-10-12 | Pin **`opencv-contrib-python-headless==5.0.0.93`**; the fallback engine order is `ENGINE_NEW → ENGINE_ORT → ENGINE_CLASSIC` | Verified in the Phase 0 smoke test | — |
 | D-16 | 2026-10-12 | Budget alert emails are a **required Terraform variable** (in git-ignored `terraform.tfvars`), not hard-coded | Owner chooses the recipients | — |
+| D-17 | 2026-10-12 | LLMs are **Amazon Nova** models on Bedrock (not Anthropic) for the agent and the VLM fallback | Owner's choice | Claude on Bedrock |
+| D-18 | 2026-10-12 | **Permissions boundary** `patchwork-boundary` is mandatory on every `patchwork-*` role; the dev-box role is read-only to itself | Closes the self-escalation path in the IAM-scoped policy (a role that can attach policies could grant itself admin) | Trusting the scoped policy alone |
+| D-19 | 2026-10-12 | The renderer draws the road in **road-aligned coordinates** (each view is locally straight); curvature lives in the corridor polyline used for GNSS, lat/lon and chainage | The image geometry is then *exactly* the camera's road-plane homography, so measurement ground truth is exact; curves don't affect area measurement | Full 3D curved-road rendering |
+| D-20 | 2026-10-12 | Survey loop = **28.6 km** routed on OSM through named-road waypoints: Coastal Road driven once (10.1 km control, of which 3.1 km tunnel); return via Worli Seaface → Haji Ali → Warden Rd → Kemps Corner → Marine Drive | Matches the proposal's corridor; the control section is driven once per pass | Hand-drawn route |
+| D-21 | 2026-10-12 | GNSS/IMU written as **CSV** (`gnss.csv`, `imu.csv`) instead of GPX | Simpler and lossless (HDOP, fix flag, NaN in tunnels) | GPX |
+| D-22 | 2026-10-12 | Camera model lives in `patchwork/camera.py`, **shared** by the renderer and perception | One definition of geometry on both sides | Separate copies |
 
 ## Risk register
 

@@ -19,7 +19,7 @@ Region **ap-south-1 (Mumbai)**. All resources are created by Terraform (`infra/t
          [S3 artifacts] crops/overlays                 [API Gateway + Lambda] ─► [CloudFront + S3] map viewer
          [DynamoDB] job state/idempotency                                         [Amazon Location] tiles, snap-to-road
  [SageMaker AI] training (GPU Spot) ─► model.onnx ─► S3
- [Bedrock AgentCore + Claude on Bedrock] agent ─► [Lambda tools] ─► [Step Functions] approval (task token)
+ [Bedrock AgentCore + Amazon Nova on Bedrock] agent ─► [Lambda tools] ─► [Step Functions] approval (task token)
  [CloudWatch · X-Ray] metrics/logs/traces    [AWS Budgets · Cost Explorer] cost guard + report    [KMS · IAM · Secrets Manager]
 ```
 
@@ -42,7 +42,7 @@ Region **ap-south-1 (Mumbai)**. All resources are created by Terraform (`infra/t
 | **Amazon API Gateway (HTTP API)** | Viewer/console API | Throttling; auth added in the second half | Cheapest managed HTTP front door | ⏭ |
 | **Amazon CloudFront** | Serves the map viewer | Origin Access Control to S3 | HTTPS + global caching for the demo | ⏭ |
 | **Amazon Location Service** | Map tiles, snap-to-road, reverse geocoding | API key restricted to the viewer domain | Keeps the geo stack on AWS | ⏭ |
-| **Amazon Bedrock (Claude)** | Reasoning model for the agent | APAC inference profile if required | Managed, no GPU hosting | ⏭ (stretch) |
+| **Amazon Bedrock (Amazon Nova)** | Reasoning model for the agent (Nova Pro/Lite); multimodal fallback for defect attributes | APAC inference profile if required | Managed, no GPU hosting | ⏭ (stretch) |
 | **Amazon Bedrock AgentCore** | Agent runtime, tool gateway, memory, per-run traces | Strands agent; tools are Lambdas via the Gateway | Managed agent loop and traces to show judges | ⏭ (stretch) |
 | **Amazon CloudWatch + AWS X-Ray** | Metrics (km, frames, stage timings, cost/km), logs, traces, alarms, dashboard | EMF metrics, 14-day log retention, OTel | Observability in one place | ⏭ |
 | **AWS KMS · IAM · Secrets Manager** | Encryption, least privilege, DB credentials | One CMK; one role per component | Security baseline | ⏭ |

@@ -2,10 +2,19 @@
   "Version": "2012-10-17",
   "Statement": [
     {
+      "Sid": "CreatePatchworkRolesOnlyWithBoundary",
+      "Effect": "Allow",
+      "Action": ["iam:CreateRole", "iam:PutRolePermissionsBoundary"],
+      "Resource": "arn:aws:iam::ACCOUNT_ID:role/patchwork-*",
+      "Condition": {
+        "StringEquals": { "iam:PermissionsBoundary": "arn:aws:iam::ACCOUNT_ID:policy/patchwork-boundary" }
+      }
+    },
+    {
       "Sid": "ManagePatchworkRolesAndPolicies",
       "Effect": "Allow",
       "Action": [
-        "iam:CreateRole", "iam:DeleteRole", "iam:GetRole", "iam:UpdateRole", "iam:TagRole", "iam:UntagRole",
+        "iam:DeleteRole", "iam:GetRole", "iam:UpdateRole", "iam:TagRole", "iam:UntagRole",
         "iam:UpdateAssumeRolePolicy", "iam:PutRolePolicy", "iam:GetRolePolicy", "iam:DeleteRolePolicy",
         "iam:AttachRolePolicy", "iam:DetachRolePolicy", "iam:ListRolePolicies", "iam:ListAttachedRolePolicies",
         "iam:ListInstanceProfilesForRole", "iam:CreateInstanceProfile", "iam:DeleteInstanceProfile",
@@ -14,27 +23,48 @@
         "iam:CreatePolicyVersion", "iam:DeletePolicyVersion", "iam:ListPolicyVersions", "iam:TagPolicy"
       ],
       "Resource": [
-        "arn:aws:iam::*:role/patchwork-*",
-        "arn:aws:iam::*:instance-profile/patchwork-*",
-        "arn:aws:iam::*:policy/patchwork-*"
+        "arn:aws:iam::ACCOUNT_ID:role/patchwork-*",
+        "arn:aws:iam::ACCOUNT_ID:instance-profile/patchwork-*",
+        "arn:aws:iam::ACCOUNT_ID:policy/patchwork-*"
       ]
     },
     {
       "Sid": "PassOnlyPatchworkRoles",
       "Effect": "Allow",
       "Action": "iam:PassRole",
-      "Resource": "arn:aws:iam::*:role/patchwork-*"
+      "Resource": "arn:aws:iam::ACCOUNT_ID:role/patchwork-*"
     },
     {
       "Sid": "ServiceLinkedRoles",
       "Effect": "Allow",
       "Action": ["iam:CreateServiceLinkedRole", "iam:GetRole"],
-      "Resource": "arn:aws:iam::*:role/aws-service-role/*"
+      "Resource": "arn:aws:iam::ACCOUNT_ID:role/aws-service-role/*"
     },
     {
       "Sid": "ReadOnlyIamForTerraformPlans",
       "Effect": "Allow",
       "Action": ["iam:ListRoles", "iam:ListPolicies", "iam:GetAccountSummary"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DevBoxRoleIsReadOnlyToItself",
+      "Effect": "Deny",
+      "NotAction": ["iam:Get*", "iam:List*"],
+      "Resource": [
+        "arn:aws:iam::ACCOUNT_ID:role/patchwork-dev-box",
+        "arn:aws:iam::ACCOUNT_ID:instance-profile/patchwork-dev-box"
+      ]
+    },
+    {
+      "Sid": "BoundaryPolicyIsImmutable",
+      "Effect": "Deny",
+      "Action": ["iam:CreatePolicyVersion", "iam:DeletePolicy", "iam:DeletePolicyVersion", "iam:SetDefaultPolicyVersion"],
+      "Resource": "arn:aws:iam::ACCOUNT_ID:policy/patchwork-boundary"
+    },
+    {
+      "Sid": "BoundaryCannotBeRemoved",
+      "Effect": "Deny",
+      "Action": "iam:DeleteRolePermissionsBoundary",
       "Resource": "*"
     }
   ]

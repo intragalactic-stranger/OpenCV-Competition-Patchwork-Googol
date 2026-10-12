@@ -1,0 +1,23 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "EverythingExceptIdentityAndAccountAdmin",
+      "Effect": "Allow",
+      "NotAction": ["iam:*", "organizations:*", "account:*"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "PassOnlyPatchworkRoles",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::*:role/patchwork-*"
+    },
+    {
+      "Sid": "ReadIam",
+      "Effect": "Allow",
+      "Action": ["iam:GetRole", "iam:ListRoles", "iam:GetPolicy", "iam:GetPolicyVersion", "iam:ListAttachedRolePolicies"],
+      "Resource": "*"
+    }
+  ]
+}

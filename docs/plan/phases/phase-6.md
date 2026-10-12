@@ -8,7 +8,7 @@
 - [ ] Obscured detection (specular / water) → re-queue
 - [ ] `status_event` with before/after evidence crops
 - [ ] `verify_repair` tool: filed package + post-repair pass → verified or escalate
-- [ ] VLM attributes: try **OpenCV 5 VLM inference** with a small VLM on defect crops → JSON attributes; fallback to Claude multimodal on Bedrock; third fallback to rules (wheel path from lateral offset, bus stop from POIs)
+- [ ] VLM attributes: try **OpenCV 5 VLM inference** with a small VLM on defect crops → JSON attributes; fallback to Amazon Nova (multimodal) on Bedrock; third fallback to rules (wheel path from lateral offset, bus stop from POIs)
 - [ ] Generate passes 4–8 for D3
 
 ## Exit criteria

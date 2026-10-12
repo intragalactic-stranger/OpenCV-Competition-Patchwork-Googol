@@ -46,11 +46,12 @@
 
 | Evidence | File | Status |
 |---|---|---|
-| Synthetic contact sheet | `assets/synth_contact_sheet.jpg` | ⏭ |
-| ChArUco detection + calibration report | `assets/calibration.png`, `assets/calibration.json` | ⏭ |
-| Perspective vs BEV with measured polygons | `assets/bev_measure.png` | ⏭ |
+| Corridor map (real OSM geometry) | `assets/corridor_map.png` | ✅ |
+| Synthetic contact sheet | `assets/synth_contact_sheet.jpg` | ✅ |
+| ChArUco detection + calibration report | `assets/calibration.png` | ✅ |
+| Perspective vs BEV with measured polygons | `assets/bev_measure.png` | ✅ |
 | Segmentation examples (real + synthetic) | `assets/seg_examples.jpg` | ⏭ |
-| ONNX parity report | `assets/parity.md` | ⏭ |
+| ONNX parity report | `assets/opencv5_smoke.md` (smoke graph) ✅; real model in Phase 3 | 🔄 |
 | Area: measured vs truth scatter | `assets/area_scatter.png` | ⏭ |
 | Step Functions run graph screenshot | `assets/sfn_run.png` | ⏭ |
 | Map viewer screenshot + URL | `assets/viewer.png` | ⏭ |

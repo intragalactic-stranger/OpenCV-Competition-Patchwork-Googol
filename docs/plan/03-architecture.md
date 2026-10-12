@@ -26,7 +26,7 @@
 └──────────────────────────────────────────────┬────────────────────────────────────────────────────────────┘
                                                ▼
 ┌─ ACT ──────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Bedrock AgentCore Runtime (Strands agent, Claude on Bedrock)  ──►  AgentCore Gateway  ──►  Lambda tools    │
+│  Bedrock AgentCore Runtime (Strands agent, Nova on Bedrock)   ──►  AgentCore Gateway  ──►  Lambda tools    │
 │  request_human_approval ──► Step Functions waitForTaskToken ◄── Console approve/reject (API Gateway)        │
 │  file_complaint (only after token) ──► mock municipal webhook     schedule_reinspection ──► next pass queue │
 └──────────────────────────────────────────────┬────────────────────────────────────────────────────────────┘
@@ -124,7 +124,7 @@ Configuration lives in a single `PATCHWORK_ENV=local|aws` setting plus `config/*
 | Training | PyTorch + HF `transformers` (SegFormer) on SageMaker | Export ONNX opset ≥ 17, dynamic H/W |
 | Geo | PostGIS, Shapely, pyproj, OSM via `osmnx`/Overpass | Corridor geometry and road graph |
 | Agent | Strands Agents SDK on Bedrock AgentCore Runtime | Tools via AgentCore Gateway → Lambda |
-| LLM | Claude on Amazon Bedrock (APAC cross-region inference profile if needed) | Exact model ID confirmed in Phase 0 |
+| LLM | **Amazon Nova** on Amazon Bedrock (APAC cross-region inference profile if needed) | Owner's choice (D-17); model ID confirmed in Phase 5a |
 | PDF | `reportlab` | Work orders |
 | IaC | Terraform ≥ 1.9, AWS provider 6.x | Remote state in S3 + DynamoDB lock |
 | Viewer | Static HTML + MapLibre GL + Amazon Location map style | No build step at midpoint |

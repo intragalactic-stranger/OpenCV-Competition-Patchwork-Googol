@@ -9,7 +9,7 @@ A register of thousands of rows helps nobody. The agent turns **measurements int
 | Piece | Choice |
 |---|---|
 | Agent loop | **Strands Agents SDK** (Python) deployed to **Bedrock AgentCore Runtime** |
-| Model | Claude on Amazon Bedrock in ap-south-1 (APAC inference profile if the model needs it). Model ID is pinned in `config/agent.yaml` and confirmed in Phase 0. |
+| Model | **Amazon Nova** on Amazon Bedrock in ap-south-1 (Nova Pro for planning, Nova Lite/Micro for cheap sub-steps; APAC cross-region inference profile if needed). Model ID pinned in `config/agent.yaml`, confirmed with `aws bedrock list-inference-profiles` (decision D-17). |
 | Tools | **AWS Lambda** functions exposed through **AgentCore Gateway** (MCP). Also callable directly in local tests. |
 | Memory | AgentCore Memory: short-term per session; long-term "ward preferences" (for example the approved patch thickness) |
 | Tracing | AgentCore observability + OpenTelemetry spans → CloudWatch / X-Ray; full JSON trace to `s3://…/traces/<run_id>.json` |

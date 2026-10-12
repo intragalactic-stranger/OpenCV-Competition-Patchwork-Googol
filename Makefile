@@ -13,7 +13,7 @@ setup:
 	uv sync --python 3.12
 
 lint:
-	uv run ruff check src scripts tests
+	uv run ruff check src scripts tests eval
 
 test:
 	uv run pytest

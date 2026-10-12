@@ -7,57 +7,19 @@ Region: **ap-south-1 (Mumbai)**. Monthly cap: **$300**. Everything is in Terrafo
 ### 1.1 Attach an IAM role to this EC2 instance
 1. IAM → Roles → *Create role* → trusted entity **EC2** → name `patchwork-dev-box`.
 2. Attach the managed policy **`PowerUserAccess`** (everything except IAM/Organizations).
-3. Add the inline policy below (`patchwork-iam-scoped`). It lets Terraform create and pass **only** roles and policies named `patchwork-*`, and create service-linked roles.
+3. Add the inline policy `infra/iam/patchwork-iam-scoped.json` (replace `ACCOUNT_ID`). It lets Terraform manage **only** `patchwork-*` roles and policies, and pass only `patchwork-*` roles.
 4. EC2 → this instance → *Actions → Security → Modify IAM role* → choose `patchwork-dev-box`.
 5. Tell me, and I'll verify with `aws sts get-caller-identity`.
 
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "ManagePatchworkRolesAndPolicies",
-      "Effect": "Allow",
-      "Action": [
-        "iam:CreateRole", "iam:DeleteRole", "iam:GetRole", "iam:UpdateRole", "iam:TagRole", "iam:UntagRole",
-        "iam:UpdateAssumeRolePolicy", "iam:PutRolePolicy", "iam:GetRolePolicy", "iam:DeleteRolePolicy",
-        "iam:AttachRolePolicy", "iam:DetachRolePolicy", "iam:ListRolePolicies", "iam:ListAttachedRolePolicies",
-        "iam:ListInstanceProfilesForRole", "iam:CreateInstanceProfile", "iam:DeleteInstanceProfile",
-        "iam:GetInstanceProfile", "iam:AddRoleToInstanceProfile", "iam:RemoveRoleFromInstanceProfile",
-        "iam:TagInstanceProfile", "iam:CreatePolicy", "iam:DeletePolicy", "iam:GetPolicy", "iam:GetPolicyVersion",
-        "iam:CreatePolicyVersion", "iam:DeletePolicyVersion", "iam:ListPolicyVersions", "iam:TagPolicy"
-      ],
-      "Resource": [
-        "arn:aws:iam::*:role/patchwork-*",
-        "arn:aws:iam::*:instance-profile/patchwork-*",
-        "arn:aws:iam::*:policy/patchwork-*"
-      ]
-    },
-    {
-      "Sid": "PassOnlyPatchworkRoles",
-      "Effect": "Allow",
-      "Action": "iam:PassRole",
-      "Resource": "arn:aws:iam::*:role/patchwork-*"
-    },
-    {
-      "Sid": "ServiceLinkedRoles",
-      "Effect": "Allow",
-      "Action": ["iam:CreateServiceLinkedRole", "iam:GetRole"],
-      "Resource": "arn:aws:iam::*:role/aws-service-role/*"
-    },
-    {
-      "Sid": "ReadOnlyIamForTerraformPlans",
-      "Effect": "Allow",
-      "Action": ["iam:ListRoles", "iam:ListPolicies", "iam:GetAccountSummary"],
-      "Resource": "*"
-    }
-  ]
-}
-```
-A copy lives at `infra/iam/patchwork-iam-scoped.json`.
+**Privilege-escalation guard (applied 2026-10-12, decision D-18).** IAM write access is dangerous, because a role that can edit roles can grant itself admin. So:
+- Every `patchwork-*` role **must** be created with the permissions boundary `patchwork-boundary` (`infra/iam/patchwork-boundary.json`: everything except `iam:*`, `organizations:*`, `account:*`). Creating a role without it is denied.
+- The boundary can't be removed from a role, and the boundary policy itself can't be edited or deleted.
+- The `patchwork-dev-box` role and its instance profile are **read-only to themselves**. Only a human admin in the console can change the dev box's permissions.
+- Verified by test: no-boundary create → denied; remove boundary → denied; attach AdministratorAccess to the dev box → denied; edit boundary → denied.
+- Terraform sets `permissions_boundary = "arn:aws:iam::<acct>:policy/patchwork-boundary"` on every role.
 
 ### 1.2 Enable Bedrock model access
-Bedrock console (ap-south-1) → *Model access* → enable the **Anthropic Claude** models (the Sonnet and Haiku tiers). Some Anthropic models need the one-time use-case form.
+We use **Amazon Nova** models (owner's choice, D-17). Amazon's first-party models generally need no use-case form; if a call returns `AccessDeniedException`, enable them under Bedrock console (ap-south-1) → *Model access*.
 
 ### 1.3 Cost Explorer and the cost-allocation tag
 - Billing → Cost Explorer → enable (free; data appears within 24 h).
@@ -98,7 +60,7 @@ envs/dev/             composition, default_tags, variables
 | CloudFront + S3 website | Viewer | OAC, cache static | ✅ |
 | API Gateway (HTTP API) | Viewer/console API | IAM/Cognito auth in Phase 7 | ✅ (read-only) |
 | Amazon Location Service | Map tiles, SnapToRoads, reverse geocode | API key restricted to the CloudFront domain | ✅ |
-| Bedrock (Claude) | Agent reasoning | APAC inference profile if needed | 5a |
+| Bedrock (Amazon Nova) | Agent reasoning | APAC inference profile if needed | 5a |
 | Bedrock AgentCore | Agent runtime, gateway, memory, traces | | 5a |
 | CloudWatch + X-Ray (OTel) | Metrics, logs, traces, dashboard | 14-day log retention | ✅ |
 | KMS, IAM, Secrets Manager | Security | One CMK, least-privilege roles | ✅ |

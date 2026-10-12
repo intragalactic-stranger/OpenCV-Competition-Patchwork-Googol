@@ -13,22 +13,25 @@
 - [ ] Blur pass over real images (faces/plates) before upload to `s3://…-datasets/`
 - [ ] `data/LICENSES.md`
 
-### Corridor (`synth/corridor.py`)
-- [ ] Overpass query for the named roads (Coastal Road, Worli Seaface / Khan Abdul Gaffar Khan Rd, Dr Annie Besant Rd, Haji Ali, Marine Drive / Netaji Subhash Chandra Bose Rd, Pandurang Budhkar Marg …) → ordered loop polyline (≈ 25 km)
-- [ ] Road segments with `name`, `highway` class, `is_control` (Coastal Road), `is_tunnel`
-- [ ] POIs within 200 m: schools, hospitals, bus stops → `data/corridor/poi.geojson`
-- [ ] Cache to `data/corridor/` (ODbL attribution in `LICENSES.md`)
+### Corridor (`synth/corridor.py`): done, 28.6 km loop, 33 segments, 84 POIs (`docs/midpoint/assets/corridor_map.png`)
+- [x] Overpass download (`scripts/data/fetch_osm.py`) → loop routed through named-road waypoints on the directed road graph → 28.6 km polyline
+- [x] Road segments with `name`, `highway` class, `is_control` (Coastal Road), `is_tunnel`
+- [x] POIs within 200 m: schools, hospitals, bus stops → `data/corridor/poi.geojson`
+- [x] Cache to `data/corridor/` (corridor.npz, segments.json/.geojson, poi.geojson); ODbL noted in `data/raw/osm/SOURCE.md`
+- [ ] `data/LICENSES.md` consolidating all sources
 
-### Generator (`synth/`)
-- [ ] `camera.py`: intrinsics, distortion, extrinsics, homography helpers (shared with perception)
-- [ ] `road.py`: metric ground texture tiles at 1 cm/px (asphalt, markings, seams, old patches), seeded per segment
-- [ ] `defects.py`: procedural potholes/edge breaks/depressions + real cut-outs (seamlessClone); exact polygon area
-- [ ] `distractors.py`: shadows, wet sheen, manholes, speed breakers, arrows
-- [ ] `lifecycle.py`: pass-to-pass Markov transitions (unchanged/repaired/degraded/new)
-- [ ] `motion.py`: speed profile, stops, GNSS noise (urban canyon ×2.5, tunnel outage), IMU
-- [ ] `render.py`: frame = warp(ground) + sky/buildings + distortion + photometrics; GT masks
-- [ ] `charuco.py`: rendered calibration views
-- [ ] CLI: `python -m patchwork.synth --seed 7 --passes 3 [--segment worli-seaface] [--fps 30]`
+### Generator (`synth/`): implemented as `camera.py` (shared), `synth/world.py` (road, features, defects, lifecycle, distractors), `render.py`, `motion.py`, `charuco.py`, `__main__.py`
+- [x] `camera.py`: intrinsics, distortion, extrinsics, homography helpers (shared with perception)
+- [x] Ground texture tiles at 1 cm/px (asphalt with wear and wheel-path polish, kerbs, pavers/parapets, lane markings, seams, old patches), deterministic per tile (`world.py`)
+- [x] Procedural potholes, edge breaks and depressions with exact polygon area; 8× supersampled raster (bias < 1%)
+- [ ] Real pothole cut-outs from Indian Roads blended in (`seamlessClone`): needs the dataset
+- [x] Distractors: shadows and wet patches (per pass), manholes, speed breakers, tar seams, old patches (persistent)
+- [ ] Painted arrows / zebra crossings
+- [x] Lifecycle: pass-to-pass transitions (unchanged / repaired / degraded / new); repaired → rendered as a patch
+- [x] `motion.py`: speed profile, stops, GNSS noise (urban canyon ×2.5, tunnel outage), IMU
+- [x] `render.py`: frame = warp(ground) + sky/buildings + distortion + photometrics; GT masks
+- [x] `charuco.py`: rendered calibration views
+- [x] CLI: `python -m patchwork.synth --seed 7 --passes 1,2,3 [--segment NAME | --s-start/--s-end] [--fps 15] [--clip-m 3000]`
 - [ ] QA: contact sheet (`docs/midpoint/assets/synth_contact_sheet.jpg`), GT-mask overlay video snippet
 
 ### Datasets D1–D4 (starter for the midpoint)

@@ -24,7 +24,7 @@
 - [x] Install AWS CLI v2 and Terraform (user-local, `~/.local/bin`)
 - [ ] ⚠️ **User:** attach the instance role (see [09 §1.1](../09-aws-infra-and-cost.md#11-attach-an-iam-role-to-this-ec2-instance))
 - [ ] `aws sts get-caller-identity` OK; `aws configure set region ap-south-1`
-- [ ] ⚠️ **User:** Bedrock model access for Claude; then `aws bedrock list-foundation-models` + `list-inference-profiles` → pick and pin the model ID
+- [ ] (moved to Phase 5a) Amazon Nova model access check: `aws bedrock list-inference-profiles` → pin the model ID
 - [ ] Terraform `bootstrap/` **written and validated** (state bucket with S3-native locking + **Budget $300**, alerts 50/80/100% actual and 100% forecast); `apply` blocked on the instance role
 - [ ] Activate the cost-allocation tag `Project` (or ask the payer admin)
 - [x] `scripts/cost_report.py` skeleton runs (even with $0)
