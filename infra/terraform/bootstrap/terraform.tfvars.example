@@ -1,0 +1,3 @@
+region             = "ap-south-1"
+monthly_budget_usd = 300
+alert_emails       = ["you@example.com"]

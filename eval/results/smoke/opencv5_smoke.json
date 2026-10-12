@@ -1,0 +1,96 @@
+{
+  "opencv_version": "5.0.0",
+  "numpy": "2.5.4",
+  "onnxruntime": "1.31.0",
+  "dnn": {
+    "ok": true,
+    "model": "smoke_segformer_like.onnx",
+    "opset": 17,
+    "runs": [
+      {
+        "input": [
+          64,
+          96
+        ],
+        "ort_shape": [
+          1,
+          4,
+          64,
+          96
+        ],
+        "ENGINE_NEW": {
+          "loaded": true,
+          "max_abs_diff": 3.635883331298828e-06,
+          "ms": 1.49
+        },
+        "ENGINE_CLASSIC": {
+          "loaded": false,
+          "error": "OpenCV(5.0.0) /io/opencv/modules/dnn/src/onnx/onnx_importer.cpp:1114: error: (-2:Unspecified error) in function 'handleNode' > Node [Shape@ai.onnx]:(onnx_node_output_0!f_shape) parse error: OpenCV(5.0.0) /io/opencv/modules/dnn/src/onnx/onnx"
+        }
+      },
+      {
+        "input": [
+          128,
+          224
+        ],
+        "ort_shape": [
+          1,
+          4,
+          128,
+          224
+        ],
+        "ENGINE_NEW": {
+          "loaded": true,
+          "max_abs_diff": 3.7550926208496094e-06,
+          "ms": 17.4
+        },
+        "ENGINE_CLASSIC": {
+          "loaded": false,
+          "error": "OpenCV(5.0.0) /io/opencv/modules/dnn/src/onnx/onnx_importer.cpp:1114: error: (-2:Unspecified error) in function 'handleNode' > Node [Shape@ai.onnx]:(onnx_node_output_0!f_shape) parse error: OpenCV(5.0.0) /io/opencv/modules/dnn/src/onnx/onnx"
+        }
+      },
+      {
+        "input": [
+          256,
+          448
+        ],
+        "ort_shape": [
+          1,
+          4,
+          256,
+          448
+        ],
+        "ENGINE_NEW": {
+          "loaded": true,
+          "max_abs_diff": 1.430511474609375e-06,
+          "ms": 146.87
+        },
+        "ENGINE_CLASSIC": {
+          "loaded": false,
+          "error": "OpenCV(5.0.0) /io/opencv/modules/dnn/src/onnx/onnx_importer.cpp:1114: error: (-2:Unspecified error) in function 'handleNode' > Node [Shape@ai.onnx]:(onnx_node_output_0!f_shape) parse error: OpenCV(5.0.0) /io/opencv/modules/dnn/src/onnx/onnx"
+        }
+      }
+    ]
+  },
+  "charuco": {
+    "ok": true,
+    "views_used": 18,
+    "rms_px": 0.1688,
+    "fx_true": 1400.0,
+    "fx_est": 1400.6,
+    "fx_rel_err": 0.00043,
+    "k1_true": -0.28,
+    "k1_est": -0.2797
+  },
+  "yunet": {
+    "ok": true,
+    "model": "face_detection_yunet_2023mar.onnx",
+    "faces_on_blank_frame": 0
+  },
+  "orb_homography": {
+    "ok": true,
+    "good_matches": 866,
+    "inliers": 854,
+    "corner_err_px": 0.121
+  }
+}

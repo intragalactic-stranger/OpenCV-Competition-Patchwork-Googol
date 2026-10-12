@@ -1,0 +1,29 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Data and models (never committed)
+data/
+!data/.gitkeep
+models/
+*.onnx
+*.mp4
+*.pt
+*.pth
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+.terraform.lock.hcl.bak
+
+# Local
+.env
+*.log
+scratch/
+terraform.tfvars
