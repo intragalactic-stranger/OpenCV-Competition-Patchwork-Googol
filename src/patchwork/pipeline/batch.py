@@ -31,6 +31,32 @@ CALIB = ROOT / "data" / "calib" / "cam01-v1.json"
 CLIP_FILES = ("clip.mp4", "frames.csv", "gnss.csv", "meta.json")
 
 
+def emf(metrics: dict[str, float], dims: dict[str, str], unit: dict[str, str] | None = None) -> None:
+    """CloudWatch Embedded Metric Format on stdout: the awslogs driver turns it into metrics (namespace Patchwork)."""
+    import time as _t
+
+    unit = unit or {}
+    print(
+        json.dumps(
+            {
+                "_aws": {
+                    "Timestamp": int(_t.time() * 1000),
+                    "CloudWatchMetrics": [
+                        {
+                            "Namespace": "Patchwork",
+                            "Dimensions": [list(dims)],
+                            "Metrics": [{"Name": k, "Unit": unit.get(k, "None")} for k in metrics],
+                        }
+                    ],
+                },
+                **dims,
+                **metrics,
+            }
+        ),
+        flush=True,
+    )
+
+
 def split(uri: str) -> tuple[str, str]:
     b, _, k = uri.removeprefix("s3://").partition("/")
     return b, k.rstrip("/")
@@ -74,6 +100,18 @@ def cmd_perceive(args, s3, work: Path) -> None:
     save_perception(out, obs, odo, st)
     upload_tree(s3, out, f"{args.run_uri}/{pass_name}/{clip}")
     print(json.dumps(st), flush=True)
+    emf(
+        {
+            "KmPerceived": st["km"],
+            "FramesDecoded": st["frames"],
+            "FramesKept": st["kept"],
+            "Observations": st["observations"],
+            "PerceiveSeconds": st["seconds"],
+            **{f"StageSeconds_{k}": v for k, v in st["stage_seconds"].items()},
+        },
+        {"Stage": "perceive"},
+        {"PerceiveSeconds": "Seconds"},
+    )
 
 
 def cmd_assemble(args, s3, work: Path) -> None:
@@ -113,6 +151,15 @@ def cmd_assemble(args, s3, work: Path) -> None:
     b, k = split(args.run_uri)
     s3.put_object(Bucket=b, Key=f"{k}/{pass_name}/summary.json", Body=json.dumps(summary, indent=1).encode())
     print(json.dumps(summary), flush=True)
+    emf(
+        {
+            "KmProcessed": summary["km"],
+            "DefectsFound": summary["defects"],
+            "NewDefects": summary.get("register", {}).get("new_defects", 0),
+            "LinkedDefects": summary.get("register", {}).get("linked_to_existing", 0),
+        },
+        {"Stage": "assemble"},
+    )
 
 
 def main() -> None:

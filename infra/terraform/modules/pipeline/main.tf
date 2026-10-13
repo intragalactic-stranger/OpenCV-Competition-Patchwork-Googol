@@ -368,3 +368,72 @@ resource "aws_sfn_state_machine" "approval" {
 }
 
 output "approval_state_machine_arn" { value = aws_sfn_state_machine.approval.arn }
+
+# ---------- observability: one dashboard (metrics come from EMF lines printed by the Batch jobs) ----------
+resource "aws_cloudwatch_dashboard" "pipeline" {
+  dashboard_name = "${var.name}-pipeline"
+  dashboard_body = jsonencode({
+    widgets = [
+      {
+        type = "metric", x = 0, y = 0, width = 8, height = 6
+        properties = {
+          title  = "Km processed / defects found (per pass)"
+          region = data.aws_region.current.region, stat = "Sum", period = 3600, view = "timeSeries"
+          metrics = [
+            ["Patchwork", "KmProcessed", "Stage", "assemble"],
+            [".", "DefectsFound", ".", "."],
+            [".", "NewDefects", ".", "."],
+            [".", "LinkedDefects", ".", "."],
+          ]
+        }
+      },
+      {
+        type = "metric", x = 8, y = 0, width = 8, height = 6
+        properties = {
+          title  = "Perception: seconds per stage (sum over clips)"
+          region = data.aws_region.current.region, stat = "Sum", period = 3600, view = "bar"
+          metrics = [
+            ["Patchwork", "StageSeconds_decode_triage", "Stage", "perceive"],
+            [".", "StageSeconds_privacy", ".", "."],
+            [".", "StageSeconds_pose", ".", "."],
+            [".", "StageSeconds_segment", ".", "."],
+            [".", "StageSeconds_measure", ".", "."],
+          ]
+        }
+      },
+      {
+        type = "metric", x = 16, y = 0, width = 8, height = 6
+        properties = {
+          title  = "Pipeline executions"
+          region = data.aws_region.current.region, stat = "Sum", period = 3600, view = "timeSeries"
+          metrics = [
+            ["AWS/States", "ExecutionsSucceeded", "StateMachineArn", aws_sfn_state_machine.pipeline.arn],
+            [".", "ExecutionsFailed", ".", "."],
+          ]
+        }
+      },
+      {
+        type = "metric", x = 0, y = 6, width = 12, height = 6
+        properties = {
+          title  = "Frames decoded vs kept by triage"
+          region = data.aws_region.current.region, stat = "Sum", period = 3600, view = "timeSeries"
+          metrics = [
+            ["Patchwork", "FramesDecoded", "Stage", "perceive"],
+            [".", "FramesKept", ".", "."],
+          ]
+        }
+      },
+      {
+        type = "metric", x = 12, y = 6, width = 12, height = 6
+        properties = {
+          title  = "Approvals (agent work packages)"
+          region = data.aws_region.current.region, stat = "Sum", period = 3600, view = "timeSeries"
+          metrics = [
+            ["AWS/States", "ExecutionsSucceeded", "StateMachineArn", aws_sfn_state_machine.approval.arn],
+            [".", "ExecutionsStarted", ".", "."],
+          ]
+        }
+      },
+    ]
+  })
+}
