@@ -1,0 +1,49 @@
+{
+ "defect": {
+  "defect_id": "01M4T0M9DC6SA3ZQAZ0SW9S1RC",
+  "road_name": "Marine Drive",
+  "chainage_m": 49.983
+ },
+ "area_A": 0.24526,
+ "area_B": 3.1,
+ "plan_changed": true,
+ "A": {
+  "run_id": "ablation-A-W9S1RC",
+  "tool_sequence": [
+   "query_defects",
+   "cluster_into_packages",
+   "estimate_materials",
+   "draft_work_order",
+   "request_human_approval"
+  ],
+  "package_id": "01M4T0Z4Y3E9EKMBC442YFWW90",
+  "priority": 3,
+  "exposure_score": 1.829,
+  "area_m2": 0.2453,
+  "mass_t": 0.0317,
+  "state": "awaiting_approval",
+  "final": "<thinking> The work order has been successfully requested for human approval. Here is the summary of the package: </thinking>\n\n**Summary:**\n- **Package ID:** 01M4T0Z4Y3E9EKMBC442YFWW90\n- **Priority:** 3\n- **Rationale:** The defect on Marine Drive at chainage 50.0m has a low severity but covers an area of 0.245m\u00b2. Despite its low severity, it is important to address this defect to maintain the road's integrity and ensure safety for pedestrians and vehicles. The defect is located on a major road, and although there are no nearby schools, hospitals, or bus stops, it is still a significant area that requires attention.\n\nThe work order is now awaiting approval.\n",
+  "tokens": 12283,
+  "seconds": 11.5
+ },
+ "B": {
+  "run_id": "ablation-B-W9S1RC",
+  "tool_sequence": [
+   "query_defects",
+   "cluster_into_packages",
+   "estimate_materials",
+   "draft_work_order",
+   "request_human_approval"
+  ],
+  "package_id": "01M4T0ZH0FGXDR2E7Z5778KX5S",
+  "priority": 1,
+  "exposure_score": 14.466,
+  "area_m2": 3.1,
+  "mass_t": 0.4007,
+  "state": "awaiting_approval",
+  "final": "<thinking> The work order for the package has been successfully requested for human approval. Here is the summary of the package: </thinking>\n\nPackage ID: 01M4T0ZH0FGXDR2E7Z5778KX5S\nPriority: 1\nRationale: The defect on Marine Drive at chainage 50.0m has a high severity and an area of 3.1m\u00b2. Given its location on a major road and the high exposure score of 14.47, this repair is a priority to ensure road safety and maintainability.\n\nThe work order is now awaiting approval.\n",
+  "tokens": 11944,
+  "seconds": 10.7
+ },
+ "source": "ground-truth fixture (eval/agent_fixture.py), used until the pipeline has populated the register"
+}

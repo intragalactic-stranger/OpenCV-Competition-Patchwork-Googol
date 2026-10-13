@@ -20,9 +20,9 @@
 | Processing time per km (Batch, Graviton) | reported | [[TBD]] | ⏭ |
 | Cost per km processed | < $0.02 | [[TBD]] | ⏭ |
 | Cross-pass re-ID F1, basic matcher (stretch) | ≥ 0.90 (final) | [[TBD]] | ⏭ |
-| Run A/B: plan changes with measured area (stretch) | must change | [[TBD]] | ⏭ |
+| Run A/B: plan changes with measured area (agent on Amazon Nova) | must change | changed · 0.25 → 3.10 m²: priority 3 → 1, hot-mix 0.0317 → 0.4007 t; register source: ground-truth fixture; see assets/ablation_ab.md | ✅ |
 
-_Generated 2026-10-13 05:56 UTC by `uv run python -m eval.report`._
+_Generated 2026-10-13 07:00 UTC by `uv run python -m eval.report`._
 <!-- METRICS:END -->
 
 ## 2. Visual outputs

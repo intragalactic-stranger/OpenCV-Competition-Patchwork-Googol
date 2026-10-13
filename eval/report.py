@@ -138,7 +138,22 @@ def build_table() -> str:
     rows.append(_row("Processing time per km (Batch, Graviton)", "reported", None, None))
     rows.append(_row("Cost per km processed", "< $0.02", None, None))
     rows.append(_row("Cross-pass re-ID F1, basic matcher (stretch)", "≥ 0.90 (final)", None, None))
-    rows.append(_row("Run A/B: plan changes with measured area (stretch)", "must change", None, None))
+    ab = _load("ablation_ab.json")
+    if ab:
+        A, B = ab["A"], ab["B"]
+        rows.append(
+            _row(
+                "Run A/B: plan changes with measured area (agent on Amazon Nova)",
+                "must change",
+                "changed" if ab["plan_changed"] else "NOT changed",
+                ab["plan_changed"],
+                f"{ab['area_A']:.2f} → {ab['area_B']:.2f} m²: priority {A['priority']} → {B['priority']}, "
+                f"hot-mix {A['mass_t']} → {B['mass_t']} t; register source: {ab.get('source', '?').split(' (')[0]}; "
+                "see assets/ablation_ab.md",
+            )
+        )
+    else:
+        rows.append(_row("Run A/B: plan changes with measured area (stretch)", "must change", None, None))
     rows.append("")
     rows.append(f"_Generated {dt.datetime.now(dt.UTC):%Y-%m-%d %H:%M} UTC by `uv run python -m eval.report`._")
     return "\n".join(rows)

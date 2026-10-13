@@ -275,3 +275,96 @@ resource "aws_cloudwatch_event_target" "sfn" {
 }
 
 output "state_machine_arn" { value = aws_sfn_state_machine.pipeline.arn }
+
+# ---------- human approval gate (agent work packages) ----------
+# request_human_approval starts this workflow. It writes its task token straight into Aurora (SDK integration),
+# so the token never passes through the agent. Only an engineer's decision (scripts/approve.py, later the
+# console) resumes it. Filing goes to a MOCK endpoint: nothing is ever sent to a real authority.
+resource "aws_iam_role" "approval" {
+  name                 = "${var.name}-approval-sfn"
+  assume_role_policy   = data.aws_iam_policy_document.sfn_trust.json
+  permissions_boundary = var.boundary_arn
+}
+
+resource "aws_iam_role_policy" "approval" {
+  name = "register"
+  role = aws_iam_role.approval.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      { Effect = "Allow", Action = ["rds-data:ExecuteStatement"], Resource = var.db_cluster_arn },
+      { Effect = "Allow", Action = ["secretsmanager:GetSecretValue"], Resource = var.db_secret_arn },
+    ]
+  })
+}
+
+locals {
+  db = { ResourceArn = var.db_cluster_arn, SecretArn = var.db_secret_arn, Database = "patchwork" }
+}
+
+resource "aws_sfn_state_machine" "approval" {
+  name     = "${var.name}-approve-work-package"
+  role_arn = aws_iam_role.approval.arn
+  definition = jsonencode({
+    Comment = "Human approval gate for an agent-drafted work package"
+    StartAt = "StoreTokenAndWait"
+    States = {
+      StoreTokenAndWait = {
+        Type     = "Task"
+        Resource = "arn:aws:states:::aws-sdk:rdsdata:executeStatement.waitForTaskToken"
+        Parameters = merge(local.db, {
+          Sql = "INSERT INTO approval_request (package_id, task_token, sfn_execution_arn) VALUES (:p, :t, :e) ON CONFLICT (package_id) DO UPDATE SET task_token = EXCLUDED.task_token, sfn_execution_arn = EXCLUDED.sfn_execution_arn"
+          Parameters = [
+            { Name = "p", Value = { "StringValue.$" = "$.package_id" } },
+            { Name = "t", Value = { "StringValue.$" = "$$.Task.Token" } },
+            { Name = "e", Value = { "StringValue.$" = "$$.Execution.Id" } },
+          ]
+        })
+        TimeoutSeconds = 604800
+        ResultPath     = "$.decision"
+        Catch = [
+          { ErrorEquals = ["Rejected"], ResultPath = "$.error", Next = "MarkRejected" },
+          { ErrorEquals = ["States.Timeout"], ResultPath = "$.error", Next = "MarkExpired" },
+        ]
+        Next = "FileMockTicket"
+      }
+      FileMockTicket = {
+        Type     = "Task"
+        Resource = "arn:aws:states:::aws-sdk:rdsdata:executeStatement"
+        Parameters = merge(local.db, {
+          Sql = "WITH t AS (INSERT INTO ticket (ticket_id, package_id, external_ref, payload) VALUES (:id, :p, :ref, CAST(:payload AS jsonb)) RETURNING package_id) UPDATE work_package SET state = 'filed' WHERE package_id IN (SELECT package_id FROM t)"
+          Parameters = [
+            { Name = "id", Value = { "StringValue.$" = "States.UUID()" } },
+            { Name = "p", Value = { "StringValue.$" = "$.package_id" } },
+            { Name = "ref", Value = { "StringValue.$" = "States.Format('MOCK-{}', States.UUID())" } },
+            { Name = "payload", Value = { "StringValue.$" = "States.JsonToString($.decision)" } },
+          ]
+        })
+        ResultPath = null
+        End        = true
+      }
+      MarkRejected = {
+        Type     = "Task"
+        Resource = "arn:aws:states:::aws-sdk:rdsdata:executeStatement"
+        Parameters = merge(local.db, {
+          Sql        = "UPDATE work_package SET state = 'rejected' WHERE package_id = :p"
+          Parameters = [{ Name = "p", Value = { "StringValue.$" = "$.package_id" } }]
+        })
+        ResultPath = null
+        End        = true
+      }
+      MarkExpired = {
+        Type     = "Task"
+        Resource = "arn:aws:states:::aws-sdk:rdsdata:executeStatement"
+        Parameters = merge(local.db, {
+          Sql        = "UPDATE work_package SET state = 'escalated' WHERE package_id = :p"
+          Parameters = [{ Name = "p", Value = { "StringValue.$" = "$.package_id" } }]
+        })
+        ResultPath = null
+        End        = true
+      }
+    }
+  })
+}
+
+output "approval_state_machine_arn" { value = aws_sfn_state_machine.approval.arn }

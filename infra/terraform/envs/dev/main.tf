@@ -99,3 +99,4 @@ output "viewer_url" { value = module.viewer.url }
 output "viewer_bucket" { value = module.viewer.bucket }
 output "viewer_distribution_id" { value = module.viewer.distribution_id }
 output "pipeline_state_machine" { value = module.pipeline.state_machine_arn }
+output "approval_state_machine" { value = module.pipeline.approval_state_machine_arn }

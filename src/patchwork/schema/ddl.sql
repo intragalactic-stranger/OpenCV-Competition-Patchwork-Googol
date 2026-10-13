@@ -159,3 +159,12 @@ CREATE TABLE IF NOT EXISTS reinspection (
   reason          text,
   package_id      text REFERENCES work_package
 );
+
+-- v1.1 (additive, decision D-28): the approval workflow's task token, written by Step Functions itself.
+-- Only the approval console/CLI reads it; no agent tool can SELECT this table.
+CREATE TABLE IF NOT EXISTS approval_request (
+  package_id        text PRIMARY KEY REFERENCES work_package,
+  task_token        text NOT NULL,
+  sfn_execution_arn text,
+  requested_at      timestamptz NOT NULL DEFAULT now()
+);
