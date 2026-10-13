@@ -3,17 +3,17 @@
 **Goal:** the Ward Engineer's Assistant proposes grounded work packages, waits for a human, and demonstrably changes its plan when the vision output changes.
 
 ## 5a: midpoint slice (SHOULD for the checkpoint)
-- [ ] Confirm the **Amazon Nova** model ID / APAC inference profile in ap-south-1 (`aws bedrock list-inference-profiles`); smoke-test tool use via the Converse API
-- [ ] Tool Lambdas: `query_defects`, `cluster_into_packages`, `estimate_materials`, `draft_work_order`, `request_human_approval`
-- [ ] Shared `grounding.py` guard (reject unknown IDs → `UNGROUNDED_ID`), used by every tool
-- [ ] Exposure score + priority (deterministic, in `estimate_materials`/`cluster` outputs)
-- [ ] Strands agent + system prompt; local run against Bedrock with tools called in-process
-- [ ] Deploy to AgentCore Runtime; tools via AgentCore Gateway
-- [ ] Approval state machine (`waitForTaskToken`), token in DynamoDB only; approve/reject via a minimal endpoint (`POST /approvals/{id}`)
-- [ ] On approve → mock `file_complaint` webhook (logged) + `schedule_reinspection` row
-- [ ] Work-order PDF (reportlab): photo, BEV overlay, quantities, assumptions, rationale, confidence, defect IDs
-- [ ] Trace capture (S3 JSON + CloudWatch)
-- [ ] **`eval/ablation_ab.py`** → side-by-side trace diff to `docs/midpoint/assets/`
+- [x] Confirm the **Amazon Nova** model ID / APAC inference profile in ap-south-1: `apac.amazon.nova-pro-v1:0` (planning), Lite/Micro available; tool use works through Strands
+- [x] Tools `query_defects`, `cluster_into_packages`, `estimate_materials`, `draft_work_order`, `request_human_approval` (`agent/tools.py`). **Deviation:** in-process Python functions, not Lambdas yet (same code moves behind AgentCore Gateway in 5b)
+- [x] Grounding guard in every tool (`_validate_defects`, `_package` → `UNGROUNDED_ID`) + DB trigger; both verified with a fake ID
+- [x] Exposure score + priority (deterministic, PostGIS POI context, in `cluster_into_packages`)
+- [x] Strands agent + system prompt (`agent/run.py`, `prompts/system.md`); about 25 s and 12–30 k tokens per run
+- [ ] Deploy to AgentCore Runtime; tools via AgentCore Gateway (next; D-27 trial rule applies)
+- [x] Approval state machine (`waitForTaskToken`). **Deviation:** the token is written by Step Functions into Aurora (`approval_request`, decision D-28), not DynamoDB; approve/reject via `scripts/approve.py` (endpoint comes with the console)
+- [x] On approve → **mock** ticket (`MOCK-…`) + package `filed`; on reject → `rejected` + override recorded · [ ] `schedule_reinspection` row (5b)
+- [~] Work order as **Markdown** in S3 (quantities, assumptions, rationale, confidence, defect IDs; all numbers from the DB). PDF with photo + BEV overlay: 5b
+- [x] Trace capture: every tool call, its arguments and result → `eval/results/agent/<run>.json` and `s3://…-artifacts/traces/`
+- [x] **`eval/ablation_ab.py`** → `docs/midpoint/assets/ablation_ab.md`: 0.25 → 3.10 m² changes priority 3 → 1 and hot-mix 0.03 → 0.40 t
 
 **Exit 5a:** A/B produce different priorities and actions; approve → ticket logged; reject → nothing filed; an unknown ID → rejected.
 

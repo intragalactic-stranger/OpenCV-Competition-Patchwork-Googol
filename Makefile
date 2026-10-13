@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 PY := uv run python
 
-.PHONY: setup check lint test smoke cost-report services-inventory eval-midpoint help
+.PHONY: setup check lint test smoke cost-report services-inventory eval-midpoint upload-demo agent-demo ablation approvals help
 
 help:
 	@echo "setup        create .venv (Python 3.12) and install deps"
@@ -33,3 +33,19 @@ services-inventory:
 
 eval-midpoint:
 	$(PY) -m eval.report
+
+# demo helpers (see docs/midpoint/05-DEMO-GUIDE.md)
+MODEL ?= seg-v2
+upload-demo:
+	$(PY) scripts/aws/upload_pass.py --seed 11 --pass 1 --model $(MODEL) --clips 5,6 --run demo-$$(date +%H%M%S)
+
+agent-demo:
+	PATCHWORK_APPROVAL_SFN=$$(cd infra/terraform/envs/dev && terraform output -raw approval_state_machine) \
+	PATCHWORK_ARTIFACTS_BUCKET=$$(cd infra/terraform/envs/dev && terraform output -json buckets | python3 -c "import json,sys; print(json.load(sys.stdin)['artifacts'])") \
+	uv run --group agent python -m patchwork.agent.run "Plan repairs for Khan Abdul Gaffar Khan Marg."
+
+ablation:
+	uv run --group agent python -m eval.ablation_ab
+
+approvals:
+	$(PY) scripts/approve.py list

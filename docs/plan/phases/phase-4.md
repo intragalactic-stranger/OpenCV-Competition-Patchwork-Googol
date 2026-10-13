@@ -6,27 +6,27 @@
 ## Checklist
 
 ### Register
-- [ ] `register/repo.py`: Data API client (aws) + psycopg (local), same interface
-- [ ] DDL migration runner (`register/migrate.py`), PostGIS extension, `schema-v1`
-- [ ] Load corridor road segments + POIs
-- [ ] Observation load (one transaction), within-pass dedup, road snapping (Amazon Location SnapToRoads → PostGIS fallback)
-- [ ] Basic defect tracks: link to the existing defect within 3 m / same segment (full cross-pass matching is Phase 6)
+- [x] `register/dataapi.py`: Data API client (the only access path; no local psycopg needed)
+- [x] DDL migration (`dataapi migrate`, `$$`-aware splitter), PostGIS, schema v1 (+ v1.1 `approval_request`, D-28)
+- [x] Load corridor road segments (33) + POIs (84)
+- [x] Observation load, idempotent via unique index (`ON CONFLICT DO NOTHING`); within-pass dedup in `assemble`; road snapping = route chainage (the survey route is known). Amazon Location SnapToRoads not needed
+- [x] Basic cross-pass tracks: link to an existing defect within 8 m on the same segment (localisation p90 6.5 m); unchanged/degraded status events
 
 ### Container
-- [ ] `docker/batch.Dockerfile`: python:3.12-slim arm64, OpenCV 5, onnxruntime (parity fallback), our package
-- [ ] `docker buildx` for linux/arm64 (QEMU on this x86 box) → ECR
-- [ ] Entry point `python -m patchwork.pipeline.batch_entry --clip s3://…`
+- [x] `docker/batch.Dockerfile`: python:3.12-slim arm64, OpenCV 5, our package, YuNet, calibration, viewer
+- [x] `docker buildx` for linux/arm64 (QEMU on this x86 box) → ECR (`patchwork-batch`, `patchwork-train`)
+- [x] Entry point `python -m patchwork.pipeline.batch perceive|assemble` (D-29)
 
 ### Terraform (`infra/terraform/envs/dev`)
-- [ ] modules: storage, network, db, ingest, batch, pipeline, viewer, observability
-- [ ] Step Functions `process-clip`: idempotency → Batch .sync (retry on Spot) → register-load Lambda → match Lambda → metrics
+- [x] modules: storage, network, db, batch, pipeline (incl. ingest + approval), viewer · [ ] observability (dashboard, alarms)
+- [x] Step Functions `process-pass`: read manifest → Batch perceive array (.sync) → Batch assemble (.sync: register + viewer). No Lambda needed
 - [ ] DLQ alarm, Batch failure alarm
-- [ ] `terraform apply` from a clean state works; `terraform destroy` too (verified once)
+- [x] `terraform apply` works incrementally (≈ 70 resources) · [ ] destroy from clean verified once (Phase 9)
 
 ### Viewer (midpoint)
-- [ ] `viewer/index.html`: MapLibre + Amazon Location style; defects as circles coloured by severity; popup with overlay image, m² ± uncertainty, material, status, IDs
-- [ ] `GET /defects?bbox=` and `GET /defects/{id}` (Lambda via Data API)
-- [ ] Served from CloudFront
+- [x] `viewer/index.html`: MapLibre + Amazon Location style; defects coloured by severity; popup with evidence image, m² ± uncertainty, material, status, IDs; synthetic-data banner
+- [~] No API needed for the midpoint: the assemble job publishes the register as GeoJSON (`pipeline/publish.py`). API Gateway comes with the console
+- [x] Served from CloudFront (private bucket + OAC)
 
 ### Pipeline metrics
 - [ ] CloudWatch EMF metrics: `KmProcessed`, `FramesKept`, `DefectsFound`, `StageSeconds{stage}`, `EstimatedCostUSD`

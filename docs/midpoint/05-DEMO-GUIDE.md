@@ -1,33 +1,44 @@
 # Demo guide (midpoint checkpoint)
 
-**Length:** about 10 minutes. **Setup:** browser tabs pre-opened; terminal in the repo; AWS console logged in (ap-south-1).
-**Fallback:** a recorded run of the same sequence (`assets/demo_recording.mp4`), because live demos fail on venue Wi-Fi.
+**Length:** about 10 minutes. **Setup:** browser tabs open; terminal in the repo; AWS console signed in (region ap-south-1).
+**Fallback:** screenshots and outputs from the last successful run are in `assets/`. Live demos fail on venue Wi-Fi.
 
 ## Before the demo (T−30 min)
+
 ```bash
-make preflight            # checks AWS identity, Aurora awake, Batch CE valid, viewer URL 200, model in S3
-make synth-demo           # renders a short 2–3 km Worli Seaface pass (≈ 3 min) if not cached
+make check                    # lint + tests green
+make upload-demo MODEL=seg-v2 # uploads 2 clips (6 km) of the held-out world -> pipeline starts by itself
+make cost-report && make services-inventory && make eval-midpoint
 ```
-Open tabs: (1) the viewer URL, (2) the Step Functions console on `patchwork-process-clip`, (3) this repo's `docs/midpoint/04-RESULTS-AND-OUTPUTS.md`, (4) `02-COST-REPORT.md`.
+
+Open these tabs:
+1. **Viewer:** https://d3mt6jrs1ynczo.cloudfront.net
+2. **Step Functions console:** state machine `patchwork-process-pass`.
+3. `docs/midpoint/04-RESULTS-AND-OUTPUTS.md`
+4. `docs/midpoint/02-COST-REPORT.md`
+5. `docs/midpoint/07-MODEL-CARD.md`
 
 ## Script
 
 | # | Time | Do | Say (key message) |
 |---|---|---|---|
-| 1 | 0:00 | Show the proposal's one-liner and the architecture in `03-SERVICES-USED.md` | "Detection is solved. Measurement and verification are not. That's what Patchwork adds." |
-| 2 | 1:00 | Play 20 s of the synthetic pass | "This is the real Worli Seaface geometry from OpenStreetMap. Every pothole has a known area to the cm², so we can grade ourselves exactly." |
-| 3 | 2:00 | `make upload-demo` → switch to Step Functions, watch the graph | "Upload triggers EventBridge → SQS → Step Functions → Batch on Graviton Spot." |
-| 4 | 3:00 | While it runs: show `calibration.png` and `bev_measure.png` | "OpenCV 5 ChArUco calibration, then one homography turns pixels into a 1 cm top-down grid. That's where square metres come from." |
-| 5 | 4:00 | Show `seg_examples.jpg` + `parity.md` | "SegFormer-B0 trained on SageMaker, exported to ONNX, running in OpenCV 5's new engine. Here's the parity check against onnxruntime." |
-| 6 | 5:00 | Step Functions finished → open the viewer, click 2–3 defects | "Each dot is a defect with m² ± uncertainty, severity, and material at a stated 5 cm thickness. We claim area, not depth." |
-| 7 | 6:30 | Results table in `04-RESULTS…` | "Recall, false positives per km on the control section, area error, localisation, all computed by code." |
-| 8 | 7:30 | `02-COST-REPORT.md` | "Spend so far by service, and cost per km." |
-| 9 | 8:30 | *(stretch)* Run A/B diff | "Same clip, same prompt. Change only the measured area and the agent's plan changes. The vision drives the action, and nothing is filed without a human approval token." |
-| 10 | 9:30 | `06-NEXT-STEPS.md` | "Second half: repair verification across passes, the full agent, the console, the 40-scenario evaluation." |
+| 1 | 0:00 | Architecture diagram in `03-SERVICES-USED.md` | "Detection is solved. Measurement and verification are not. That's what Patchwork adds." |
+| 2 | 1:00 | Corridor map + synthetic contact sheet (`04-RESULTS` §2.0–2.1) | "Real Mumbai road geometry from OpenStreetMap, a simulated dashcam on it, and every pothole's area known to the cm², so we can grade ourselves exactly." |
+| 3 | 2:00 | `make upload-demo`, then the Step Functions graph | "The upload *is* the trigger: S3 → EventBridge → Step Functions → Batch on Graviton Spot, one container per clip in parallel. Ground truth never leaves the dataset bucket." |
+| 4 | 3:00 | While it runs: `calibration.png`, `bev_measure.png` | "OpenCV 5 ChArUco calibration, then one homography turns pixels into a 1 cm top-down grid. That's where square metres come from: 2.1% error with perfect masks." |
+| 5 | 4:00 | Model card §7 | "SegFormer-B0 trained on CPU (Graviton Spot, no GPU) and running in OpenCV 5's new engine, identical to onnxruntime to 1e-6. The 4.x-style engine cannot even load it." |
+| 6 | 5:00 | Viewer: click 2–3 defects | "Each dot: m² ± uncertainty, severity, material at a stated 5 cm thickness, and the evidence image (dashcam view + metric top-down view). We claim area, never depth." |
+| 7 | 6:00 | `make agent-demo`, then `make approvals` | "Amazon Nova plans the work: packages, priority from measured area and nearby schools/hospitals, materials, a work order. It can only *request* approval; the token lives in the database, never in the agent." |
+| 8 | 7:00 | `uv run python scripts/approve.py approve <id> --by "AE Ward D"` | "A human approves, and only then a (mock) ticket is filed. A rejection is recorded as an override." |
+| 9 | 7:45 | `assets/ablation_ab.md` | "Same defect, same prompt. Change only the measured area and the plan changes: priority 3 → 1. The vision drives the action." |
+| 10 | 8:30 | Results table + cost report (usage vs credits vs real money) | "Every number is computed by code. Real money spent: zero; everything runs on promotional credits." |
+| 11 | 9:15 | `06-NEXT-STEPS.md` | "Second half: repair verification across passes, the full agent, the console, the 40-scenario evaluation." |
 
 ## If something fails live
+
 | Failure | Recovery |
 |---|---|
-| Step Functions slow (Spot capacity) | Show the previous successful execution (pre-run at T−30) |
-| Viewer blank | `make preflight` again; else show `assets/viewer.png` |
-| Wi-Fi down | Switch to `assets/demo_recording.mp4` |
+| Spot capacity is slow to start | Show the previous successful execution in the Step Functions console (history is kept) |
+| Viewer blank | `uv run python scripts/aws/deploy_viewer.py` republishes from the register |
+| Bedrock throttled | Show the saved trace `eval/results/agent/<run>.json` and `assets/ablation_ab.md` |
+| Wi-Fi down | Everything in `docs/midpoint/` is static and was generated by the last run |
