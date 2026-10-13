@@ -1,6 +1,9 @@
 """Submit dataset preparation + CPU training on AWS Batch (Graviton Spot; decision D-25, no GPU).
 
   uv run python scripts/aws/submit_train.py --version seg-v1 [--arch segformer] [--epochs 12] [--skip-prepare]
+  fine-tune with hard negatives (seg-v3):
+  uv run python scripts/aws/submit_train.py --version seg-v3 --data-version v3 --merge-version v2 --hard-neg 150 \
+      --hard-only --init seg-v2 --epochs 4 --lr 1e-4 --max-hours 3
 
 1. prepare  (4 vCPU): sync seed-07 synthetic passes + prepared Pothole Mix from S3 -> training/prepare.py
                       -> s3://<datasets>/train/<data-version>/
@@ -27,6 +30,11 @@ def main() -> None:
     ap.add_argument("--max-hours", type=float, default=6.0)
     ap.add_argument("--seed-dir", default="synth/seed07")
     ap.add_argument("--skip-prepare", action="store_true")
+    ap.add_argument("--merge-version", default="pmix_only", help="prepared set to fold in (train/<this>)")
+    ap.add_argument("--hard-neg", type=int, default=0, help="hard negatives per clip (data v3+)")
+    ap.add_argument("--hard-only", action="store_true", help="prepare adds only hard negatives to the merged set")
+    ap.add_argument("--init", default=None, help="fine-tune from models/<this>/best.pt")
+    ap.add_argument("--lr", type=float, default=3e-4)
     ap.add_argument("--queue", default="patchwork-spot")
     args = ap.parse_args()
 
@@ -47,10 +55,12 @@ def main() -> None:
                     "--synth",
                     f"{ds}/{args.seed_dir}",
                     "--merge",
-                    f"{ds}/train/pmix_only",
+                    f"{ds}/train/{args.merge_version}",
                     "--out",
                     data_s3,
                 ]
+                + (["--hard-neg", str(args.hard_neg)] if args.hard_neg else [])
+                + (["--hard-only"] if args.hard_only else [])
             },
             tags=tags,
             propagateTags=True,
@@ -77,7 +87,11 @@ def main() -> None:
         "6",
         "--threads",
         "26",
+        "--lr",
+        str(args.lr),
     ]
+    if args.init:
+        cmd += ["--init", f"{art}/models/{args.init}/best.pt"]
     job = batch.submit_job(
         jobName=f"train-{args.version}",
         jobQueue=args.queue,

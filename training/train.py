@@ -219,6 +219,7 @@ def main() -> None:
     ap.add_argument("--limit", type=int, default=None, help="debug: cap images per split")
     ap.add_argument("--max-hours", type=float, default=6.0)
     ap.add_argument("--synth-weight", type=float, default=1.0, help="sampling weight of synthetic vs real")
+    ap.add_argument("--init", default=None, help="fine-tune: start from these weights (best.pt path or s3:// URI)")
     args = ap.parse_args()
 
     torch.set_num_threads(args.threads or max((os.cpu_count() or 4) - args.workers, 1))
@@ -245,11 +246,19 @@ def main() -> None:
     )
     val = {
         k: DataLoader(SegSet(args.data, splits[k], False), batch_size=1, num_workers=args.workers)
-        for k in ("val_real", "val_synth")
+        for k in ("val_real", "val_synth", "hard_neg_val")
         if splits.get(k)
     }
+    scored = ("val_real", "val_synth")  # model selection; hard_neg_val (no damage at all) is reported only
 
     model = build(args.arch)
+    if args.init:
+        src = args.init
+        if src.startswith("s3://"):
+            subprocess.run(["aws", "s3", "cp", src, str(args.out / "init.pt"), "--only-show-errors"], check=True)
+            src = str(args.out / "init.pt")
+        model.load_state_dict(torch.load(src, map_location="cpu"))
+        print(f"initialised from {args.init}", flush=True)
     head = [p for n, p in model.named_parameters() if "decode_head" in n or "classifier" in n]
     head_ids = {id(p) for p in head}
     body = [p for p in model.parameters() if id(p) not in head_ids]
@@ -282,7 +291,8 @@ def main() -> None:
                 sec = (time.time() - te) / (it + 1)
                 print(f"epoch {epoch} it {it}/{len(train_dl)} loss {run:.4f} {sec:.2f} s/it", flush=True)
         metrics = {k: evaluate(model, dl) for k, dl in val.items()}
-        score = float(np.mean([m["iou_damage"] for m in metrics.values()])) if metrics else -float(run)
+        sel = [m["iou_damage"] for k, m in metrics.items() if k in scored]
+        score = float(np.mean(sel)) if sel else -float(run)
         history.append({"epoch": epoch, "loss": round(run, 4), "minutes": round((time.time() - te) / 60, 1), **metrics})
         print(json.dumps(history[-1]), flush=True)
         if score > best:
@@ -322,6 +332,7 @@ def main() -> None:
                 "best_score": best,
                 "history": history,
                 "train_images": len(train_names),
+                "init": args.init,
                 "input": "RGB, ImageNet mean/std, HxW multiple of 32; logits at 1/4 (segformer) or 1/1 (lraspp)",
                 "hours": round((time.time() - t0) / 3600, 2),
                 "parity": parity,

@@ -19,7 +19,7 @@ from patchwork.perception.segment import Segmenter
 def evaluate_onnx(
     model: Path,
     data: Path,
-    splits_wanted: tuple[str, ...] = ("test_real", "val_real", "val_synth"),
+    splits_wanted: tuple[str, ...] = ("test_real", "val_real", "val_synth", "hard_neg_val"),
     limit: int | None = None,
 ) -> dict:
     seg = Segmenter(model)

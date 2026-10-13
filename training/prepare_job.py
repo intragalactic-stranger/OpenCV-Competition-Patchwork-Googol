@@ -23,6 +23,8 @@ def main() -> None:
     ap.add_argument("--merge", nargs="*", default=[])
     ap.add_argument("--out", required=True)
     ap.add_argument("--work", type=Path, default=Path("/work"))
+    ap.add_argument("--hard-neg", type=int, default=0)
+    ap.add_argument("--hard-only", action="store_true")
     args = ap.parse_args()
     synth_dirs, merge_dirs = [], []
     for i, s in enumerate(args.synth):
@@ -37,6 +39,8 @@ def main() -> None:
     sys.argv = ["prepare", "--pmix", "/nonexistent", "--out", str(out), "--synth", *synth_dirs]
     if merge_dirs:
         sys.argv += ["--merge", *merge_dirs]
+    if args.hard_neg:
+        sys.argv += ["--hard-neg", str(args.hard_neg)] + (["--hard-only"] if args.hard_only else [])
     prepare.main()
     sync(str(out), args.out)
 

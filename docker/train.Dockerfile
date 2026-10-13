@@ -15,6 +15,7 @@ RUN python -c "from transformers import SegformerForSemanticSegmentation as S; S
  && python -c "from torchvision.models import MobileNet_V3_Large_Weights as W; W.IMAGENET1K_V2.get_state_dict()"
 COPY src ./src
 COPY training ./training
+COPY data/corridor ./data/corridor
 # awscli after the final (exact) sync, otherwise uv removes it; used for `aws s3 sync` of datasets/checkpoints
 RUN uv sync --frozen --no-dev --group aws --group train && uv pip install --python .venv awscli
 RUN python -c "import awscli, torch, cv2; print(torch.__version__, cv2.__version__, torch.backends.mkldnn.is_available())"
