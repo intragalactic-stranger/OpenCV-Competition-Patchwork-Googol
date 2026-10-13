@@ -17,6 +17,7 @@ Open these tabs:
 3. `docs/midpoint/04-RESULTS-AND-OUTPUTS.md`
 4. `docs/midpoint/02-COST-REPORT.md`
 5. `docs/midpoint/07-MODEL-CARD.md`
+6. `docs/midpoint/08-SERVICE-MAPPINGS.md`
 
 ## Script
 
@@ -26,13 +27,13 @@ Open these tabs:
 | 2 | 1:00 | Corridor map + synthetic contact sheet (`04-RESULTS` §2.0–2.1) | "Real Mumbai road geometry from OpenStreetMap, a simulated dashcam on it, and every pothole's area known to the cm², so we can grade ourselves exactly." |
 | 3 | 2:00 | `make upload-demo`, then the Step Functions graph | "The upload *is* the trigger: S3 → EventBridge → Step Functions → Batch on Graviton Spot, one container per clip in parallel. Ground truth never leaves the dataset bucket." |
 | 4 | 3:00 | While it runs: `calibration.png`, `bev_measure.png` | "OpenCV 5 ChArUco calibration, then one homography turns pixels into a 1 cm top-down grid. That's where square metres come from: 2.1% error with perfect masks." |
-| 5 | 4:00 | Model card §7 | "SegFormer-B0 trained on CPU (Graviton Spot, no GPU) and running in OpenCV 5's new engine, identical to onnxruntime to 1e-6. The 4.x-style engine cannot even load it." |
+| 5 | 4:00 | Model card §7 | "SegFormer-B0 trained on CPU (Graviton Spot, no GPU) and running in OpenCV 5's new engine, matching onnxruntime to 0.00002 (2.4e-5, target 1e-3). The 4.x-style engine cannot even load it." |
 | 6 | 5:00 | Viewer: click 2–3 defects | "Each dot: m² ± uncertainty, severity, material at a stated 5 cm thickness, and the evidence image (dashcam view + metric top-down view). We claim area, never depth." |
 | 7 | 6:00 | `make agent-demo`, then `make approvals` | "Amazon Nova plans the work: packages, priority from measured area and nearby schools/hospitals, materials, a work order. It can only *request* approval; the token lives in the database, never in the agent." |
 | 8 | 7:00 | `uv run python scripts/approve.py approve <id> --by "AE Ward D"` | "A human approves, and only then a (mock) ticket is filed. A rejection is recorded as an override." |
-| 9 | 7:45 | `assets/ablation_ab.md` | "Same defect, same prompt. Change only the measured area and the plan changes: priority 3 → 1. The vision drives the action." |
-| 10 | 8:30 | Results table + cost report (usage vs credits vs real money) | "Every number is computed by code. Real money spent: zero; everything runs on promotional credits." |
-| 11 | 9:15 | `06-NEXT-STEPS.md` | "Second half: repair verification across passes, the full agent, the console, the 40-scenario evaluation." |
+| 9 | 7:45 | `assets/ablation_ab.md` | "Same defect, same prompt. Change only the measured area and the plan changes: priority 2 → 1, hot-mix 0.05 → 0.40 t. The vision drives the action. This runs on real pipeline output, a pothole measured at 0.38 m² (true area 0.40 m²)." |
+| 10 | 8:30 | Results table, then `08-SERVICE-MAPPINGS.md` §0–3 (service → purpose → credits) | "Every number is computed by code. Real money spent: zero; everything runs on promotional credits." |
+| 11 | 9:15 | `08-SERVICE-MAPPINGS.md` §5 and `06-NEXT-STEPS.md` | "Second half: GPU training (g6.xlarge, about 110 GPU-hours), the full agent on AgentCore, repair verification over 8 passes, the console and the 40-scenario evaluation. Projected at about $370 of credits, line by line, with caps." |
 
 ## If something fails live
 

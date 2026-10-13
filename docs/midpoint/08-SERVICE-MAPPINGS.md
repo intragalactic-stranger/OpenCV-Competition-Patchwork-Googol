@@ -116,12 +116,84 @@ The per-service credit amounts do not always equal the per-service usage. AWS ap
 | Service | Why not |
 |---|---|
 | NAT Gateway | It would cost about $33/month, more than all the compute. Public subnets plus an S3 gateway endpoint do the job |
-| SageMaker (GPU) | The owner asked for CPU training. Batch Graviton Spot trains the model for about $2 per run |
+| SageMaker | First half: the owner asked for CPU training, and Batch Graviton Spot trains the model for about $2 per run. Second half: GPU training runs on EC2 G instances through the same Batch setup (same container, Spot pricing, checkpoint resume), so no second training stack is needed |
 | SQS, DynamoDB | Step Functions + Batch retries and the register's unique index already give buffering and idempotency |
 | API Gateway, Lambda, Cognito | Not needed for the midpoint: the viewer reads a published GeoJSON. Planned for the second-half console and agent tools |
 | AWS Marketplace / third-party Bedrock models / Route 53 domains / Savings Plans / paid Support | Not covered by promotional credits, so banned by D-27 |
 
-## 5. How to check these numbers yourself
+## 5. Second half: services we will use, how they are configured, and projected credits
+
+The second half (about 6 weeks) adds:
+- the full agent on AgentCore,
+- repair verification over 8 passes,
+- the web console,
+- the 40-scenario evaluation,
+- a **stronger segmentation model trained on GPU**.
+
+The first half was deliberately run on the cheapest settings: CPU training, everything auto-pausing, small models. Those settings proved the pipeline works. The second half is where accuracy is bought.
+
+**How the projection was built.** Prices are **AWS list prices for ap-south-1** (AWS Pricing API, 2026-10-13) or **rates measured in our own bill**: Nova Pro at $0.94 per million input tokens and $3.76 per million output tokens. Quantities come from **measured first-half runs** (tokens per agent run, seconds per km, vCPU-hours per clip), scaled to the planned work. Every line has a cap enforced in AWS (§5.3).
+
+### 5.1 GPU training configuration (the largest new compute item)
+
+| Item | Plan |
+|---|---|
+| Instance | **EC2 `g6.xlarge`** (1× NVIDIA L4 24 GB, 4 vCPU, 16 GiB). Fallback **`g5.xlarge`** (1× A10G 24 GB) |
+| Price (ap-south-1) | On-demand list **$0.97/h** (g6) and $1.21/h (g5). Spot today **$0.53–0.77/h** (g6) and $0.55–0.70/h (g5) |
+| Run by | **AWS Batch**: a second compute environment `patchwork-gpu-spot` (ECS GPU AMI), Spot first, on-demand only if Spot is unavailable for > 2 h. Same container, plus CUDA PyTorch |
+| Limits | max **2 instances** (8 vCPU), job timeout **12 h**, checkpoint every epoch to S3 (existing Spot-resume code), mixed precision |
+| Model | SegFormer-**B2** (25 M parameters; B0 has 3.7 M) at the full 1920×448 road strip. Adds a severity/depth head and soft boundaries for depressions |
+| Data | Real Pothole Mix + **5 synthetic training worlds** (4 new) with hard negatives: about 25 k images |
+| Prerequisite | EC2 **G-instance quota** (currently 0). New quota requests are blocked while the old SageMaker GPU requests stay open, so the owner must close those support cases first |
+
+| Training work | Runs | GPU-hours per run | GPU-hours |
+|---|---|---|---|
+| Architecture × resolution sweep (B0/B1/B2 × 2 sizes, 10 epochs each) | 6 | 6 | 36 |
+| Final model, 3 random seeds (30 epochs; mean ± spread reported) | 3 | 17.5 | 52 |
+| Depression/severity head, soft-boundary labels | 2 | 10 | 20 |
+| **Total** | | | **≈ 110 GPU-h** |
+
+At $0.60/h Spot that is $66. Allowing 20% for on-demand fallback and re-runs: **≈ $80**.
+
+The hours are a planning estimate. As decision D-27 requires, a 1-epoch trial run measures the real throughput first, and this table is updated from that measurement.
+
+### 5.2 Projected credits by service (second half)
+
+| # | Service | What it is for in the second half | Basis of the estimate | Expected credits |
+|---|---|---|---|---|
+| 1 | **EC2 GPU via AWS Batch** | Segmentation training (§5.1) | 110 GPU-h × $0.60 Spot + 20% fallback | **$80** |
+| 2 | **Amazon Bedrock: Amazon Nova Pro** | 40-scenario agent suite run live about 50 times (recorded responses in between) | Measured: about 12 k tokens per single-defect plan, about 106 k per road-wide plan → ≈ 1.36 M tokens ≈ **$1.47 per suite run** | **$74** |
+| | | LLM-judge rubric scoring of work orders | About 15% of the suite cost | **$10** |
+| | | Image context attributes (water, location, surface) for each defect's evidence image | About 10,000 images × 3 iterations × 1.6 k tokens | **$16** |
+| 3 | **Amazon Aurora Serverless v2** | Register for 8-pass verification, the live console and the agent | $0.18 per ACU-hour (Mumbai list). Development 6 h/day × 42 d × 0.5 ACU, plus 2 weeks always-on demo period × 0.5 ACU, plus storage/I/O | **$40** |
+| 4 | **EC2 development workstation** (t3a.xlarge, us-east-1) | Where the code is written and builds run | $0.1504/h list × about 12 h/day × 42 d, plus EBS and IPv4 | **$92** |
+| 5 | **Amazon CloudWatch** | Dashboards (override rate, cost/km, time to approval), about 20 custom metrics, logs, traces | Metrics $0.30/month each, log ingestion, X-Ray | **$15** |
+| 6 | **Amazon S3** (+ transfer) | 5 training worlds, 8-pass evaluation data, models, evidence images | ~150 GB-month, requests (first half: $0.41 per 74 k), transfer to the dev box | **$12** |
+| 7 | **AWS Batch on Graviton Spot (CPU)** | Pipeline runs for evaluation: 2 worlds × 8 passes × (system + 4 ablations) × about 3 iterations ≈ 120 passes. RDD2022 external check | Measured **$0.054 per pass** | **$10** |
+| 8 | **Bedrock AgentCore** (Runtime, Gateway, Memory) | Hosts the agent and its tools | $0.0895/vCPU-h + $0.00945/GB-h on active time. About 3,000 sessions at about $0.003 each, plus Gateway $0.005 per 1 k calls | **$9** |
+| 9 | **AWS Batch on Graviton Spot (CPU)** | Rendering 4 new training worlds and 5 more held-out passes (about 170 clips) | Measured about 0.25 vCPU-h per clip | **$5** |
+| 10 | **AWS Cost Explorer** API | Daily cost report | $0.01 per call | **$4** |
+| 11 | ECR, Secrets Manager, Location, Step Functions, EventBridge, CloudFront | Images, secret, basemap tiles for reviewers, workflows, triggers, HTTPS | List prices; mostly within the free tier | **$4** |
+| 12 | **Lambda, API Gateway, Cognito** | Console backend, agent tools behind the Gateway, sign-in | Mostly within the free tier | **$2** |
+| | **Total second half (expected)** | | | **≈ $370** |
+| | Lower case (Spot always available, 30 live suite runs, dev box stopped at night) | | | ≈ $260 |
+| | Upper case (on-demand GPU, 80 live suite runs) | | | ≈ $470 |
+
+**Combined view for the grant:** the first half used about **$7** of project credits by the checkpoint ($4.69 billed + about $2.30 of Spot still being billed + the `seg-v3` fine-tune). The second half is projected at **≈ $370 (range $260–470)**. The extra spend goes on GPU training, live agent evaluation and an always-on demo database, the three items deliberately kept at zero or near zero in the first half.
+
+### 5.3 Boundaries: what stops spend from running away
+
+| Guardrail | Setting |
+|---|---|
+| Real-money alarm | `patchwork-real-spend` budget, cost **after credits**, alert at the first cent (unchanged) |
+| Credit-usage budget | New budget on **gross** usage: $300/month with alerts at 50/80/100% |
+| Compute caps | Batch `maxvCpus`: CPU 32, GPU 8 (2 instances); job timeouts (train 12 h, perceive 1 h) |
+| Database cap | Aurora 0–4 ACU, auto-pause after 10 min idle |
+| LLM cap | Agent-suite runner refuses to start when the month's Bedrock usage passes its budget line; temperature 0; recorded-response mode for routine CI |
+| Permissions | All roles stay under the `patchwork-boundary` permissions boundary. No role can raise its own limits |
+| Trial first (D-27) | Every new service (GPU instances, AgentCore, API Gateway, Cognito) runs a small trial. It is scaled up only after the cost report shows it ✅ covered by credits |
+
+## 6. How to check these numbers yourself
 
 ```bash
 make cost-report          # rewrites 02-COST-REPORT.md: usage / credits / net per service, coverage table

@@ -28,7 +28,8 @@ docs/
 │   ├── 05-DEMO-GUIDE.md            step-by-step live demo script and fallback
 │   ├── 06-NEXT-STEPS.md            the second half, and what the remaining grant pays for
 │   ├── 07-MODEL-CARD.md            the trained model: data, configs, libraries, inputs/outputs, metrics
-│   ├── 08-SERVICE-MAPPINGS.md      step by step: which AWS service does what, and the credits it used
+│   ├── 08-SERVICE-MAPPINGS.md      step by step: which AWS service does what, credits used, second-half projection
+│   ├── 09-REVIEWER-WALKTHROUGH.md  START HERE before a review: story, order, what to show and say, Q&A
 │   └── assets/                     screenshots, overlays, charts used by the pack
 │
 └── plan/         ◄ MAIN ENGINEERING PLAN: how the whole thing is built
