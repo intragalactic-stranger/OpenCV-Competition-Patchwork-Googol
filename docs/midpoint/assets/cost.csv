@@ -1,5 +1,6 @@
 service,usd
-Amazon Elastic Compute Cloud - Compute,0.4512
-EC2 - Other,0.0688
-Amazon Virtual Private Cloud,0.0284
+Amazon Elastic Compute Cloud - Compute,1.9552
+EC2 - Other,0.1548
+Amazon Virtual Private Cloud,0.0734
+Amazon Bedrock,0.0001
 Amazon Simple Storage Service,0.0000

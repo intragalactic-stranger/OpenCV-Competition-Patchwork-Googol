@@ -81,6 +81,19 @@ class TriageResult:
         }
 
 
+def consensus(dy: np.ndarray, tol_m: float = 0.04, tol_rel: float = 0.08) -> float:
+    """Displacement agreed by the largest group of tracks (robust to aliased / independently moving ones)."""
+    dy = dy[np.isfinite(dy)]
+    if len(dy) == 0:
+        return 0.0
+    tol = np.maximum(tol_m, tol_rel * np.abs(dy))
+    support = (np.abs(dy[:, None] - dy[None, :]) <= tol[:, None]).sum(1)
+    best = dy[support == support.max()]
+    centre = float(np.median(best))
+    members = dy[np.abs(dy - centre) <= max(tol_m, tol_rel * abs(centre))]
+    return float(np.median(members)) if len(members) else centre
+
+
 class Triage:
     """Streaming triage: call `push(frame)` for every decoded frame, in order."""
 
@@ -107,17 +120,37 @@ class Triage:
         if p0 is None or len(p0) < c.min_tracks:
             return self.last_travel, 0
         lk = {"winSize": (21, 21), "maxLevel": 3}
-        p1, st, _ = cv2.calcOpticalFlowPyrLK(prev, cur, p0, None, **lk)
+        # seed the flow with the motion predicted from the previous frame: repetitive texture (painted kerb
+        # blocks, zebra lines) otherwise aliases, e.g. 0.56 m of motion against a 1 m pattern reads as -0.44 m
+        pts = p0.reshape(-1, 2)
+        g_prev = self.cam.pixel_to_ground(pts / c.scale)
+        init = pts.copy()
+        ahead = g_prev[:, 1] > 0
+        if self.last_travel > 0 and ahead.any():
+            moved = g_prev[ahead] - np.array([0.0, self.last_travel])
+            proj = self.cam.ground_to_pixel(moved, distort=True) * c.scale
+            good = np.isfinite(proj).all(1)
+            idx = np.flatnonzero(ahead)[good]
+            init[idx] = proj[good]
+        p1, st, _ = cv2.calcOpticalFlowPyrLK(
+            prev, cur, p0, init.reshape(-1, 1, 2).astype(np.float32), flags=cv2.OPTFLOW_USE_INITIAL_FLOW, **lk
+        )
         pb, st2, _ = cv2.calcOpticalFlowPyrLK(cur, prev, p1, None, **lk)
         ok = (st.ravel() == 1) & (st2.ravel() == 1) & (np.linalg.norm((p0 - pb).reshape(-1, 2), axis=1) < 0.5)
         if ok.sum() < c.min_tracks:
             return self.last_travel, int(ok.sum())
-        g0 = self.cam.pixel_to_ground(p0.reshape(-1, 2)[ok] / c.scale)
+        g0 = g_prev[ok]
         g1 = self.cam.pixel_to_ground(p1.reshape(-1, 2)[ok] / c.scale)
-        valid = (g0[:, 1] > 0) & (g1[:, 1] > 0)
+        valid = (g0[:, 1] > 0) & (g1[:, 1] > 0) & np.isfinite(g1).all(1)
         if valid.sum() < c.min_tracks:
             return self.last_travel, int(valid.sum())
-        return float(np.median(g0[valid, 1] - g1[valid, 1])), int(valid.sum())
+        dy = g0[valid, 1] - g1[valid, 1]
+        # a survey vehicle never reverses: backward "motion" is aliasing or a passing vehicle; if most tracks
+        # agree on (near) zero we are stopped
+        fwd = dy[dy > self.min_step / 2]
+        if len(fwd) < max(c.min_tracks // 3, 3):
+            return 0.0, int(valid.sum())
+        return consensus(fwd), int(valid.sum())
 
     def push(self, frame_bgr: np.ndarray) -> FrameScore:
         c = self.cfg

@@ -76,6 +76,8 @@ The account runs on **AWS promotional credits**, and the owner must never pay re
 | Only first-party AWS services | No AWS Marketplace subscriptions, no third-party Bedrock models (Amazon Nova only, D-17), no Route 53 domain purchase, no Savings Plans / RIs, no paid Support plan. These are the usual promotional-credit exclusions. |
 | Credits really are applied | `make cost-report` shows gross usage, the amount covered by credits, and net paid, from Cost Explorer `RECORD_TYPE`. Verified: Sep 2026 $32.72 usage, $32.72 credits; Oct to date fully offset |
 | Credit balance and expiry | Not exposed by any API: the owner checks **Billing → Credits** (remaining amount, expiry date, eligible services) once a month |
+| Every service is proven covered | `make cost-report` has a **per-service credit-coverage table** (usage vs credits vs net, from Cost Explorer). Any service with net > $0.005 is flagged ⚠️ and the command exits with an error |
+| New services are trialled before scaling | A service not yet in the coverage table is first used at a trivial scale (one small job or resource). It is scaled up only after the next report (Cost Explorer lags about 24 h) shows it ✅. Planned and all first-party: Step Functions, Lambda, EventBridge, SQS, DynamoDB, Aurora Serverless v2, CloudFront, API Gateway, Amazon Location, Bedrock (Nova), Bedrock AgentCore |
 | Burn rate stays small | Spot everywhere, no NAT, no GPU (D-25), Aurora auto-pause, S3 lifecycle; planned usage ≤ $300/month of credits |
 
 ## 4. Cost model

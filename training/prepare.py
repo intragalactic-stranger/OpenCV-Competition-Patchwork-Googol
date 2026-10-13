@@ -68,7 +68,9 @@ def add_pothole_mix(src: Path, out: Path, splits: dict[str, list[str]]) -> None:
             splits[split].append(name)
 
 
-def add_synthetic(seed_dir: Path, out: Path, splits: dict[str, list[str]], neg_ratio: float, every: int) -> None:
+def add_synthetic(
+    seed_dir: Path, out: Path, splits: dict[str, list[str]], neg_ratio: float, every: int, min_neg: int = 120
+) -> None:
     rng = random.Random(0)
     for pass_dir in sorted(seed_dir.glob("pass_*")):
         masks = {}
@@ -81,7 +83,10 @@ def add_synthetic(seed_dir: Path, out: Path, splits: dict[str, list[str]], neg_r
             n = meta["frames"]
             pos = [f for f in range(0, n, 5) if (ci, f) in masks][::every]
             neg_all = [f for f in range(0, n, 5) if (ci, f) not in masks]
-            neg = set(rng.sample(neg_all, min(len(neg_all), int(len(pos) * neg_ratio))))
+            # at least `min_neg` per clip, so defect-free stretches (the control section) still teach the
+            # model what clean road, shadows and wet patches look like
+            n_neg = max(int(len(pos) * neg_ratio), min_neg)
+            neg = set(rng.sample(neg_all, min(len(neg_all), n_neg)))
             want = set(pos) | neg
             split = "val_synth" if ci in VAL_CLIPS else "train"
             cap = cv2.VideoCapture(str(clip_dir / "clip.mp4"))

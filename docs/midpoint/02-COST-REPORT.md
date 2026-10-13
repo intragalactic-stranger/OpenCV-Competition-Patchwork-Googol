@@ -9,29 +9,43 @@
 | Item | Value |
 |---|---|
 | Period | 2026-10-12 → 2026-10-14 (end exclusive) |
-| Project usage (gross, before credits) | **$0.55** |
-| Account usage since project start (gross) | $0.55 |
-| Paid by AWS promotional credits | $0.55 |
+| Project usage (gross, before credits) | **$2.18** |
+| Account usage since project start (gross) | $2.18 |
+| Paid by AWS promotional credits | $2.18 |
 | **Real money paid (net after credits)** | **$0.00** (guarded by the `patchwork-real-spend` budget: alert at $0.01) |
 | Dev box (shared EC2 t3a.xlarge, us-east-1) | included above only if it is tagged |
 | Planned monthly usage (from credits) | $300.00 |
-| Account usage this month to date | $8.57 (2.9% of plan); net paid $0.00 |
+| Account usage this month to date | $10.20 (3.4% of plan); net paid $0.00 |
 | Kilometres processed (from the register) | 0.0 |
 | **Cost per km processed** (processing services only) | n/a (no km processed yet) |
 | Target cost per km (proposal) | < $0.02 |
-| Generated | 2026-10-13 04:55 UTC by `make cost-report` |
+| Generated | 2026-10-13 05:37 UTC by `make cost-report` |
 
 ⚠️ The `Project` cost-allocation tag is not active yet (or has no data), so this shows the **whole account**, including the dev box and anything unrelated.
 <!-- COST-SUMMARY:END -->
+
+## Credit coverage per service (must be ✅ for every row)
+
+<!-- COST-CREDIT-COVERAGE:BEGIN -->
+| AWS service | Usage | Paid by credits | Real money (net) | Covered? |
+|---|---|---|---|---|
+| Amazon Elastic Compute Cloud - Compute | $1.9552 | $1.9552 | $0.0000 | ✅ |
+| EC2 - Other | $0.1548 | $0.1548 | $0.0000 | ✅ |
+| Amazon Virtual Private Cloud | $0.0734 | $0.0734 | $0.0000 | ✅ |
+| Amazon Bedrock | $0.0001 | $0.0001 | $0.0000 | ✅ |
+
+**All services fully covered by promotional credits.**
+<!-- COST-CREDIT-COVERAGE:END -->
 
 ## Spend by AWS service
 
 <!-- COST-BY-SERVICE:BEGIN -->
 | AWS service | What it is used for | Usage to date (gross, paid by credits) |
 |---|---|---|
-| Amazon Elastic Compute Cloud - Compute | Batch Graviton Spot instances (and dev box if untagged) | $0.45 |
-| EC2 - Other | EBS volumes, data transfer | $0.07 |
-| Amazon Virtual Private Cloud | Networking (no NAT) | $0.03 |
+| Amazon Elastic Compute Cloud - Compute | Batch Graviton Spot instances (and dev box if untagged) | $1.96 |
+| EC2 - Other | EBS volumes, data transfer | $0.15 |
+| Amazon Virtual Private Cloud | Networking (no NAT) | $0.07 |
+| Amazon Bedrock | Claude for the agent | $0.00 |
 | Amazon Simple Storage Service | Clips, crops, overlays, models, state | $0.00 |
 <!-- COST-BY-SERVICE:END -->
 

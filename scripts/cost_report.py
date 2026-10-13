@@ -115,6 +115,30 @@ def by_record_type(ce, start: str, end: str) -> dict[str, float]:
     return out
 
 
+def credit_coverage(ce, start: str, end: str) -> dict[str, dict[str, float]]:
+    """Account-wide, per service: usage, credits applied, net. Net > 0 means credits did NOT cover it."""
+    out: dict[str, dict[str, float]] = {}
+    kwargs = dict(
+        TimePeriod={"Start": start, "End": end},
+        Granularity="MONTHLY",
+        Metrics=["UnblendedCost"],
+        GroupBy=[{"Type": "DIMENSION", "Key": "SERVICE"}, {"Type": "DIMENSION", "Key": "RECORD_TYPE"}],
+    )
+    token = None
+    while True:
+        if token:
+            kwargs["NextPageToken"] = token
+        resp = ce.get_cost_and_usage(**kwargs)
+        for p in resp["ResultsByTime"]:
+            for g in p["Groups"]:
+                svc, rt = g["Keys"]
+                d = out.setdefault(svc, {})
+                d[rt] = d.get(rt, 0.0) + float(g["Metrics"]["UnblendedCost"]["Amount"])
+        token = resp.get("NextPageToken")
+        if not token:
+            return out
+
+
 def write_chart_and_csv(rows: list[tuple[str, float]]) -> None:
     ASSETS.mkdir(parents=True, exist_ok=True)
     with open(ASSETS / "cost.csv", "w", newline="") as f:
@@ -165,6 +189,7 @@ def main() -> int:
         today = dt.date.today()
         mtd = by_record_type(ce, today.replace(day=1).isoformat(), (today + dt.timedelta(days=1)).isoformat())
         since = by_record_type(ce, args.start, args.end)
+        coverage = credit_coverage(ce, args.start, args.end)
     except NoCredentialsError:
         print("No AWS credentials (attach the instance role first). Report left unchanged.", file=sys.stderr)
         return 2
@@ -206,13 +231,41 @@ def main() -> int:
     ph = ["| Phase | Spend |", "|---|---|"]
     ph += [f"| {k} | ${v:,.2f} |" for k, v in phase_rows] or ["| (no tagged spend yet) | $0.00 |"]
 
+    cov = ["| AWS service | Usage | Paid by credits | Real money (net) | Covered? |", "|---|---|---|---|---|"]
+    uncovered = []
+    for name, d in sorted(coverage.items(), key=lambda kv: -kv[1].get("Usage", 0.0)):
+        usage, credit = d.get("Usage", 0.0), d.get("Credit", 0.0)
+        net = sum(d.values())
+        if usage < 0.00005 and net < 0.00005:
+            continue
+        ok = net <= 0.005
+        if not ok:
+            uncovered.append(name)
+        cov.append(
+            f"| {name} | ${usage:,.4f} | ${-credit:,.4f} | ${net:,.4f} | "
+            f"{'✅' if ok else '⚠️ NOT covered: stop using it'} |"
+        )
+    if len(cov) == 2:
+        cov.append("| (no usage yet) | | | | |")
+    cov.append("")
+    cov.append(
+        "**All services fully covered by promotional credits.**"
+        if not uncovered
+        else f"⚠️ **Real charges detected for: {', '.join(uncovered)}.** Stop these services or find an alternative "
+        "(decision D-27)."
+    )
+
     text = REPORT.read_text()
+    text = replace_block(text, "COST-CREDIT-COVERAGE", "\n".join(cov))
     text = replace_block(text, "COST-SUMMARY", summary)
     text = replace_block(text, "COST-BY-SERVICE", "\n".join(svc))
     text = replace_block(text, "COST-BY-PHASE", "\n".join(ph))
     REPORT.write_text(text)
     write_chart_and_csv(rows)
     print(f"Updated {REPORT.relative_to(ROOT)}: total ${total:.2f}, {len(rows)} services, km={km}")
+    if uncovered:
+        print(f"WARNING: real (uncovered) charges for {uncovered}", file=sys.stderr)
+        return 3
     return 0
 
 
