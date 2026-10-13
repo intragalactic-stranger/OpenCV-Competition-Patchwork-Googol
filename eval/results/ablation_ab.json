@@ -1,14 +1,15 @@
 {
  "defect": {
-  "defect_id": "01M4T0M9DC6SA3ZQAZ0SW9S1RC",
+  "defect_id": "01M4TGEJ8D6EAN8TXV6EGXFG1M",
   "road_name": "Marine Drive",
-  "chainage_m": 49.983
+  "chainage_m": 3030.96
  },
- "area_A": 0.24526,
+ "source": "pipeline output (model seg-v2)",
+ "area_A": 0.3792,
  "area_B": 3.1,
  "plan_changed": true,
  "A": {
-  "run_id": "ablation-A-W9S1RC",
+  "run_id": "ablation-A-GXFG1M",
   "tool_sequence": [
    "query_defects",
    "cluster_into_packages",
@@ -16,18 +17,18 @@
    "draft_work_order",
    "request_human_approval"
   ],
-  "package_id": "01M4T0Z4Y3E9EKMBC442YFWW90",
-  "priority": 3,
-  "exposure_score": 1.829,
-  "area_m2": 0.2453,
-  "mass_t": 0.0317,
+  "package_id": "01M4THNX01BYK9AYHZJCQFHEMQ",
+  "priority": 2,
+  "exposure_score": 5.947,
+  "area_m2": 0.3792,
+  "mass_t": 0.049,
   "state": "awaiting_approval",
-  "final": "<thinking> The work order has been successfully requested for human approval. Here is the summary of the package: </thinking>\n\n**Summary:**\n- **Package ID:** 01M4T0Z4Y3E9EKMBC442YFWW90\n- **Priority:** 3\n- **Rationale:** The defect on Marine Drive at chainage 50.0m has a low severity but covers an area of 0.245m\u00b2. Despite its low severity, it is important to address this defect to maintain the road's integrity and ensure safety for pedestrians and vehicles. The defect is located on a major road, and although there are no nearby schools, hospitals, or bus stops, it is still a significant area that requires attention.\n\nThe work order is now awaiting approval.\n",
-  "tokens": 12283,
-  "seconds": 11.5
+  "final": "<thinking> The work order for package_id 01M4THNX01BYK9AYHZJCQFHEMQ has been successfully drafted and is now awaiting human approval. The priority of this work order is due to the medium severity of the defect, its location on Marine Drive, and its proximity to two hospitals. </thinking>\n\nThe work order for package_id 01M4THNX01BYK9AYHZJCQFHEMQ has been drafted and is now awaiting human approval. The priority of this work order is due to the medium severity of the defect (defect_id 01M4TGEJ8D6EAN8TXV6EGXFG1M), its location on Marine Drive, and its proximity to two hospitals. The estimated materials required for the repair are 0.019 m\u00b3 of hot-mix asphalt.\n",
+  "tokens": 12159,
+  "seconds": 10.9
  },
  "B": {
-  "run_id": "ablation-B-W9S1RC",
+  "run_id": "ablation-B-GXFG1M",
   "tool_sequence": [
    "query_defects",
    "cluster_into_packages",
@@ -35,15 +36,14 @@
    "draft_work_order",
    "request_human_approval"
   ],
-  "package_id": "01M4T0ZH0FGXDR2E7Z5778KX5S",
+  "package_id": "01M4THP84BM9GY1YNRNY0THEXW",
   "priority": 1,
-  "exposure_score": 14.466,
+  "exposure_score": 21.699,
   "area_m2": 3.1,
   "mass_t": 0.4007,
   "state": "awaiting_approval",
-  "final": "<thinking> The work order for the package has been successfully requested for human approval. Here is the summary of the package: </thinking>\n\nPackage ID: 01M4T0ZH0FGXDR2E7Z5778KX5S\nPriority: 1\nRationale: The defect on Marine Drive at chainage 50.0m has a high severity and an area of 3.1m\u00b2. Given its location on a major road and the high exposure score of 14.47, this repair is a priority to ensure road safety and maintainability.\n\nThe work order is now awaiting approval.\n",
-  "tokens": 11944,
-  "seconds": 10.7
- },
- "source": "ground-truth fixture (eval/agent_fixture.py), used until the pipeline has populated the register"
+  "final": "<thinking> The work order for the defect on Marine Drive at chainage 3031.0 m has been successfully drafted and submitted for human approval. The defect has a high severity, an area of 3.1 m\u00b2, and is located near two hospitals, making it a priority for repair. The defect has been measured and has a detection confidence of 0.881, indicating a reliable measurement. The work order is now awaiting approval. </thinking>\n\nThe work order for the defect on Marine Drive at chainage 3031.0 m has been successfully drafted and submitted for human approval. The defect has a high severity, an area of 3.1 m\u00b2, and is located near two hospitals, making it a priority for repair. The defect has been measured and has a detection confidence of 0.881, indicating a reliable measurement. The work order is now awaiting approval.\n",
+  "tokens": 12171,
+  "seconds": 11.7
+ }
 }

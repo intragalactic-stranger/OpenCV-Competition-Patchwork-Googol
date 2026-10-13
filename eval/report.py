@@ -196,7 +196,19 @@ def build_table() -> str:
         )
     else:
         rows.append(_row("Processing time per km (Batch, Graviton)", "reported", None, None))
-    rows.append(_row("Cost per km processed", "< $0.02", None, None))
+    cost = _load("cost_per_km.json")
+    rows.append(
+        _row(
+            "Cost per km processed (perception compute, Graviton Spot)",
+            "< $0.02",
+            f"${cost['usd_per_km']:.4f}" if cost else None,
+            cost["usd_per_km"] < 0.02 if cost else None,
+            f"{cost['seconds_per_km']:.0f} s × {cost['vcpu']} vCPU per km at ${cost['spot_usd_per_vcpu_h']}/vCPU-h; "
+            f"upper bound incl. data rendering + training ${cost['upper_bound_usd_per_km']}/km; see 02-COST-REPORT"
+            if cost
+            else "",
+        )
+    )
     reid = _load("reid.json")
     if reid:
         rows.append(

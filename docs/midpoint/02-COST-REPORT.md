@@ -16,10 +16,11 @@
 | Dev box (shared EC2 t3a.xlarge, us-east-1) | included above only if it is tagged |
 | Planned monthly usage (from credits) | $300.00 |
 | Account usage this month to date | $10.20 (3.4% of plan); net paid $0.00 |
-| Kilometres processed (from the register) | 0.0 |
-| **Cost per km processed** (processing services only) | n/a (no km processed yet) |
+| Kilometres processed (pipeline runs evaluated in `eval/results/end_to_end.json`) | 56.8 |
+| Perception compute cost per km (measured run time × Spot price) | **$0.0019/km** (133 s of 4-vCPU Graviton Spot per km at $0.0127/vCPU-h, current Spot price) |
+| Upper bound: all processing-service spend ÷ km (also includes data rendering and training) | $0.0344/km |
 | Target cost per km (proposal) | < $0.02 |
-| Generated | 2026-10-13 05:37 UTC by `make cost-report` |
+| Generated | 2026-10-13 11:56 UTC by `make cost-report` |
 
 ⚠️ The `Project` cost-allocation tag is not active yet (or has no data), so this shows the **whole account**, including the dev box and anything unrelated.
 <!-- COST-SUMMARY:END -->
@@ -45,7 +46,7 @@
 | Amazon Elastic Compute Cloud - Compute | Batch Graviton Spot instances (and dev box if untagged) | $1.96 |
 | EC2 - Other | EBS volumes, data transfer | $0.15 |
 | Amazon Virtual Private Cloud | Networking (no NAT) | $0.07 |
-| Amazon Bedrock | Claude for the agent | $0.00 |
+| Amazon Bedrock | Amazon Nova for the agent | $0.00 |
 | Amazon Simple Storage Service | Clips, crops, overlays, models, state | $0.00 |
 <!-- COST-BY-SERVICE:END -->
 

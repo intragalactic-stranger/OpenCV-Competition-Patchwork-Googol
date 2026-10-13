@@ -1098,6 +1098,881 @@
     "segment": 2863.1,
     "measure": 41.0
    }
+  },
+  {
+   "matches": [
+    {
+     "truth_id": "T11-00043",
+     "kind": "depression",
+     "true_m2": 2.3515,
+     "meas_m2": 1.5516,
+     "unc_m2": 0.0997,
+     "s_err_m": 4.07
+    },
+    {
+     "truth_id": "T11-00036",
+     "kind": "depression",
+     "true_m2": 2.22743,
+     "meas_m2": 1.4588,
+     "unc_m2": 0.2313,
+     "s_err_m": -2.58
+    },
+    {
+     "truth_id": "T11-00133",
+     "kind": "pothole",
+     "true_m2": 0.41282,
+     "meas_m2": 0.4375,
+     "unc_m2": 0.0558,
+     "s_err_m": -0.95
+    },
+    {
+     "truth_id": "T11-00006",
+     "kind": "pothole",
+     "true_m2": 0.39758,
+     "meas_m2": 0.3792,
+     "unc_m2": 0.0135,
+     "s_err_m": 1.88
+    },
+    {
+     "truth_id": "T11-00114",
+     "kind": "pothole",
+     "true_m2": 0.79059,
+     "meas_m2": 0.6766,
+     "unc_m2": 0.1747,
+     "s_err_m": 4.0
+    },
+    {
+     "truth_id": "T11-00138",
+     "kind": "pothole",
+     "true_m2": 0.57577,
+     "meas_m2": 0.2785,
+     "unc_m2": 0.1236,
+     "s_err_m": -0.78
+    },
+    {
+     "truth_id": "T11-00055",
+     "kind": "pothole",
+     "true_m2": 0.45451,
+     "meas_m2": 0.4403,
+     "unc_m2": 0.0499,
+     "s_err_m": -4.46
+    },
+    {
+     "truth_id": "T11-00181",
+     "kind": "depression",
+     "true_m2": 2.42902,
+     "meas_m2": 0.7056,
+     "unc_m2": 0.2199,
+     "s_err_m": 10.42
+    },
+    {
+     "truth_id": "T11-00041",
+     "kind": "pothole",
+     "true_m2": 0.15375,
+     "meas_m2": 0.2032,
+     "unc_m2": 0.0205,
+     "s_err_m": 4.1
+    },
+    {
+     "truth_id": "T11-00024",
+     "kind": "pothole",
+     "true_m2": 0.19375,
+     "meas_m2": 0.2422,
+     "unc_m2": 0.0236,
+     "s_err_m": 1.71
+    },
+    {
+     "truth_id": "T11-00168",
+     "kind": "pothole",
+     "true_m2": 0.33587,
+     "meas_m2": 0.3888,
+     "unc_m2": 0.0531,
+     "s_err_m": -4.1
+    },
+    {
+     "truth_id": "T11-00152",
+     "kind": "pothole",
+     "true_m2": 0.44662,
+     "meas_m2": 0.4418,
+     "unc_m2": 0.0288,
+     "s_err_m": 10.3
+    },
+    {
+     "truth_id": "T11-00175",
+     "kind": "pothole",
+     "true_m2": 0.21706,
+     "meas_m2": 0.2268,
+     "unc_m2": 0.027,
+     "s_err_m": 9.27
+    },
+    {
+     "truth_id": "T11-00097",
+     "kind": "pothole",
+     "true_m2": 0.23539,
+     "meas_m2": 0.2361,
+     "unc_m2": 0.014,
+     "s_err_m": -1.24
+    },
+    {
+     "truth_id": "T11-00075",
+     "kind": "pothole",
+     "true_m2": 0.47224,
+     "meas_m2": 0.3929,
+     "unc_m2": 0.0173,
+     "s_err_m": -1.47
+    },
+    {
+     "truth_id": "T11-00031",
+     "kind": "pothole",
+     "true_m2": 1.02749,
+     "meas_m2": 0.9669,
+     "unc_m2": 0.0253,
+     "s_err_m": -9.13
+    },
+    {
+     "truth_id": "T11-00158",
+     "kind": "pothole",
+     "true_m2": 0.32369,
+     "meas_m2": 0.282,
+     "unc_m2": 0.0398,
+     "s_err_m": -6.92
+    },
+    {
+     "truth_id": "T11-00047",
+     "kind": "pothole",
+     "true_m2": 0.24214,
+     "meas_m2": 0.2881,
+     "unc_m2": 0.0416,
+     "s_err_m": 7.37
+    },
+    {
+     "truth_id": "T11-00059",
+     "kind": "pothole",
+     "true_m2": 0.18235,
+     "meas_m2": 0.2102,
+     "unc_m2": 0.0195,
+     "s_err_m": -2.24
+    },
+    {
+     "truth_id": "T11-00160",
+     "kind": "pothole",
+     "true_m2": 0.23254,
+     "meas_m2": 0.2423,
+     "unc_m2": 0.0307,
+     "s_err_m": 9.77
+    },
+    {
+     "truth_id": "T11-00151",
+     "kind": "depression",
+     "true_m2": 2.41121,
+     "meas_m2": 0.5675,
+     "unc_m2": 0.0651,
+     "s_err_m": 7.68
+    },
+    {
+     "truth_id": "T11-00141",
+     "kind": "pothole",
+     "true_m2": 0.2904,
+     "meas_m2": 0.2518,
+     "unc_m2": 0.0725,
+     "s_err_m": -2.03
+    },
+    {
+     "truth_id": "T11-00090",
+     "kind": "pothole",
+     "true_m2": 0.61568,
+     "meas_m2": 0.1478,
+     "unc_m2": 0.0545,
+     "s_err_m": -4.98
+    },
+    {
+     "truth_id": "T11-00142",
+     "kind": "pothole",
+     "true_m2": 0.30678,
+     "meas_m2": 0.4706,
+     "unc_m2": 0.142,
+     "s_err_m": -1.67
+    },
+    {
+     "truth_id": "T11-00042",
+     "kind": "pothole",
+     "true_m2": 0.48839,
+     "meas_m2": 0.227,
+     "unc_m2": 0.1072,
+     "s_err_m": 3.99
+    },
+    {
+     "truth_id": "T11-00084",
+     "kind": "pothole",
+     "true_m2": 0.19852,
+     "meas_m2": 0.2049,
+     "unc_m2": 0.015,
+     "s_err_m": -4.73
+    },
+    {
+     "truth_id": "T11-00046",
+     "kind": "pothole",
+     "true_m2": 0.41295,
+     "meas_m2": 0.251,
+     "unc_m2": 0.0347,
+     "s_err_m": 10.31
+    },
+    {
+     "truth_id": "T11-00176",
+     "kind": "depression",
+     "true_m2": 2.1986,
+     "meas_m2": 0.5986,
+     "unc_m2": 0.2157,
+     "s_err_m": 7.16
+    },
+    {
+     "truth_id": "T11-00008",
+     "kind": "pothole",
+     "true_m2": 0.2693,
+     "meas_m2": 0.2523,
+     "unc_m2": 0.0263,
+     "s_err_m": 1.69
+    },
+    {
+     "truth_id": "T11-00073",
+     "kind": "pothole",
+     "true_m2": 0.34858,
+     "meas_m2": 0.3599,
+     "unc_m2": 0.0105,
+     "s_err_m": -2.24
+    },
+    {
+     "truth_id": "T11-00161",
+     "kind": "pothole",
+     "true_m2": 0.16743,
+     "meas_m2": 0.2117,
+     "unc_m2": 0.0376,
+     "s_err_m": 10.71
+    },
+    {
+     "truth_id": "T11-00107",
+     "kind": "depression",
+     "true_m2": 1.10047,
+     "meas_m2": 0.2503,
+     "unc_m2": 0.1649,
+     "s_err_m": 4.28
+    },
+    {
+     "truth_id": "T11-00007",
+     "kind": "pothole",
+     "true_m2": 1.2488,
+     "meas_m2": 0.154,
+     "unc_m2": 0.0137,
+     "s_err_m": 7.92
+    },
+    {
+     "truth_id": "T11-00099",
+     "kind": "pothole",
+     "true_m2": 0.68149,
+     "meas_m2": 0.1254,
+     "unc_m2": 0.1012,
+     "s_err_m": 0.69
+    },
+    {
+     "truth_id": "T11-00023",
+     "kind": "pothole",
+     "true_m2": 0.19866,
+     "meas_m2": 0.0883,
+     "unc_m2": 0.0838,
+     "s_err_m": -6.95
+    },
+    {
+     "truth_id": "T11-00026",
+     "kind": "pothole",
+     "true_m2": 0.63512,
+     "meas_m2": 0.1316,
+     "unc_m2": 0.0333,
+     "s_err_m": -5.71
+    },
+    {
+     "truth_id": "T11-00068",
+     "kind": "pothole",
+     "true_m2": 0.99318,
+     "meas_m2": 0.0753,
+     "unc_m2": 0.0191,
+     "s_err_m": -1.39
+    },
+    {
+     "truth_id": "T11-00173",
+     "kind": "pothole",
+     "true_m2": 0.65479,
+     "meas_m2": 0.0477,
+     "unc_m2": 0.048,
+     "s_err_m": -1.92
+    },
+    {
+     "truth_id": "T11-00060",
+     "kind": "pothole",
+     "true_m2": 0.40284,
+     "meas_m2": 0.203,
+     "unc_m2": 0.1034,
+     "s_err_m": 0.81
+    },
+    {
+     "truth_id": "T11-00108",
+     "kind": "pothole",
+     "true_m2": 0.56599,
+     "meas_m2": 0.5371,
+     "unc_m2": 0.0192,
+     "s_err_m": 4.2
+    },
+    {
+     "truth_id": "T11-00061",
+     "kind": "pothole",
+     "true_m2": 0.23087,
+     "meas_m2": 0.2894,
+     "unc_m2": 0.0227,
+     "s_err_m": 3.73
+    },
+    {
+     "truth_id": "T11-00163",
+     "kind": "depression",
+     "true_m2": 2.89934,
+     "meas_m2": 0.8105,
+     "unc_m2": 0.0889,
+     "s_err_m": 1.74
+    },
+    {
+     "truth_id": "T11-00077",
+     "kind": "depression",
+     "true_m2": 2.44344,
+     "meas_m2": 0.6795,
+     "unc_m2": 0.0703,
+     "s_err_m": -0.75
+    },
+    {
+     "truth_id": "T11-00122",
+     "kind": "pothole",
+     "true_m2": 0.27854,
+     "meas_m2": 0.3796,
+     "unc_m2": 0.0351,
+     "s_err_m": 3.12
+    },
+    {
+     "truth_id": "T11-00148",
+     "kind": "pothole",
+     "true_m2": 0.33527,
+     "meas_m2": 0.427,
+     "unc_m2": 0.043,
+     "s_err_m": -5.6
+    },
+    {
+     "truth_id": "T11-00065",
+     "kind": "pothole",
+     "true_m2": 0.46609,
+     "meas_m2": 0.5593,
+     "unc_m2": 0.052,
+     "s_err_m": 0.41
+    },
+    {
+     "truth_id": "T11-00030",
+     "kind": "pothole",
+     "true_m2": 0.30545,
+     "meas_m2": 0.3175,
+     "unc_m2": 0.0132,
+     "s_err_m": -3.26
+    },
+    {
+     "truth_id": "T11-00076",
+     "kind": "pothole",
+     "true_m2": 0.17052,
+     "meas_m2": 0.1889,
+     "unc_m2": 0.047,
+     "s_err_m": 1.52
+    },
+    {
+     "truth_id": "T11-00182",
+     "kind": "edge_break",
+     "true_m2": 0.93068,
+     "meas_m2": 0.8037,
+     "unc_m2": 0.1234,
+     "s_err_m": 3.38
+    },
+    {
+     "truth_id": "T11-00137",
+     "kind": "pothole",
+     "true_m2": 0.28238,
+     "meas_m2": 0.3218,
+     "unc_m2": 0.052,
+     "s_err_m": -1.61
+    },
+    {
+     "truth_id": "T11-00045",
+     "kind": "pothole",
+     "true_m2": 0.12071,
+     "meas_m2": 0.1862,
+     "unc_m2": 0.0274,
+     "s_err_m": 2.0
+    },
+    {
+     "truth_id": "T11-00127",
+     "kind": "depression",
+     "true_m2": 1.30736,
+     "meas_m2": 0.6347,
+     "unc_m2": 0.0675,
+     "s_err_m": 4.77
+    },
+    {
+     "truth_id": "T11-00020",
+     "kind": "depression",
+     "true_m2": 0.9127,
+     "meas_m2": 0.7702,
+     "unc_m2": 0.0413,
+     "s_err_m": 4.85
+    },
+    {
+     "truth_id": "T11-00018",
+     "kind": "depression",
+     "true_m2": 1.81243,
+     "meas_m2": 0.3402,
+     "unc_m2": 0.0198,
+     "s_err_m": 6.05
+    },
+    {
+     "truth_id": "T11-00050",
+     "kind": "pothole",
+     "true_m2": 0.1099,
+     "meas_m2": 0.1542,
+     "unc_m2": 0.0219,
+     "s_err_m": 7.48
+    },
+    {
+     "truth_id": "T11-00022",
+     "kind": "pothole",
+     "true_m2": 0.33247,
+     "meas_m2": 0.3186,
+     "unc_m2": 0.0206,
+     "s_err_m": 2.76
+    },
+    {
+     "truth_id": "T11-00091",
+     "kind": "pothole",
+     "true_m2": 0.24534,
+     "meas_m2": 0.141,
+     "unc_m2": 0.071,
+     "s_err_m": -3.8
+    },
+    {
+     "truth_id": "T11-00174",
+     "kind": "pothole",
+     "true_m2": 0.28397,
+     "meas_m2": 0.2726,
+     "unc_m2": 0.0343,
+     "s_err_m": 10.25
+    },
+    {
+     "truth_id": "T11-00145",
+     "kind": "depression",
+     "true_m2": 2.58018,
+     "meas_m2": 0.4821,
+     "unc_m2": 0.0278,
+     "s_err_m": -4.67
+    },
+    {
+     "truth_id": "T11-00028",
+     "kind": "pothole",
+     "true_m2": 0.35033,
+     "meas_m2": 0.374,
+     "unc_m2": 0.012,
+     "s_err_m": 1.54
+    },
+    {
+     "truth_id": "T11-00051",
+     "kind": "pothole",
+     "true_m2": 0.30666,
+     "meas_m2": 0.351,
+     "unc_m2": 0.0455,
+     "s_err_m": 3.9
+    },
+    {
+     "truth_id": "T11-00078",
+     "kind": "pothole",
+     "true_m2": 0.33446,
+     "meas_m2": 0.312,
+     "unc_m2": 0.0429,
+     "s_err_m": -2.64
+    },
+    {
+     "truth_id": "T11-00040",
+     "kind": "pothole",
+     "true_m2": 0.16164,
+     "meas_m2": 0.1826,
+     "unc_m2": 0.0385,
+     "s_err_m": -3.28
+    },
+    {
+     "truth_id": "T11-00079",
+     "kind": "pothole",
+     "true_m2": 0.13897,
+     "meas_m2": 0.1718,
+     "unc_m2": 0.0387,
+     "s_err_m": -4.4
+    },
+    {
+     "truth_id": "T11-00172",
+     "kind": "pothole",
+     "true_m2": 0.18883,
+     "meas_m2": 0.2019,
+     "unc_m2": 0.0196,
+     "s_err_m": -0.84
+    },
+    {
+     "truth_id": "T11-00166",
+     "kind": "pothole",
+     "true_m2": 0.36402,
+     "meas_m2": 0.3906,
+     "unc_m2": 0.0533,
+     "s_err_m": -3.04
+    },
+    {
+     "truth_id": "T11-00109",
+     "kind": "edge_break",
+     "true_m2": 0.90323,
+     "meas_m2": 0.3773,
+     "unc_m2": 0.0908,
+     "s_err_m": 4.65
+    },
+    {
+     "truth_id": "T11-00164",
+     "kind": "pothole",
+     "true_m2": 0.07289,
+     "meas_m2": 0.0852,
+     "unc_m2": 0.0111,
+     "s_err_m": 5.57
+    },
+    {
+     "truth_id": "T11-00167",
+     "kind": "pothole",
+     "true_m2": 0.09595,
+     "meas_m2": 0.1124,
+     "unc_m2": 0.0166,
+     "s_err_m": -0.2
+    },
+    {
+     "truth_id": "T11-00179",
+     "kind": "pothole",
+     "true_m2": 0.0679,
+     "meas_m2": 0.1086,
+     "unc_m2": 0.0184,
+     "s_err_m": 6.99
+    },
+    {
+     "truth_id": "T11-00000",
+     "kind": "pothole",
+     "true_m2": 0.19698,
+     "meas_m2": 0.294,
+     "unc_m2": 0.0442,
+     "s_err_m": 0.18
+    },
+    {
+     "truth_id": "T11-00092",
+     "kind": "pothole",
+     "true_m2": 0.14874,
+     "meas_m2": 0.1612,
+     "unc_m2": 0.008,
+     "s_err_m": -4.85
+    },
+    {
+     "truth_id": "T11-00149",
+     "kind": "depression",
+     "true_m2": 0.95423,
+     "meas_m2": 0.3706,
+     "unc_m2": 0.0865,
+     "s_err_m": -0.78
+    },
+    {
+     "truth_id": "T11-00115",
+     "kind": "pothole",
+     "true_m2": 0.10043,
+     "meas_m2": 0.147,
+     "unc_m2": 0.0158,
+     "s_err_m": 4.13
+    },
+    {
+     "truth_id": "T11-00135",
+     "kind": "depression",
+     "true_m2": 3.65137,
+     "meas_m2": 2.0943,
+     "unc_m2": 0.0839,
+     "s_err_m": -2.14
+    },
+    {
+     "truth_id": "T11-00147",
+     "kind": "pothole",
+     "true_m2": 0.30633,
+     "meas_m2": 0.3486,
+     "unc_m2": 0.031,
+     "s_err_m": 7.74
+    },
+    {
+     "truth_id": "T11-00136",
+     "kind": "pothole",
+     "true_m2": 0.35593,
+     "meas_m2": 0.3394,
+     "unc_m2": 0.0619,
+     "s_err_m": -1.66
+    },
+    {
+     "truth_id": "T11-00002",
+     "kind": "pothole",
+     "true_m2": 0.12786,
+     "meas_m2": 0.1466,
+     "unc_m2": 0.0337,
+     "s_err_m": 1.41
+    },
+    {
+     "truth_id": "T11-00074",
+     "kind": "pothole",
+     "true_m2": 0.47268,
+     "meas_m2": 0.4165,
+     "unc_m2": 0.1272,
+     "s_err_m": -1.46
+    },
+    {
+     "truth_id": "T11-00134",
+     "kind": "pothole",
+     "true_m2": 0.33517,
+     "meas_m2": 0.3794,
+     "unc_m2": 0.0448,
+     "s_err_m": -2.35
+    },
+    {
+     "truth_id": "T11-00169",
+     "kind": "pothole",
+     "true_m2": 0.43681,
+     "meas_m2": 0.3085,
+     "unc_m2": 0.0703,
+     "s_err_m": -6.05
+    },
+    {
+     "truth_id": "T11-00021",
+     "kind": "pothole",
+     "true_m2": 0.44563,
+     "meas_m2": 0.4778,
+     "unc_m2": 0.044,
+     "s_err_m": 3.64
+    },
+    {
+     "truth_id": "T11-00118",
+     "kind": "pothole",
+     "true_m2": 0.07778,
+     "meas_m2": 0.0945,
+     "unc_m2": 0.011,
+     "s_err_m": 6.65
+    },
+    {
+     "truth_id": "T11-00123",
+     "kind": "edge_break",
+     "true_m2": 0.3921,
+     "meas_m2": 0.2763,
+     "unc_m2": 0.0178,
+     "s_err_m": 3.03
+    },
+    {
+     "truth_id": "T11-00058",
+     "kind": "pothole",
+     "true_m2": 0.30575,
+     "meas_m2": 0.3324,
+     "unc_m2": 0.0309,
+     "s_err_m": -2.35
+    },
+    {
+     "truth_id": "T11-00132",
+     "kind": "pothole",
+     "true_m2": 0.20774,
+     "meas_m2": 0.2265,
+     "unc_m2": 0.0225,
+     "s_err_m": -1.68
+    },
+    {
+     "truth_id": "T11-00106",
+     "kind": "pothole",
+     "true_m2": 1.63285,
+     "meas_m2": 0.3715,
+     "unc_m2": 0.1084,
+     "s_err_m": 8.51
+    },
+    {
+     "truth_id": "T11-00124",
+     "kind": "depression",
+     "true_m2": 1.00882,
+     "meas_m2": 0.0736,
+     "unc_m2": 0.004,
+     "s_err_m": 4.39
+    },
+    {
+     "truth_id": "T11-00088",
+     "kind": "pothole",
+     "true_m2": 0.12332,
+     "meas_m2": 0.0916,
+     "unc_m2": 0.0066,
+     "s_err_m": 2.08
+    },
+    {
+     "truth_id": "T11-00033",
+     "kind": "pothole",
+     "true_m2": 0.13243,
+     "meas_m2": 0.127,
+     "unc_m2": 0.0269,
+     "s_err_m": 2.02
+    },
+    {
+     "truth_id": "T11-00180",
+     "kind": "pothole",
+     "true_m2": 0.2209,
+     "meas_m2": 0.2551,
+     "unc_m2": 0.0259,
+     "s_err_m": -7.12
+    },
+    {
+     "truth_id": "T11-00125",
+     "kind": "pothole",
+     "true_m2": 0.18654,
+     "meas_m2": 0.1339,
+     "unc_m2": 0.0088,
+     "s_err_m": 5.66
+    },
+    {
+     "truth_id": "T11-00001",
+     "kind": "pothole",
+     "true_m2": 0.13035,
+     "meas_m2": 0.1415,
+     "unc_m2": 0.0071,
+     "s_err_m": 2.12
+    },
+    {
+     "truth_id": "T11-00128",
+     "kind": "pothole",
+     "true_m2": 0.08823,
+     "meas_m2": 0.1446,
+     "unc_m2": 0.0211,
+     "s_err_m": -0.91
+    },
+    {
+     "truth_id": "T11-00121",
+     "kind": "pothole",
+     "true_m2": 0.07316,
+     "meas_m2": 0.1464,
+     "unc_m2": 0.0141,
+     "s_err_m": 5.35
+    },
+    {
+     "truth_id": "T11-00104",
+     "kind": "edge_break",
+     "true_m2": 0.3055,
+     "meas_m2": 0.059,
+     "unc_m2": 0.0071,
+     "s_err_m": 6.27
+    },
+    {
+     "truth_id": "T11-00102",
+     "kind": "pothole",
+     "true_m2": 0.0653,
+     "meas_m2": 0.0938,
+     "unc_m2": 0.0081,
+     "s_err_m": 7.72
+    },
+    {
+     "truth_id": "T11-00154",
+     "kind": "pothole",
+     "true_m2": 0.10368,
+     "meas_m2": 0.1285,
+     "unc_m2": 0.0206,
+     "s_err_m": 8.34
+    },
+    {
+     "truth_id": "T11-00113",
+     "kind": "pothole",
+     "true_m2": 0.13968,
+     "meas_m2": 0.1787,
+     "unc_m2": 0.0455,
+     "s_err_m": 4.93
+    },
+    {
+     "truth_id": "T11-00093",
+     "kind": "pothole",
+     "true_m2": 0.77322,
+     "meas_m2": 0.4693,
+     "unc_m2": 0.0725,
+     "s_err_m": -0.81
+    },
+    {
+     "truth_id": "T11-00120",
+     "kind": "pothole",
+     "true_m2": 0.05505,
+     "meas_m2": 0.1321,
+     "unc_m2": 0.0203,
+     "s_err_m": 3.18
+    },
+    {
+     "truth_id": "T11-00119",
+     "kind": "pothole",
+     "true_m2": 0.11531,
+     "meas_m2": 0.1316,
+     "unc_m2": 0.0118,
+     "s_err_m": 4.66
+    },
+    {
+     "truth_id": "T11-00101",
+     "kind": "edge_break",
+     "true_m2": 0.35668,
+     "meas_m2": 0.0348,
+     "unc_m2": 0.0064,
+     "s_err_m": 5.1
+    },
+    {
+     "truth_id": "T11-00178",
+     "kind": "pothole",
+     "true_m2": 0.13479,
+     "meas_m2": 0.1099,
+     "unc_m2": 0.0158,
+     "s_err_m": -5.3
+    },
+    {
+     "truth_id": "T11-00072",
+     "kind": "pothole",
+     "true_m2": 0.76307,
+     "meas_m2": 0.1384,
+     "unc_m2": 0.0486,
+     "s_err_m": 0.62
+    }
+   ],
+   "pass": "pass_2",
+   "clips": 10,
+   "km": 28.42,
+   "truth_visible": 111,
+   "detections": 387,
+   "matched": 105,
+   "recall": 0.946,
+   "recall_by_kind": {
+    "depression": 0.938,
+    "edge_break": 0.714,
+    "pothole": 0.966
+   },
+   "false_positives": 282,
+   "fp_per_km": 9.92,
+   "control_km": 10.09,
+   "fp_control": 40,
+   "fp_per_km_control": 3.96,
+   "fp_on_repaired_patches": 22,
+   "area_measured": 105,
+   "area_mape_pct": 34.92,
+   "area_median_ape_pct": 25.01,
+   "area_bias_pct": -11.36,
+   "position_median_m": 3.92,
+   "seconds_per_km": 134.1,
+   "stage_seconds": {
+    "decode_triage": 271.6,
+    "privacy": 216.3,
+    "pose": 294.3,
+    "segment": 2993.4,
+    "measure": 32.6
+   }
   }
  ]
 }

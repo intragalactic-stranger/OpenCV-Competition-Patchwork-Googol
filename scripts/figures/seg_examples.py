@@ -62,16 +62,18 @@ def main() -> None:
     args = ap.parse_args()
     seg = Segmenter(args.model)
     splits = json.loads((args.data / "splits.json").read_text())
-    real = pick(seg, args.data, splits["test_real"][: args.n], 4)
+    real = pick(seg, args.data, splits["test_real"][: args.n * 6], 4)
     synth = pick(seg, args.data, splits["val_synth"][: args.n * 3], 4)
 
     def row(ps: list[np.ndarray]) -> np.ndarray:
         h = max(p.shape[0] for p in ps)
-        return np.hstack([cv2.copyMakeBorder(p, 0, h - p.shape[0], 0, 4, cv2.BORDER_CONSTANT, value=255) for p in ps])
+        return np.hstack(
+            [cv2.copyMakeBorder(p, 0, h - p.shape[0], 0, 4, cv2.BORDER_CONSTANT, value=(255, 255, 255)) for p in ps]
+        )
 
     r1, r2 = row(real), row(synth)
     w = max(r1.shape[1], r2.shape[1])
-    pad = lambda r: cv2.copyMakeBorder(r, 0, 6, 0, w - r.shape[1], cv2.BORDER_CONSTANT, value=255)  # noqa: E731
+    pad = lambda r: cv2.copyMakeBorder(r, 0, 6, 0, w - r.shape[1], cv2.BORDER_CONSTANT, value=(255, 255, 255))  # noqa: E731
     out = ROOT / "docs" / "midpoint" / "assets" / "seg_examples.jpg"
     cv2.imwrite(str(out), np.vstack([pad(r1), pad(r2)]), [cv2.IMWRITE_JPEG_QUALITY, 88])
     print(f"wrote {out} (engine {seg.engine})")

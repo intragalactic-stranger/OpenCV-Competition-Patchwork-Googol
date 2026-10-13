@@ -21,7 +21,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "docs" / "midpoint" / "02-COST-REPORT.md"
 ASSETS = ROOT / "docs" / "midpoint" / "assets"
-KM_FILE = ROOT / "eval" / "results" / "km_processed.json"
+E2E_FILE = ROOT / "eval" / "results" / "end_to_end.json"
+PERCEIVE_VCPU = 4  # patchwork-perceive job definition
 PROJECT_START = "2026-10-12"
 BUDGET_USD = 300.0
 # Services whose cost scales with km processed (training, agent dev and the dev box are excluded).
@@ -47,7 +48,7 @@ PURPOSE = {
     "Amazon DynamoDB": "Job state, idempotency, approval tokens",
     "AWS Step Functions": "Pipeline orchestration + approval gate",
     "AWS Lambda": "Register loader, viewer API, agent tools",
-    "Amazon Bedrock": "Claude for the agent",
+    "Amazon Bedrock": "Amazon Nova for the agent",
     "Amazon Bedrock AgentCore": "Agent runtime / gateway / memory",
     "Amazon CloudFront": "Map viewer delivery",
     "Amazon API Gateway": "Viewer / console API",
@@ -200,8 +201,35 @@ def main() -> int:
     rows = sorted(((s, v) for s, v in tagged.items() if v > 0), key=lambda r: -r[1])
     total = sum(v for _, v in rows)
     processing = sum(v for s, v in rows if s in PROCESSING_SERVICES)
-    km = json.loads(KM_FILE.read_text()).get("km", 0.0) if KM_FILE.exists() else 0.0
+    passes = json.loads(E2E_FILE.read_text())["passes"] if E2E_FILE.exists() else []
+    km = sum(p["km"] for p in passes)
     cost_per_km = f"${processing / km:.4f}/km" if km > 0 else "n/a (no km processed yet)"
+    measured_per_km = "n/a (no pipeline run evaluated yet)"
+    if km > 0:
+        sec_per_km = sum(p["seconds_per_km"] * p["km"] for p in passes) / km
+        prices = boto3.client("ec2", region_name="ap-south-1").describe_spot_price_history(
+            InstanceTypes=["c8g.4xlarge", "c7g.4xlarge"],
+            ProductDescriptions=["Linux/UNIX"],
+            StartTime=dt.datetime.now(dt.UTC),
+        )["SpotPriceHistory"]
+        vcpu_h = sum(float(x["SpotPrice"]) for x in prices) / len(prices) / 16
+        usd_km = sec_per_km / 3600 * PERCEIVE_VCPU * vcpu_h
+        (ROOT / "eval" / "results" / "cost_per_km.json").write_text(
+            json.dumps(
+                {
+                    "usd_per_km": round(usd_km, 5),
+                    "seconds_per_km": round(sec_per_km, 1),
+                    "vcpu": PERCEIVE_VCPU,
+                    "spot_usd_per_vcpu_h": round(vcpu_h, 5),
+                    "upper_bound_usd_per_km": round(processing / km, 4),
+                    "km": round(km, 2),
+                }
+            )
+        )
+        measured_per_km = (
+            f"**${usd_km:.4f}/km** ({sec_per_km:.0f} s of {PERCEIVE_VCPU}-vCPU "
+            f"Graviton Spot per km at ${vcpu_h:.4f}/vCPU-h, current Spot price)"
+        )
 
     summary = "\n".join(
         [
@@ -217,8 +245,10 @@ def main() -> int:
             f"| Planned monthly usage (from credits) | ${BUDGET_USD:,.2f} |",
             f"| Account usage this month to date | ${mtd.get('Usage', 0):,.2f} "
             f"({mtd.get('Usage', 0) / BUDGET_USD * 100:.1f}% of plan); net paid ${sum(mtd.values()):,.2f} |",
-            f"| Kilometres processed (from the register) | {km:,.1f} |",
-            f"| **Cost per km processed** (processing services only) | {cost_per_km} |",
+            f"| Kilometres processed (pipeline runs evaluated in `eval/results/end_to_end.json`) | {km:,.1f} |",
+            f"| Perception compute cost per km (measured run time × Spot price) | {measured_per_km} |",
+            f"| Upper bound: all processing-service spend ÷ km (also includes data rendering and training) "
+            f"| {cost_per_km} |",
             "| Target cost per km (proposal) | < $0.02 |",
             f"| Generated | {dt.datetime.now(dt.UTC).strftime('%Y-%m-%d %H:%M UTC')} by `make cost-report` |",
             "",

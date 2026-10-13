@@ -6,13 +6,13 @@
  "seconds_perceive": 3734.1,
  "register": {
   "new_observations": 417,
-  "new_defects": 350,
-  "linked_to_existing": 67
+  "new_defects": 417,
+  "linked_to_existing": 0
  },
  "viewer": {
-  "generated": "2026-10-13 11:07 UTC",
+  "generated": "2026-10-13 11:31 UTC",
   "source": "pass_1 (synthetic survey, seed 11, pass 1)",
-  "defects": 350,
-  "overlays": 350
+  "defects": 417,
+  "overlays": 417
  }
 }
