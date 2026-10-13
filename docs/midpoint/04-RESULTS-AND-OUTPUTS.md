@@ -12,17 +12,17 @@
 | False positives per km, control section (D2) | ≤ 0.5 | [[TBD]] | ⏭ |
 | Damaged-area MAPE, end to end (D1) | ≤ 20% | [[TBD]] | ⏭ |
 | Damaged-area MAPE, oracle masks (geometry only, estimated pitch) | ≤ 5% | 2.14% · n=18 defects; median 2.16%, p90 4.42%; true-pose 1.4%, nominal-pitch 4.44% | ✅ |
-| Median localisation error | ≤ 8 m | [[TBD]] | ⏭ |
+| Median localisation error | ≤ 8 m | 2.63 m · p90 6.51 m; raw GNSS median 6.23 m; tunnel (no GNSS) median 7.49 m; 37520 frames | ✅ |
 | Segmentation IoU (damage), real photos (test split) | reported (aim ≥ 0.55) | [[TBD]] | ⏭ |
 | Segmentation IoU (damage), synthetic held-out stretch | reported (aim ≥ 0.75) | [[TBD]] | ⏭ |
 | ONNX parity: OpenCV 5 ENGINE_NEW vs onnxruntime (SegFormer-like smoke graph) | ≤ 1e-3 | 3.8e-06 · ENGINE_CLASSIC cannot load it | ✅ |
-| Frame triage: kept frames per km (recall loss) | ≤ 620/km, ≤ 2% loss | 297/km, 0.0% loss · 18.64% of 15 fps frames; 100.0% of defects in ≥ 2 kept frames; odometry -1.52% over 2.0 km | ✅ |
+| Frame triage: kept frames per km (recall loss) | ≤ 620/km, ≤ 2% loss | 284/km, 0.0% loss · 21.63% of 15 fps frames; 98.9% of defects in ≥ 2 kept frames; odometry -0.6% over 28.558 km | ✅ |
 | Processing time per km (Batch, Graviton) | reported | [[TBD]] | ⏭ |
 | Cost per km processed | < $0.02 | [[TBD]] | ⏭ |
 | Cross-pass re-ID F1, basic matcher (stretch) | ≥ 0.90 (final) | [[TBD]] | ⏭ |
 | Run A/B: plan changes with measured area (stretch) | must change | [[TBD]] | ⏭ |
 
-_Generated 2026-10-13 04:51 UTC by `uv run python -m eval.report`._
+_Generated 2026-10-13 05:56 UTC by `uv run python -m eval.report`._
 <!-- METRICS:END -->
 
 ## 2. Visual outputs

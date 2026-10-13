@@ -99,7 +99,7 @@ class ClipRunner:
         self.privacy = Privacy()
         self.min_obs, self.min_prob = min_obs, min_prob
 
-    def run(self, clip_dir: Path) -> tuple[list[DefectTrack], list[Observation], dict]:
+    def run(self, clip_dir: Path, s_hint: float | None = None) -> tuple[list[DefectTrack], list[Observation], dict]:
         t0 = time.time()
         meta = json.loads((clip_dir / "meta.json").read_text())
         cam = camera_from_calibration(self.cal, meta["mount_height_m"], meta["nominal_pitch_deg"])
@@ -164,7 +164,9 @@ class ClipRunner:
         g = _csv(clip_dir / "gnss.csv")
         odo = np.array([s.travel_m for s in triage.result.scores])
         n = min(len(odo), len(fr["t"]))
-        track: Track = localise(self.corridor, fr["t"][:n], odo[:n], g["t"], g["lat"], g["lon"], g["hdop"])
+        track: Track = localise(
+            self.corridor, fr["t"][:n], odo[:n], g["t"], g["lat"], g["lon"], g["hdop"], s_hint=s_hint
+        )
         for o in obs:
             o.s, o.d = float(track.s[o.frame] + o.Y), float(track.d[o.frame] + o.X)
         defects = []
@@ -216,20 +218,25 @@ class ClipRunner:
             "engine": self.seg.engine,
             "seconds": round(time.time() - t0, 1),
             "stage_seconds": {k: round(v, 1) for k, v in stage.items()},
+            "s_start": round(float(track.s[0]), 1),
+            "s_end": round(float(track.s[-1]), 1),
         }
         return defects, obs, stats_out
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("clips", nargs="+", type=Path)
+    ap.add_argument("clips", nargs="+", type=Path, help="clip dirs; clips of one pass are processed in order")
     ap.add_argument("--model", type=Path, required=True)
     ap.add_argument("--calib", type=Path, default=ROOT / "data" / "calib" / "cam01-v1.json")
     ap.add_argument("--out", type=Path, default=None, help="default: <clip>/run")
     args = ap.parse_args()
     runner = ClipRunner(args.model, args.calib, load_corridor(ROOT / "data" / "corridor"))
-    for clip in args.clips:
-        defects, obs, st = runner.run(clip)
+    hints: dict[Path, float] = {}  # clips of one pass run in order: each continues where the last ended
+    for clip in sorted(args.clips):
+        first = clip.name.endswith("_00")
+        defects, obs, st = runner.run(clip, 0.0 if first else hints.get(clip.parent))
+        hints[clip.parent] = st["s_end"]
         out = args.out / clip.parent.name / clip.name if args.out else clip / "run"
         out.mkdir(parents=True, exist_ok=True)
         (out / "defects.json").write_text(json.dumps([asdict(d) for d in defects], indent=1))

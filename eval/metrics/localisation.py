@@ -49,12 +49,12 @@ def odometry(clip_dir: Path, cal_path: Path) -> np.ndarray:
     return odo
 
 
-def run_clip(c, clip_dir: Path, cal_path: Path) -> dict:
+def run_clip(c, clip_dir: Path, cal_path: Path, s_hint: float | None = None) -> dict:
     fr = _csv(clip_dir / "frames.csv")
     g = _csv(clip_dir / "gnss.csv")
     odo = odometry(clip_dir, cal_path)
     n = min(len(odo), len(fr["t"]))
-    tr = localise(c, fr["t"][:n], odo[:n], g["t"], g["lat"], g["lon"], g["hdop"])
+    tr = localise(c, fr["t"][:n], odo[:n], g["t"], g["lat"], g["lon"], g["hdop"], s_hint=s_hint)
     tx, ty, _ = true_positions(c, fr["s"][:n], fr["lateral"][:n])
     ex, ey, _ = true_positions(c, tr.s, tr.d)
     err = np.hypot(ex - tx, ey - ty)
@@ -79,6 +79,7 @@ def run_clip(c, clip_dir: Path, cal_path: Path) -> dict:
         "_in2s": err <= 2 * np.maximum(tr.sigma, 0.5),
         "odo_scale": round(tr.scale, 4),
         "gnss_used": tr.gnss_used,
+        "_s_end": float(tr.s[-1]),
         "_err": err,
         "_gerr": gerr,
         "_tunnel": tunnel,
@@ -94,8 +95,10 @@ def main() -> None:
     c = load_corridor(ROOT / "data" / "corridor")
     clips = []
     for pd in args.pass_dirs:
+        hint = 0.0  # a pass starts at the start of the planned route; later clips continue the previous one
         for cd in sorted(pd.glob("clip_*")):
-            r = run_clip(c, cd, args.calib)
+            r = run_clip(c, cd, args.calib, hint)
+            hint = r["_s_end"]
             clips.append(r)
             print(json.dumps({k: v for k, v in r.items() if not k.startswith("_")}), flush=True)
     err = np.concatenate([r["_err"] for r in clips])

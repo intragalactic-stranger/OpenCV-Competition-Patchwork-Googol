@@ -48,8 +48,9 @@ class CorridorMatcher:
         cross = self.dx[sl][j] * (y - self.ay[sl][j]) - self.dy[sl][j] * (x - self.ax[sl][j])
         return s, float(-cross / seg_len), float(np.sqrt(d2[j]))
 
-    def initial_chainage(self, xs: np.ndarray, ys: np.ndarray) -> float:
-        """Global match for the first fix, disambiguated by the direction of travel over the first fixes."""
+    def initial_chainage(self, xs: np.ndarray, ys: np.ndarray, s_hint: float | None = None) -> float:
+        """Global match for the first fix, disambiguated by the direction of travel over the first fixes and,
+        where the route passes the same place twice in the same direction, by `s_hint` (route progress)."""
         cand = []
         t = np.clip(((xs[0] - self.ax) * self.dx + (ys[0] - self.ay) * self.dy) / self.len2, 0, 1)
         d = np.hypot(xs[0] - (self.ax + t * self.dx), ys[0] - (self.ay + t * self.dy))
@@ -63,7 +64,14 @@ class CorridorMatcher:
         if not cand:
             j = int(np.argmin(d))
             return float(self.c.s[j] + t[j] * np.sqrt(self.len2[j]))
-        return min(cand)[1]
+        if s_hint is None:
+            return min(cand)[1]
+        top = min(cand)
+        # equally good geometric matches at genuinely different places on the route (>100 m apart in chainage)
+        rivals = [c for c in cand if c[0] <= top[0] + 25.0 and abs(c[1] - top[1]) > 100.0]
+        if not rivals:
+            return top[1]
+        return min([top, *rivals], key=lambda c: abs(c[1] - s_hint))[1]
 
 
 @dataclass
@@ -96,8 +104,12 @@ def localise(
     q_s: float = 0.05,
     q_k: float = 1e-5,
     bias_tau_s: float = 60.0,
+    s_hint: float | None = None,
 ) -> Track:
-    """Kalman filter + RTS smoother on chainage. odo_m[i] = forward travel from frame i-1 to i."""
+    """Kalman filter + RTS smoother on chainage. odo_m[i] = forward travel from frame i-1 to i.
+
+    s_hint: expected chainage at the clip start (end of the previous clip, or 0 for the first clip of a pass).
+    Only used to choose between geometrically identical matches (the route retraces part of Marine Drive)."""
     matcher = CorridorMatcher(c)
     ok = np.isfinite(gnss_lat) & np.isfinite(gnss_lon)
     gx, gy = TO_UTM.transform(np.where(ok, gnss_lon, 0), np.where(ok, gnss_lat, 0))
@@ -105,11 +117,17 @@ def localise(
     first = np.flatnonzero(ok)
     if len(first) == 0:
         raise ValueError("no GNSS fix in clip: cannot anchor the track")
-    f0 = first[: min(len(first), 15)]
-    s0 = matcher.initial_chainage(gx[f0], gy[f0])
-    # cumulative odometry back to t=0 from the first fix time
+    # direction of travel disambiguates the loop's opposite carriageways; if the clip starts at a signal, wait
+    # until the fixes have moved >= 30 m (up to 120 s) before deciding where we are
+    moved = np.hypot(gx[first] - gx[first[0]], gy[first] - gy[first[0]])
+    far = np.flatnonzero(moved >= 30.0)
+    end = int(far[0]) + 1 if len(far) and far[0] < 120 else min(len(first), 15)
+    f0 = first[: max(end, 2)]
+    # cumulative odometry back to t=0 from the first fix time (in a tunnel the first fix can be km into the clip)
     cum = np.cumsum(odo_m)
     t_first = gnss_t[first[0]]
+    hint_at_fix = None if s_hint is None else s_hint + float(np.interp(t_first, frame_t, cum))
+    s0 = matcher.initial_chainage(gx[f0], gy[f0], hint_at_fix)
     s_init = s0 - float(np.interp(t_first, frame_t, cum))
 
     n = len(frame_t)
