@@ -1,0 +1,11 @@
+{
+ "engine": "ENGINE_NEW",
+ "hard_neg_val": {
+  "images": 480,
+  "iou_damage": 0.0,
+  "image_recall": 0.0,
+  "false_positive_images": 86,
+  "negative_images": 480,
+  "ms_per_image": 956.6
+ }
+}
