@@ -54,6 +54,12 @@ def render(m: dict, src: str) -> str:
                 f"{e['false_positive_images']} of {e['negative_images']} negatives | {e['ms_per_image']:.0f} |"
             )
     new, classic = par.get("ENGINE_NEW", {}), par.get("ENGINE_CLASSIC", {})
+    classic_txt = (
+        "also loads it"
+        if classic.get("loaded")
+        else "cannot load it (the SegFormer encoder uses dynamic Shape ops, which the classic importer rejects); "
+        "the pipeline uses ENGINE_NEW, with onnxruntime as fallback"
+    )
     rows += [
         "",
         "| OpenCV 5 runtime check (same images through both runtimes) | Result |",
@@ -61,8 +67,7 @@ def render(m: dict, src: str) -> str:
         f"| ENGINE_NEW loads the model | {'yes' if new.get('loaded') else 'NO'} |",
         f"| Max difference vs onnxruntime (logits) | {new.get('max_abs_diff', float('nan')):.1e} (target ≤ 1e-3) |",
         f"| Pixels with the same decision | {100 * new.get('argmax_agreement', 0):.4f}% |",
-        f"| ENGINE_CLASSIC (OpenCV 4.x-style importer) | "
-        f"{'also loads it' if classic.get('loaded') else 'cannot load it: ' + classic.get('error', '')[:90]} |",
+        f"| ENGINE_CLASSIC (OpenCV 4.x-style importer) | {classic_txt} |",
         "",
         "Training curve (validation IoU after each epoch, measured in PyTorch):",
         "",

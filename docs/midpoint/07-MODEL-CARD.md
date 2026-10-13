@@ -73,7 +73,37 @@ dashcam video → frame triage → privacy blur → [ THIS MODEL: which pixels a
 ## 7. Results
 
 <!-- MODEL-METRICS:BEGIN -->
-_Not trained yet: this section is filled automatically when the first training run finishes._
+**Run:** `s3://patchwork-682839842398-artifacts/models/seg-v2` · architecture `segformer` · 7790 training images · 12 epochs in 3.9 h on CPU · runtime engine for these numbers: **ENGINE_NEW**
+
+| Evaluation set (never used for training) | Images | IoU (damage) | Image recall | False-positive images | ms / image |
+|---|---|---|---|---|---|
+| Real photos, held-out test split (Pothole Mix test) | 504 | **0.496** | 0.989 | 73 of 318 negatives | 156 |
+| Real photos, validation split (Pothole Mix val) | 496 | **0.419** | 0.913 | 82 of 208 negatives | 125 |
+| Synthetic Mumbai dashcam strips, held-out road stretch | 1266 | **0.428** | 0.592 | 64 of 719 negatives | 76 |
+
+| OpenCV 5 runtime check (same images through both runtimes) | Result |
+|---|---|
+| ENGINE_NEW loads the model | yes |
+| Max difference vs onnxruntime (logits) | 2.4e-05 (target ≤ 1e-3) |
+| Pixels with the same decision | 100.0000% |
+| ENGINE_CLASSIC (OpenCV 4.x-style importer) | cannot load it (the SegFormer encoder uses dynamic Shape ops, which the classic importer rejects); the pipeline uses ENGINE_NEW, with onnxruntime as fallback |
+
+Training curve (validation IoU after each epoch, measured in PyTorch):
+
+| Epoch | Train loss | IoU val_real | IoU val_synth | Minutes |
+|---|---|---|---|---|
+| 0 | 0.9023 | 0.1683 | 0.0662 | 19.0 |
+| 1 | 0.8981 | 0.3292 | 0.1387 | 19.1 |
+| 2 | 0.8204 | 0.2778 | 0.1151 | 19.1 |
+| 3 | 0.7625 | 0.1622 | 0.1566 | 19.1 |
+| 4 | 0.6718 | 0.2387 | 0.0795 | 19.0 |
+| 5 | 0.6918 | 0.3726 | 0.2877 | 19.2 |
+| 6 | 0.6928 | 0.3336 | 0.1788 | 19.2 |
+| 7 | 0.5772 | 0.3192 | 0.3042 | 19.2 |
+| 8 | 0.5471 | 0.4941 | 0.3223 | 19.1 |
+| 9 | 0.4737 | 0.5518 | 0.2537 | 19.1 |
+| 10 | 0.4095 | 0.5122 | 0.4346 | 19.2 |
+| 11 | 0.4122 | 0.5199 | 0.3793 | 19.2 |
 <!-- MODEL-METRICS:END -->
 
 **How to read these:**

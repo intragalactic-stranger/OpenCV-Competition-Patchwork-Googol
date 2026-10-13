@@ -115,11 +115,12 @@ def load(reg: Register, pass_dir: Path, n: int) -> int:
 
 
 def remove(reg: Register) -> None:
-    reg.sql(
-        "DELETE FROM approval_request WHERE package_id IN (SELECT package_id FROM work_package wp WHERE EXISTS "
-        "(SELECT 1 FROM defect d WHERE d.defect_id = ANY(wp.defect_ids) AND d.first_seen_pass = :p))",
-        {"p": FIXTURE_PASS},
-    )
+    for table in ("approval_request", "approval", "ticket", "reinspection"):
+        reg.sql(
+            f"DELETE FROM {table} WHERE package_id IN (SELECT package_id FROM work_package wp WHERE EXISTS "
+            "(SELECT 1 FROM defect d WHERE d.defect_id = ANY(wp.defect_ids) AND d.first_seen_pass = :p))",
+            {"p": FIXTURE_PASS},
+        )
     reg.sql(
         "DELETE FROM work_package wp WHERE EXISTS (SELECT 1 FROM defect d WHERE d.defect_id = ANY(wp.defect_ids) "
         "AND d.first_seen_pass = :p)",
