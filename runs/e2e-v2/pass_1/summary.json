@@ -1,0 +1,18 @@
+{
+ "pass": "pass_1",
+ "clips": 10,
+ "km": 28.396,
+ "defects": 422,
+ "seconds_perceive": 3734.1,
+ "register": {
+  "new_observations": 417,
+  "new_defects": 350,
+  "linked_to_existing": 67
+ },
+ "viewer": {
+  "generated": "2026-10-13 11:07 UTC",
+  "source": "pass_1 (synthetic survey, seed 11, pass 1)",
+  "defects": 350,
+  "overlays": 350
+ }
+}

@@ -297,6 +297,8 @@ def main() -> None:
     lr.add_argument("--model", default="seg-v1")
     lr.add_argument("--calibration", default="cam01-v1")
     sub.add_parser("summary")
+    rs = sub.add_parser("reset-survey", help="delete survey rows (defects, observations, packages); keep roads/POIs")
+    rs.add_argument("--yes", action="store_true")
     gj = sub.add_parser("geojson")
     gj.add_argument("out", type=Path)
     args = ap.parse_args()
@@ -317,6 +319,13 @@ def main() -> None:
             "SELECT count(*) AS n FROM observation",
         ):
             print(q, "->", reg.sql(q))
+    elif args.cmd == "reset-survey":
+        if not args.yes:
+            raise SystemExit("this deletes every defect, observation and work package; re-run with --yes")
+        reg.sql(
+            "TRUNCATE approval_request, approval, ticket, reinspection, work_package, status_event, observation, defect"
+        )
+        print("survey rows deleted; roads and POIs kept")
     elif args.cmd == "geojson":
         args.out.write_text(json.dumps(reg.geojson()))
         print(f"wrote {args.out}")
