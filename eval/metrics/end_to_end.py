@@ -86,6 +86,17 @@ def evaluate(pass_dir: Path, run_root: Path, gate: float = 12.0, lateral_view: f
         n_k = sum(t["kind"] == k for t in visible)
         by_kind[k] = round(sum(t["kind"] == k for _, t in matches) / max(n_k, 1), 3)
     return {
+        "matches": [
+            {
+                "truth_id": t["truth_id"],
+                "kind": t["kind"],
+                "true_m2": t["area_m2"],
+                "meas_m2": d["area_m2"],
+                "unc_m2": d["uncertainty_m2"],
+                "s_err_m": round(d["s"] - t["centroid_s"], 2),
+            }
+            for d, t in matches
+        ],
         "pass": pass_dir.name,
         "clips": len(stats),
         "km": round(km, 2),
@@ -121,7 +132,7 @@ def main() -> None:
     args = ap.parse_args()
     res = [evaluate(pd, args.runs, args.gate) for pd in args.pass_dirs]
     for r in res:
-        print(json.dumps(r, indent=1))
+        print(json.dumps({k: v for k, v in r.items() if k != "matches"}, indent=1))
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps({"passes": res}, indent=1))
 

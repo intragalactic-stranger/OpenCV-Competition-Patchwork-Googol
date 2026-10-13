@@ -31,9 +31,56 @@ def build_table() -> str:
     smoke = _load("smoke/opencv5_smoke.json")
     area = _load("area_oracle.json")
     rows = ["| Metric | Target | Result | Status |", "|---|---|---|---|"]
-    rows.append(_row("Detection recall @ ≤ 1 FP/km (D1)", "≥ 0.85", None, None))
-    rows.append(_row("False positives per km, control section (D2)", "≤ 0.5", None, None))
-    rows.append(_row("Damaged-area MAPE, end to end (D1)", "≤ 20%", None, None))
+    e2e = _load("end_to_end.json")
+    if e2e:
+        ps = e2e["passes"]
+        vis = sum(p["truth_visible"] for p in ps)
+        matched = sum(p["matched"] for p in ps)
+        km = sum(p["km"] for p in ps)
+        fps = sum(p["false_positives"] for p in ps)
+        ckm = sum(p["control_km"] for p in ps)
+        cfp = sum(p["fp_control"] for p in ps)
+        meas = [m for p in ps for m in p["matches"] if m["meas_m2"] is not None]
+        ape = [abs(m["meas_m2"] - m["true_m2"]) / m["true_m2"] * 100 for m in meas]
+        recall = matched / max(vis, 1)
+        rows.append(
+            _row(
+                "Detection recall (held-out world, D1)",
+                "≥ 0.85",
+                f"{recall:.2f}",
+                recall >= 0.85,
+                f"{matched}/{vis} visible defects over {km:.1f} km; {fps / max(km, 1e-6):.2f} FP/km overall",
+            )
+        )
+        if ckm > 0:
+            rows.append(
+                _row(
+                    "False positives per km, Coastal Road control section (D2)",
+                    "≤ 0.5",
+                    f"{cfp / ckm:.2f}",
+                    cfp / ckm <= 0.5,
+                    f"{cfp} FPs over {ckm:.1f} km",
+                )
+            )
+        else:
+            rows.append(_row("False positives per km, control section (D2)", "≤ 0.5", None, None))
+        if ape:
+            mape = sum(ape) / len(ape)
+            rows.append(
+                _row(
+                    "Damaged-area MAPE, end to end (model masks)",
+                    "≤ 20%",
+                    f"{mape:.1f}%",
+                    mape <= 20,
+                    f"n={len(ape)} measured defects; see assets/area_scatter.png",
+                )
+            )
+        else:
+            rows.append(_row("Damaged-area MAPE, end to end (D1)", "≤ 20%", None, None))
+    else:
+        rows.append(_row("Detection recall @ ≤ 1 FP/km (D1)", "≥ 0.85", None, None))
+        rows.append(_row("False positives per km, control section (D2)", "≤ 0.5", None, None))
+        rows.append(_row("Damaged-area MAPE, end to end (D1)", "≤ 20%", None, None))
     if area:
         s = area["summary"]
         est, true_, nom = s.get("estimated_pose"), s.get("true_pose"), s.get("nominal_pose")
@@ -135,7 +182,20 @@ def build_table() -> str:
         )
     else:
         rows.append(_row("Frame triage: kept frames per km (recall loss)", "≤ 620/km, ≤ 2% loss", None, None))
-    rows.append(_row("Processing time per km (Batch, Graviton)", "reported", None, None))
+    if e2e and e2e["passes"]:
+        ps = e2e["passes"]
+        spk = sum(p["seconds_per_km"] * p["km"] for p in ps) / max(sum(p["km"] for p in ps), 1e-6)
+        rows.append(
+            _row(
+                "Processing time per km (Batch, Graviton, 4 vCPU per clip)",
+                "reported",
+                f"{spk / 60:.1f} vCPU-container-min/km",
+                None,
+                "clips run in parallel: wall-clock per pass ≈ time of the slowest clip",
+            )
+        )
+    else:
+        rows.append(_row("Processing time per km (Batch, Graviton)", "reported", None, None))
     rows.append(_row("Cost per km processed", "< $0.02", None, None))
     rows.append(_row("Cross-pass re-ID F1, basic matcher (stretch)", "≥ 0.90 (final)", None, None))
     ab = _load("ablation_ab.json")

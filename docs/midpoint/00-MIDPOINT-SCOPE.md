@@ -13,11 +13,11 @@
 |---|---|---|---|
 | 1 | **Synthetic survey of the real corridor** | A dashcam-style video over the real Coastal Road / Worli / Haji Ali / Marine Drive geometry, with potholes, shadows, seams and wet patches | We can generate unlimited, exactly-labelled test drives without field work |
 | 2 | **OpenCV 5 calibration + bird's-eye view** | ChArUco board detection; the perspective frame next to a metric top-down view with a 1 m grid | Pixels are turned into metres, which is the core of "measure, not just detect" |
-| 3 | **Pothole segmentation in OpenCV 5's new DNN engine** | Model masks on real Indian road photos and synthetic frames; the parity check vs onnxruntime | The OpenCV 5-specific capability the proposal depends on actually works |
+| 3 | **Pothole segmentation in OpenCV 5's new DNN engine** | Model masks on real road photos and synthetic frames; the parity check vs onnxruntime | The OpenCV 5-specific capability the proposal depends on actually works |
 | 4 | **Square-metre measurement with known accuracy** | Measured vs true area per pothole; area error (MAPE) chart | The headline number is trustworthy, with error bars |
 | 5 | **AWS pipeline end to end** | S3 upload → Step Functions run graph → Batch on Graviton Spot → rows in Aurora PostGIS | Production-shaped, serverless-ish, cheap, reproducible (Terraform) |
 | 6 | **Live map viewer** | CloudFront URL; defects coloured by severity; click → overlay, m², material estimate | The register exists and is usable |
-| 7 | **Cost transparency** | Cost by AWS service so far, cost per km processed, budget remaining | Grant money is spent carefully and visibly |
+| 7 | **Cost transparency** | Usage by AWS service, the part paid by promotional credits, real money paid ($0.00), cost per km | Spend is careful, visible and fully covered by credits |
 | 8 *(stretch)* | **Agent preview + run A/B** | The agent drafts a work order that blocks on approval; the same clip with a bigger measured area yields a different, more urgent plan | Vision output changes the agent's action (the Agentic Vision path) |
 
 ## 3. MUST / SHOULD / WON'T (for the midpoint)
@@ -26,12 +26,12 @@
 - Phase 0: foundations, OpenCV 5 verified, AWS + budget.
 - Phase 1: synthetic corridor + 2–3 passes with ground truth; open datasets mirrored.
 - Phase 2: calibration, undistortion, IPM, triage, privacy blur, measurement.
-- Phase 3: SegFormer-B0 trained on SageMaker, ONNX, OpenCV 5 `ENGINE_NEW`.
+- Phase 3: SegFormer-B0 trained **on CPU** (AWS Batch Graviton Spot, owner's choice, D-25), ONNX, OpenCV 5 `ENGINE_NEW`.
 - Phase 4: Terraform stack; S3 → Step Functions → Batch → Aurora; map viewer.
 - Midpoint metrics: recall, FP/km, area MAPE (model and oracle), localisation, mIoU (real + synthetic), parity, triage rate, time per km, cost per km.
 
 **SHOULD**
-- Phase 5a: 5-tool agent slice on AgentCore with the approval gate + **run A/B ablation**.
+- Phase 5a: 5-tool agent slice (Strands + Amazon Nova on Bedrock) with the Step Functions approval gate + **run A/B ablation**. Hosting on AgentCore is the next step.
 - A basic re-identification of defects on pass 2 (GNSS + ORB) to preview "verification".
 
 **WON'T (before the checkpoint)**: full 10-tool agent, VLM attributes, the full console, the 40-scenario suite, CI, the full repair-verification metrics. These are the **second half** ([06-NEXT-STEPS](06-NEXT-STEPS.md)).
@@ -46,14 +46,16 @@
 
 | Evidence | File | Status |
 |---|---|---|
+| Model card (what was trained, data, configs, metrics) | [`07-MODEL-CARD.md`](07-MODEL-CARD.md) | 🔄 metrics fill in when training finishes |
+| Approval gate (approve → mock ticket, reject → override) | `scripts/approve.py`, state machine `patchwork-approve-work-package` | ✅ |
 | Corridor map (real OSM geometry) | `assets/corridor_map.png` | ✅ |
 | Synthetic contact sheet | `assets/synth_contact_sheet.jpg` | ✅ |
 | ChArUco detection + calibration report | `assets/calibration.png` | ✅ |
 | Perspective vs BEV with measured polygons | `assets/bev_measure.png` | ✅ |
 | Segmentation examples (real + synthetic) | `assets/seg_examples.jpg` | ⏭ |
-| ONNX parity report | `assets/opencv5_smoke.md` (smoke graph) ✅; real model in Phase 3 | 🔄 |
+| ONNX parity report | smoke graph ✅; real SegFormer-B0 1.6e-6 ✅ (dev run); final model → [model card](07-MODEL-CARD.md) | 🔄 |
 | Area: measured vs truth scatter | `assets/area_scatter.png` | ⏭ |
-| Step Functions run graph screenshot | `assets/sfn_run.png` | ⏭ |
-| Map viewer screenshot + URL | `assets/viewer.png` | ⏭ |
-| Cost by service chart | `assets/cost_by_service.png` | ⏭ |
-| Run A/B trace diff (stretch) | `assets/ablation_ab.md` | ⏭ |
+| Step Functions run (generated from the execution history) | `assets/sfn_run.png` | 🔄 pipeline proven end to end (plumbing run); figure after the model run |
+| Map viewer screenshot + URL | https://d3mt6jrs1ynczo.cloudfront.net · `assets/viewer.png` | 🔄 live; populated after the model run |
+| Cost by service + credit coverage | [`02-COST-REPORT.md`](02-COST-REPORT.md), `assets/cost_by_service.png` | ✅ |
+| Run A/B trace diff (stretch) | `assets/ablation_ab.md` | ✅ (plan changes: priority 3 → 1); rerun on pipeline output after training |
