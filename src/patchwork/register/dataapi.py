@@ -36,6 +36,8 @@ REGION = "ap-south-1"
 DDL = ROOT / "src" / "patchwork" / "schema" / "ddl.sql"
 PIPELINE_VERSION = "0.2"
 LINK_M = 8.0  # cross-pass: same defect if within this distance on the same road (localisation p90 ~6.5 m)
+# Links are only made to defects last seen on an EARLIER pass: two tracks of one pass are separate defects
+# (perception already fused each defect's frames), so within-pass neighbours never get unchanged/degraded.
 
 
 def _param(name: str, v) -> dict:
@@ -204,10 +206,10 @@ class Register:
                 continue  # already loaded (idempotent re-run)
             new_obs += 1
             near = self.sql(
-                "SELECT defect_id, latest_area_m2 FROM defect WHERE road_segment_id = :seg AND "
-                "ST_DWithin(geom::geography, ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography, :r) "
+                "SELECT defect_id, latest_area_m2 FROM defect WHERE road_segment_id = :seg AND last_seen_pass <> :p "
+                "AND ST_DWithin(geom::geography, ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography, :r) "
                 "ORDER BY geom::geography <-> ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography LIMIT 1",
-                {"seg": obs.road_segment_id, "lon": obs.lon, "lat": obs.lat, "r": LINK_M},
+                {"seg": obs.road_segment_id, "lon": obs.lon, "lat": obs.lat, "r": LINK_M, "p": obs.pass_id},
             )
             if near and near[0]["defect_id"]:
                 did = near[0]["defect_id"]
