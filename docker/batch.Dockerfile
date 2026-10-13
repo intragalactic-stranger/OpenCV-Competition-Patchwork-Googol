@@ -12,9 +12,12 @@ COPY docs/README.md docs/README.md
 RUN uv sync --frozen --no-dev --group aws --no-install-project
 COPY src ./src
 COPY data/corridor ./data/corridor
+COPY data/calib ./data/calib
+COPY data/models/face_detection_yunet_2023mar.onnx ./data/models/
+COPY viewer ./viewer
 RUN uv sync --frozen --no-dev --group aws
 
 ENV PATH=/app/.venv/bin:$PATH
-RUN python -c "import cv2, boto3; print(cv2.__version__)"
+RUN python -c "import cv2, boto3; print(cv2.__version__)" && python -m patchwork.pipeline.batch --help >/dev/null
 ENTRYPOINT ["python", "-m"]
 CMD ["patchwork.pipeline.synth_job", "--help"]

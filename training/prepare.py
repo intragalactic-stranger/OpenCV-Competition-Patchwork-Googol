@@ -6,8 +6,9 @@ not area damage and would otherwise teach the model to call every crack a pothol
 Real     : Pothole Mix v2 splits (training -> train, validation -> val_real, testing -> test_real).
            Images resized so the long side is <= 1024 px.
 Synthetic: seed-07 passes, frames with stored truth (every 5th frame). Only the road band of the frame is
-           kept (rows 400-912 of 1080: horizon margin to bonnet), resized to 960x256 — the exact strip
-           `perception/segment.py` feeds the model. Hold-out by *road stretch*, not by frame: clips 08-09
+           kept (perception/segment.py STRIP: rows 448-896, ~17 m to 3.5 m ahead) at 0.75x -> 1440x336, the
+           exact input `perception/segment.py` feeds the model. Damage beyond 15 m is labelled ignore.
+           Hold-out by *road stretch*, not by frame: clips 08-09
            (~4.6 km) are val_synth, so no validation defect is ever seen in training.
            Negatives (truth frames with no defect visible, incl. shadows, wet patches, repairs) are sampled
            at `--neg-ratio` x positives.
@@ -26,9 +27,11 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from patchwork.camera import CameraModel
+from patchwork.perception.segment import STRIP, STRIP_SIZE  # one definition, shared with inference
+
 ROOT = Path(__file__).resolve().parents[1]
-STRIP = (400, 912)  # rows of the 1080p frame fed to the model
-STRIP_SIZE = (960, 256)
+FAR_IGNORE_M = 15.0  # synthetic damage farther than this is a few pixels: label it "ignore", not "damage"
 PMIX_SPLITS = {"training": "train", "validation": "val_real", "testing": "test_real"}
 VAL_CLIPS = {8, 9}
 
@@ -68,10 +71,17 @@ def add_pothole_mix(src: Path, out: Path, splits: dict[str, list[str]]) -> None:
             splits[split].append(name)
 
 
+def strip_px(mask_path: Path, far_row: int) -> int:
+    m = cv2.imread(str(mask_path), cv2.IMREAD_UNCHANGED)
+    return int((m[max(STRIP[0], far_row) : STRIP[1]] > 0).sum())
+
+
 def add_synthetic(
     seed_dir: Path, out: Path, splits: dict[str, list[str]], neg_ratio: float, every: int, min_neg: int = 120
 ) -> None:
     rng = random.Random(0)
+    cam = CameraModel()  # nominal geometry: image row of the FAR_IGNORE_M ground line
+    far_row = int(cam.ground_to_pixel(np.array([[0.0, FAR_IGNORE_M]]), distort=True)[0, 1])
     for pass_dir in sorted(seed_dir.glob("pass_*")):
         masks = {}
         for mp in (pass_dir / "truth" / "masks").glob("clip*_*.png"):
@@ -81,8 +91,13 @@ def add_synthetic(
             ci = int(clip_dir.name.split("_")[1])
             meta = json.loads((clip_dir / "meta.json").read_text())
             n = meta["frames"]
-            pos = [f for f in range(0, n, 5) if (ci, f) in masks][::every]
-            neg_all = [f for f in range(0, n, 5) if (ci, f) not in masks]
+
+            # a positive must show >= 30 damage pixels inside the strip and within FAR_IGNORE_M; frames whose defects
+            # are only far away or outside the strip are ordinary negatives
+            truth_frames = range(0, n, 5)
+            visible = {f for f in truth_frames if (ci, f) in masks and strip_px(masks[(ci, f)], far_row) >= 30}
+            pos = sorted(visible)[::every]
+            neg_all = [f for f in truth_frames if f not in visible]
             # at least `min_neg` per clip, so defect-free stretches (the control section) still teach the
             # model what clean road, shadows and wet patches look like
             n_neg = max(int(len(pos) * neg_ratio), min_neg)
@@ -98,6 +113,7 @@ def add_synthetic(
                     continue
                 inst = cv2.imread(str(masks[(ci, f)]), cv2.IMREAD_UNCHANGED) if (ci, f) in masks else None
                 lbl = (inst > 0).astype(np.uint8) if inst is not None else np.zeros(frame.shape[:2], np.uint8)
+                lbl[:far_row][lbl[:far_row] == 1] = 255
                 name = f"synth__{seed_dir.name}_{pass_dir.name}_c{ci:02d}_{f:06d}"
                 jpg = [cv2.IMWRITE_JPEG_QUALITY, 93]
                 cv2.imwrite(str(out / "images" / f"{name}.jpg"), strip(frame, cv2.INTER_AREA), jpg)
@@ -114,7 +130,7 @@ def main() -> None:
     ap.add_argument("--out", type=Path, default=ROOT / "data" / "train" / "v1")
     ap.add_argument("--merge", type=Path, nargs="*", default=[], help="already prepared sets to fold in (by split)")
     ap.add_argument("--neg-ratio", type=float, default=0.5)
-    ap.add_argument("--every", type=int, default=2, help="keep every Nth positive truth frame (they are 5 apart)")
+    ap.add_argument("--every", type=int, default=1, help="keep every Nth positive truth frame (they are 5 apart)")
     args = ap.parse_args()
     (args.out / "images").mkdir(parents=True, exist_ok=True)
     (args.out / "masks").mkdir(parents=True, exist_ok=True)

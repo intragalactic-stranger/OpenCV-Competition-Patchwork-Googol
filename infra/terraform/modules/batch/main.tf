@@ -270,3 +270,7 @@ output "job_definitions" {
   )
 }
 output "job_role_arn" { value = aws_iam_role.job.arn }
+output "job_queue_arn" { value = aws_batch_job_queue.spot.arn }
+output "job_role_name" { value = aws_iam_role.job.name }
+output "log_group" { value = aws_cloudwatch_log_group.batch.name }
+output "image" { value = local.image }

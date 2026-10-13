@@ -6,3 +6,6 @@
 !data/corridor/**
 **/__pycache__
 !training/**
+!data/models/face_detection_yunet_2023mar.onnx
+!data/calib/**
+!viewer/**

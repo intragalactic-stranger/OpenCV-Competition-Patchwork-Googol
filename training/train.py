@@ -88,8 +88,11 @@ class SegSet(Dataset):
         return to_tensor(img), torch.from_numpy(m.astype(np.int64))
 
 
-def eval_resize(img: np.ndarray, m: np.ndarray | None = None, width: int = 960):
-    """Resize to `width` keeping aspect, then pad H and W to multiples of 32 (mask padded with ignore)."""
+def eval_resize(img: np.ndarray, m: np.ndarray | None = None, width: int | None = None):
+    """Resize to `width` keeping aspect (dashcam strips stay at 1440 px, others 960), pad H to a multiple of 32."""
+    from patchwork.perception.segment import model_width
+
+    width = width or model_width(img)
     s = width / img.shape[1]
     h = int(round(img.shape[0] * s))
     img = cv2.resize(img, (width, h), interpolation=cv2.INTER_AREA if s < 1 else cv2.INTER_LINEAR)
@@ -182,7 +185,7 @@ def evaluate(model: nn.Module, loader: DataLoader) -> dict:
 # ---------------------------------------------------------------- export
 def export_onnx(model: nn.Module, path: Path) -> None:
     model.eval()
-    x = torch.randn(1, 3, 256, 960)
+    x = torch.randn(1, 3, 352, 1440)
     torch.onnx.export(
         model,
         x,

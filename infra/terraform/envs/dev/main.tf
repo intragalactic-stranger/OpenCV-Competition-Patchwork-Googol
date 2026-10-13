@@ -60,7 +60,42 @@ module "batch" {
   instance_tags = { Project = "patchwork", Phase = var.phase, Owner = "googol", Env = "dev" }
 }
 
+module "db" {
+  source     = "../../modules/db"
+  name       = local.name
+  vpc_id     = module.network.vpc_id
+  subnet_ids = module.network.private_subnet_ids
+}
+
+module "viewer" {
+  source = "../../modules/viewer"
+  prefix = local.prefix
+}
+
+module "pipeline" {
+  source             = "../../modules/pipeline"
+  name               = local.name
+  boundary_arn       = local.boundary_arn
+  raw_bucket         = module.storage.bucket_names["raw"]
+  artifacts_bucket   = module.storage.bucket_names["artifacts"]
+  job_queue_arn      = module.batch.job_queue_arn
+  job_role_name      = module.batch.job_role_name
+  job_role_arn       = module.batch.job_role_arn
+  image              = module.batch.image
+  log_group          = module.batch.log_group
+  db_cluster_arn     = module.db.cluster_arn
+  db_secret_arn      = module.db.secret_arn
+  site_bucket        = module.viewer.bucket
+  cf_distribution_id = module.viewer.distribution_id
+}
+
 output "buckets" { value = module.storage.bucket_names }
 output "ecr_repository_url" { value = module.batch.ecr_repository_url }
 output "job_queue" { value = module.batch.job_queue }
 output "job_definitions" { value = module.batch.job_definitions }
+output "db_cluster_arn" { value = module.db.cluster_arn }
+output "db_secret_arn" { value = module.db.secret_arn }
+output "viewer_url" { value = module.viewer.url }
+output "viewer_bucket" { value = module.viewer.bucket }
+output "viewer_distribution_id" { value = module.viewer.distribution_id }
+output "pipeline_state_machine" { value = module.pipeline.state_machine_arn }

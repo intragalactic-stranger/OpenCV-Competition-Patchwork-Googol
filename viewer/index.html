@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patchwork · road-defect register (Mumbai)</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<style>
+  :root { --low:#2e9e5b; --medium:#e0a100; --high:#d1352b; --ink:#1d2430; --muted:#5b6575; --line:#e3e6ea; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; color:var(--ink); display:flex; height:100vh; }
+  #side { width:340px; padding:16px 18px; overflow:auto; border-right:1px solid var(--line); background:#fff; }
+  #map { flex:1; }
+  h1 { font-size:18px; margin:0 0 2px; } .sub { color:var(--muted); font-size:12.5px; margin-bottom:12px; }
+  .banner { background:#fff6e0; border:1px solid #f0d58a; border-radius:6px; padding:8px 10px; font-size:12.5px; margin-bottom:14px; }
+  .stats { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+  .stat { border:1px solid var(--line); border-radius:6px; padding:8px 10px; }
+  .stat b { display:block; font-size:20px; } .stat span { color:var(--muted); font-size:12px; }
+  .legend div { display:flex; align-items:center; gap:8px; margin:4px 0; }
+  .dot { width:12px; height:12px; border-radius:50%; display:inline-block; }
+  table { border-collapse:collapse; width:100%; font-size:12.5px; } td { padding:2px 4px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td:first-child { color:var(--muted); white-space:nowrap; }
+  .maplibregl-popup-content { max-width:360px; } .popup img { width:100%; border-radius:4px; margin-top:6px; }
+  .mono { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11.5px; word-break:break-all; }
+  #list { margin-top:12px; } #list .row { padding:6px 0; border-bottom:1px solid var(--line); cursor:pointer; }
+  #list .row:hover { background:#f6f7f9; }
+</style>
+</head>
+<body>
+<div id="side">
+  <h1>Patchwork</h1>
+  <div class="sub">Road-defect register · damaged area in m² measured with OpenCV 5</div>
+  <div class="banner"><b>Synthetic survey over real roads.</b> The roads, schools, hospitals and bus stops are real (OpenStreetMap). The dashcam video and the defects are <b>simulated</b>, so every measurement can be checked against exact ground truth. These are not real potholes.</div>
+  <div class="stats">
+    <div class="stat"><b id="n">–</b><span>defects in register</span></div>
+    <div class="stat"><b id="area">–</b><span>total damaged area</span></div>
+    <div class="stat"><b id="high">–</b><span>high severity</span></div>
+    <div class="stat"><b id="mass">–</b><span>hot-mix needed (t)*</span></div>
+  </div>
+  <div class="legend">
+    <div><span class="dot" style="background:var(--high)"></span> high (≥ 1 m², or wheel path + water)</div>
+    <div><span class="dot" style="background:var(--medium)"></span> medium (0.25–1 m²)</div>
+    <div><span class="dot" style="background:var(--low)"></span> low (&lt; 0.25 m²)</div>
+    <div><span class="dot" style="background:#2c6fbb;width:18px;height:4px;border-radius:2px"></span> survey loop · <span class="dot" style="background:#7b3fb3;width:18px;height:4px;border-radius:2px"></span> Coastal Road control section</div>
+  </div>
+  <div class="sub" style="margin-top:8px">* 5 cm patch × area × 2.35 t/m³ + 10% wastage. Depth is not measured.</div>
+  <div id="list"></div>
+  <div class="sub" id="gen" style="margin-top:12px"></div>
+</div>
+<div id="map"></div>
+<script>
+const KEY = "__MAPS_KEY__";
+const SEV = { low: "#2e9e5b", medium: "#e0a100", high: "#d1352b" };
+const style = KEY.startsWith("__")
+  ? { version: 8, sources: {}, layers: [{ id: "bg", type: "background", paint: { "background-color": "#eef1f4" } }] }
+  : `https://maps.geo.ap-south-1.amazonaws.com/v2/styles/Standard/descriptor?key=${KEY}&color-scheme=Light`;
+const map = new maplibregl.Map({ container: "map", style, center: [72.8165, 18.975], zoom: 12.6 });
+map.addControl(new maplibregl.NavigationControl(), "top-right");
+map.addControl(new maplibregl.ScaleControl({ unit: "metric" }));
+
+const fmt = (v, d = 2) => (v === null || v === undefined ? "–" : Number(v).toFixed(d));
+const get = (u) => fetch(u, { cache: "no-store" }).then((r) => r.json());
+
+map.on("load", async () => {
+  const [corridor, segments, pois, defects, meta] = await Promise.all([
+    get("data/corridor.geojson"), get("data/segments.geojson"), get("data/poi.geojson"),
+    get("data/defects.geojson"), get("data/meta.json").catch(() => ({})),
+  ]);
+  map.addSource("corridor", { type: "geojson", data: corridor });
+  map.addSource("segments", { type: "geojson", data: segments });
+  map.addSource("pois", { type: "geojson", data: pois });
+  map.addSource("defects", { type: "geojson", data: defects });
+  map.addLayer({ id: "corridor", type: "line", source: "corridor", paint: { "line-color": "#2c6fbb", "line-width": 3, "line-opacity": 0.55 } });
+  map.addLayer({ id: "control", type: "line", source: "segments", filter: ["==", ["get", "is_control"], true],
+                 paint: { "line-color": "#7b3fb3", "line-width": 5, "line-opacity": 0.6 } });
+  map.addLayer({ id: "pois", type: "circle", source: "pois",
+                 paint: { "circle-radius": 3, "circle-color": "#ffffff", "circle-stroke-color": "#5b6575", "circle-stroke-width": 1 } });
+  map.addLayer({ id: "defects", type: "circle", source: "defects", paint: {
+      "circle-color": ["match", ["get", "latest_severity"], "high", SEV.high, "medium", SEV.medium, SEV.low],
+      "circle-radius": ["interpolate", ["linear"], ["coalesce", ["get", "latest_area_m2"], 0.3], 0, 5, 2, 12],
+      "circle-stroke-color": "#ffffff", "circle-stroke-width": 1.5, "circle-opacity": 0.92 } });
+
+  const fs = defects.features;
+  const area = fs.reduce((a, f) => a + (f.properties.latest_area_m2 || 0), 0);
+  const mass = fs.reduce((a, f) => a + ((f.properties.material || {}).mass_t || 0), 0);
+  document.getElementById("n").textContent = fs.length;
+  document.getElementById("area").textContent = area.toFixed(1) + " m²";
+  document.getElementById("high").textContent = fs.filter((f) => f.properties.latest_severity === "high").length;
+  document.getElementById("mass").textContent = mass.toFixed(2);
+  document.getElementById("gen").textContent = meta.generated ? `Register export: ${meta.generated} · ${meta.source || ""}` : "";
+
+  const popup = (f) => {
+    const p = f.properties;
+    const m = p.material || {};
+    return `<div class="popup"><b>${p.road_name}</b> · chainage ${fmt(p.chainage_m, 0)} m<table>
+      <tr><td>Damaged area</td><td><b>${fmt(p.latest_area_m2)} m²</b> ± ${fmt(p.area_uncertainty_m2)}</td></tr>
+      <tr><td>Severity</td><td>${p.latest_severity}</td></tr>
+      <tr><td>Status</td><td>${p.status} (seen ${p.first_seen_pass} → ${p.last_seen_pass})</td></tr>
+      <tr><td>Material*</td><td>${fmt(m.volume_m3, 3)} m³ · ${fmt(m.mass_t, 3)} t</td></tr>
+      <tr><td>Detection conf.</td><td>${fmt(p.detection_confidence)}</td></tr>
+      <tr><td>Measurement</td><td>${p.measurement_status}</td></tr>
+      <tr><td>Model / calib.</td><td>${p.model_version} / ${p.calibration_id}</td></tr>
+      <tr><td>Defect ID</td><td class="mono">${p.defect_id}</td></tr></table>
+      ${p.overlay_key ? `<img src="${p.overlay_key}" alt="dashcam view and top-down measurement">` : ""}</div>`;
+  };
+  const open = (f) => new maplibregl.Popup({ maxWidth: "380px" }).setLngLat(f.geometry.coordinates).setHTML(popup(f)).addTo(map);
+  map.on("click", "defects", (e) => open(e.features[0]));
+  map.on("mouseenter", "defects", () => (map.getCanvas().style.cursor = "pointer"));
+  map.on("mouseleave", "defects", () => (map.getCanvas().style.cursor = ""));
+
+  const list = document.getElementById("list");
+  [...fs].sort((a, b) => (b.properties.latest_area_m2 || 0) - (a.properties.latest_area_m2 || 0)).slice(0, 25).forEach((f) => {
+    const p = f.properties, row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML = `<span class="dot" style="background:${SEV[p.latest_severity]}"></span> <b>${fmt(p.latest_area_m2)} m²</b> · ${p.road_name}`;
+    row.onclick = () => { map.flyTo({ center: f.geometry.coordinates, zoom: 17.5 }); open(f); };
+    list.appendChild(row);
+  });
+});
+</script>
+</body>
+</html>

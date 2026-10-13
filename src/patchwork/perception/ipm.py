@@ -81,6 +81,37 @@ class IPM:
         f = cv2.remap(mask.astype(np.float32), self.map_x, self.map_y, cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
         return f >= 0.5
 
+    def warp_mask_box(self, mask: np.ndarray, box: tuple[int, int, int, int], pad_m: float = 0.3) -> np.ndarray:
+        """Like warp_mask, but only remaps the BEV window covering the component's image bounding box
+        (x, y, w, h). Identical result inside that window, ~100x cheaper for small defects."""
+        x, y, w, h = box
+        us = np.array([x, x + w, x, x + w, x + w / 2, x + w / 2, x, x + w], dtype=np.float64)
+        vs = np.array([y, y, y + h, y + h, y, y + h, y + h / 2, y + h / 2], dtype=np.float64)
+        g = self.cam.pixel_to_ground(np.stack([us, vs], 1), distorted=True)
+        ok = np.isfinite(g).all(1) & (g[:, 1] > 0)
+        out = np.zeros(self.map_x.shape, bool)
+        if not ok.any():
+            return out
+        spec = self.spec
+        X0, X1 = g[ok, 0].min() - pad_m, g[ok, 0].max() + pad_m
+        Y0, Y1 = g[ok, 1].min() - pad_m, g[ok, 1].max() + pad_m
+        c0, r1 = spec.pixel_of(np.array(X0), np.array(Y0))
+        c1, r0 = spec.pixel_of(np.array(X1), np.array(Y1))
+        H, W = self.map_x.shape
+        r0, r1 = int(np.clip(np.floor(r0), 0, H)), int(np.clip(np.ceil(r1) + 1, 0, H))
+        c0, c1 = int(np.clip(np.floor(c0), 0, W)), int(np.clip(np.ceil(c1) + 1, 0, W))
+        if r1 <= r0 or c1 <= c0:
+            return out
+        f = cv2.remap(
+            mask.astype(np.float32),
+            self.map_x[r0:r1, c0:c1],
+            self.map_y[r0:r1, c0:c1],
+            cv2.INTER_LINEAR,
+            borderMode=cv2.BORDER_CONSTANT,
+        )
+        out[r0:r1, c0:c1] = f >= 0.5
+        return out
+
     def ground_sampling(self, Y: float) -> tuple[float, float]:
         """Approximate size (m) of one camera pixel on the ground at range Y: (across, along)."""
         cam = self.cam

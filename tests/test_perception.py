@@ -77,3 +77,16 @@ def test_blurred_frame_reports_overlaps():
 def test_privacy_runs_on_blank_frame():
     out = Privacy().apply(np.full((1080, 1920, 3), 120, np.uint8))
     assert isinstance(out, BlurredFrame) and out.regions == ()
+
+
+def test_windowed_bev_warp_matches_full_warp():
+    from patchwork.perception.ipm import IPM
+
+    ipm = IPM(CameraModel())
+    m = np.zeros((1080, 1920), np.uint8)
+    cv2.ellipse(m, (1100, 650), (60, 20), 15, 0, 360, 1, -1)
+    cv2.ellipse(m, (500, 820), (140, 40), -10, 0, 360, 1, -1)
+    n, lab, stats, _ = cv2.connectedComponentsWithStats(m)
+    for k in range(1, n):
+        comp = lab == k
+        assert (ipm.warp_mask(comp) == ipm.warp_mask_box(comp, tuple(int(v) for v in stats[k, :4]))).all()
