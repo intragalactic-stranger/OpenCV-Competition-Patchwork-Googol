@@ -4,14 +4,14 @@
   2
  ],
  "link_rule_m": 8.0,
- "predicted_links": 212,
- "correct_links": 89,
- "true_pairs_detected_in_both": 98,
- "link_precision": 0.42,
- "link_recall": 0.908,
- "link_f1": 0.574,
+ "predicted_links": 142,
+ "correct_links": 86,
+ "true_pairs_detected_in_both": 95,
+ "link_precision": 0.606,
+ "link_recall": 0.905,
+ "link_f1": 0.726,
  "repaired_in_truth_and_detected_in_pass1": 32,
- "repaired_recall": 0.344,
- "still_present_but_not_resighted": 6,
- "still_present_detected_in_pass1": 101
+ "repaired_recall": 0.531,
+ "still_present_but_not_resighted": 7,
+ "still_present_detected_in_pass1": 99
 }

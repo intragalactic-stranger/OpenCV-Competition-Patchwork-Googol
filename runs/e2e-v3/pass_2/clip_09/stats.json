@@ -1,0 +1,20 @@
+{
+ "clip_id": "seed11-pass2-clip09",
+ "frames": 2028,
+ "kept": 474,
+ "km": 1.552,
+ "observations": 53,
+ "engine": "ENGINE_NEW",
+ "seconds": 144.5,
+ "stage_seconds": {
+  "decode_triage": 9.9,
+  "privacy": 8.4,
+  "pose": 22.2,
+  "segment": 102.6,
+  "measure": 1.0
+ },
+ "defects": 15,
+ "s_start": 26998.4,
+ "s_end": 28561.3,
+ "overlays": 15
+}

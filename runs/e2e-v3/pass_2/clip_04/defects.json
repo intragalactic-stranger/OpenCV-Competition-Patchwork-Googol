@@ -1,0 +1,25 @@
+[
+ {
+  "defect_id": "seed11-pass2-clip04-d0007",
+  "s": 13988.13,
+  "d": -3.52,
+  "lat": 19.002917840809005,
+  "lon": 72.8111587152659,
+  "position_sigma_m": 2.06,
+  "area_m2": 0.0968,
+  "uncertainty_m2": 0.0164,
+  "length_m": 0.624,
+  "width_m": 0.19,
+  "confidence": 0.55,
+  "n_observations": 3,
+  "best_frame": 1464,
+  "road_name": "Mumbai Coastal Road",
+  "segment_id": "seg008",
+  "is_control": true,
+  "measurement_status": "measured",
+  "frames": [
+   1461,
+   1464
+  ]
+ }
+]

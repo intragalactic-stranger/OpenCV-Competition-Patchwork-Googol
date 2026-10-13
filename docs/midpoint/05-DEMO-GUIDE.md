@@ -7,7 +7,7 @@
 
 ```bash
 make check                    # lint + tests green
-make upload-demo MODEL=seg-v2 # uploads 2 clips (6 km) of the held-out world -> pipeline starts by itself
+make upload-demo MODEL=seg-v3 # uploads 2 clips (6 km) of the held-out world -> pipeline starts by itself
 make cost-report && make services-inventory && make eval-midpoint
 ```
 

@@ -35,7 +35,7 @@ eval-midpoint:
 	$(PY) -m eval.report
 
 # demo helpers (see docs/midpoint/05-DEMO-GUIDE.md)
-MODEL ?= seg-v2
+MODEL ?= seg-v3
 upload-demo:
 	$(PY) scripts/aws/upload_pass.py --seed 11 --pass 1 --model $(MODEL) --clips 5,6 --run demo-$$(date +%H%M%S)
 

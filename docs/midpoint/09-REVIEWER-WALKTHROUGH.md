@@ -41,13 +41,15 @@ At the midpoint the **whole chain runs on AWS end to end**: upload a survey → 
 
 ### Stop 3 · The model (2 min)
 - **Show:** `07-MODEL-CARD.md` §7, then `assets/seg_examples.jpg`.
-- **Say:** "A SegFormer-B0 segmentation model, trained **on CPU only** on AWS Graviton Spot: 3.9 hours, about $2 of credits. It learned from 4,340 real pothole photos with pixel masks plus our synthetic frames. It runs in **OpenCV 5's new DNN engine** and matches the reference runtime to 0.00002 (target 0.001). The older 4.x-style engine can't load it at all, which is a concrete reason this needs OpenCV 5."
-- **Be upfront:** "Accuracy is **0.50 IoU on real photos**. It's a first CPU run and the curve was still rising. The second half trains a bigger model on GPU (see Stop 7)."
+- **Say:** "A SegFormer-B0 segmentation model, trained **on CPU only** on AWS Graviton Spot in two steps. First a 12-epoch base model (3.9 h). Then a fine-tune (2.7 h) where we showed it 1,788 **look-alikes**: shadows, wet patches, manholes, old repairs, labelled *not damage*. It learned from 4,340 real pothole photos with pixel masks plus our synthetic frames. It runs in **OpenCV 5's new DNN engine** and matches the reference runtime to 0.00002 (target 0.001). The older 4.x-style engine can't load it at all, which is a concrete reason this needs OpenCV 5."
+- **Then show `assets/hard_neg_compare.jpg`:** "Same frames, before and after. The shadows are no longer called damage. The manhole on the right still is, and we show that on purpose."
+- **Be upfront:** "Accuracy is **0.50 IoU on real photos and 0.57 on synthetic**. It's a small model trained on CPU. The second half trains a bigger model on GPU (see Stop 7)."
+- **If asked about Spot:** the fine-tune was interrupted by AWS **three times** and resumed each time from its last checkpoint in S3. The resilience design was tested for real.
 - **Point at the worst cases in the figure on purpose.** Showing failures builds trust.
 
 ### Stop 4 · The cloud pipeline running (2 min)
 - **Show:** `assets/sfn_run.png` (or the live Step Functions console), then the live viewer.
-- **Say:** "Uploading a survey *is* the trigger. S3 → EventBridge → Step Functions → AWS Batch runs 10 containers in parallel on Graviton Spot → results go into an Aurora PostgreSQL/PostGIS register → the map updates. One pass of 28.4 km takes **17–19 minutes**, and the perception compute costs **$0.0019 per km** (the proposal's target was under 2 cents)."
+- **Say:** "Uploading a survey *is* the trigger. S3 → EventBridge → Step Functions → AWS Batch runs 10 containers in parallel on Graviton Spot → results go into an Aurora PostgreSQL/PostGIS register → the map updates. One pass of 28.4 km takes **15–17 minutes**, and the perception compute costs **$0.0021 per km** (the proposal's target was under 2 cents)."
 - **In the viewer:** click a red dot. Show the **m² ± uncertainty**, the severity, the hot-mix needed (stated assumption: 5 cm patch depth; we never claim to measure depth), the status across passes, and the **evidence image**: the dashcam view plus the measured top-down view.
 
 ### Stop 5 · The agent and the human gate (2 min)
@@ -57,12 +59,13 @@ At the midpoint the **whole chain runs on AWS end to end**: upload a survey → 
 - **Grounding:** the agent can't invent a defect. Unknown IDs are rejected both by the tools and by a database trigger.
 
 ### Stop 6 · Honest results (2 min)
-- **Show:** `04-RESULTS` §1 table and §3 commentary, plus `assets/fp_shadows.jpg` and `assets/area_scatter.png`.
-- **Say what's green:** recall **0.95** (target 0.85), geometry 2.1%, localisation 2.6 m, OpenCV 5 parity, cost per km, agent A/B.
+- **Show:** `04-RESULTS` §1 table and §3 commentary (it has a before/after table), plus `assets/hard_neg_compare.jpg` and `assets/area_scatter.png`.
+- **Say what's green:** recall **0.94** (target 0.85), **false alarms on the clean control section 0.30 per km (target 0.5)**, geometry 2.1%, localisation 2.6 m, OpenCV 5 parity, cost per km, agent A/B.
 - **Say what's red, and why:**
-  - **False alarms (10 per km):** most are **cast shadows and wet patches**. We put them in the simulator on purpose as traps. A fine-tune with these "look-alikes" as negatives is the fix (see `01-PROGRESS-REPORT` for its status).
-  - **Area error end to end (34%):** small potholes are measured well. **Large, shallow depressions** are under-measured because the model marks only their darkest middle. The geometry isn't the problem (2.1% with perfect outlines).
-  - **Re-identification across passes (F1 0.57):** this is the basic matcher, and it's confused by the false alarms. The full matcher (ORB features + homography) is second-half work.
+  - **False alarms over the whole survey: 3.1 per km** (was 10 before the fine-tune). Shadows and wet patches, the traps we planted, are mostly fixed. What remains: **manhole covers**, and **one pothole split into two blobs**. The fixes are listed in §3 of `04-RESULTS`.
+  - **Area error end to end (27.8%, was 33.7%):** small potholes are measured well (median 18%). **Large, shallow depressions** are still under-measured because the model marks only part of their soft edge. The geometry isn't the problem (2.1% with perfect outlines).
+  - **Re-identification across passes (F1 0.73, was 0.57):** this is the basic matcher. It improved because there are fewer false alarms to confuse it. The full matcher (ORB features + homography) is second-half work.
+  - **One trade-off:** edge breaks at the kerb are found a little less often (8 of 15 vs 11 of 15). There are very few of them, but we report it.
 
 ### Stop 7 · Money: what was spent, what the second half needs (1 min)
 - **Show:** `08-SERVICE-MAPPINGS.md` §0, §1, then §5.
@@ -73,7 +76,7 @@ At the midpoint the **whole chain runs on AWS end to end**: upload a survey → 
 | Question | Short answer | Evidence |
 |---|---|---|
 | Is any of this real data? | Real road geometry and POIs (OpenStreetMap), real pothole photos for training and testing (Pothole Mix, 4,340 masked images; RDD2022-India). The dashcam passes are simulated so we have exact truth. | `07-MODEL-CARD` §4, `04-RESULTS` §2.1 |
-| Won't a model trained on synthetic data fail on real roads? | We report real-photo accuracy separately (0.50 IoU on a held-out real test split), and real photos are 43% of the training images (3,340 of 7,790). Closing the gap is the first second-half item. | Model card §7 |
+| Won't a model trained on synthetic data fail on real roads? | We report real-photo accuracy separately (0.50 IoU on a held-out real test split). Real photos are 3,340 of the 9,578 training images. The look-alike fine-tune also cut false alarms on **real** photos by a quarter to a third. Closing the gap is the first second-half item. | Model card §7 |
 | Why is the first half so cheap? Will you really need $370? | The first half used CPU training, Spot instances, auto-pausing databases and no always-on services: enough to prove the pipeline. The accuracy work needs GPU training and repeated live agent evaluation, both priced line by line. | `08` §5 |
 | Why not GPU now? | A deliberate cost decision for the proof-of-concept. The training code already resumes after Spot interruptions, so moving it to a GPU instance is a configuration change. | `08` §5.1 |
 | How do you know the agent isn't hallucinating? | Every defect ID is checked against the database in the tool and by a database trigger. Priority and quantities are computed by code from the register, not by the model. The A/B test shows the plan follows the measurement. | `assets/ablation_ab.md` |
@@ -81,7 +84,8 @@ At the midpoint the **whole chain runs on AWS end to end**: upload a survey → 
 | Privacy? | Faces (YuNet) and number plates are blurred before frames are stored. Ground truth is never uploaded with the survey. Raw uploads expire after 30 days. | `03-SERVICES-USED` |
 | Why Amazon Nova and not another model? | Owner's decision: first-party AWS models only, fully covered by credits, available in Mumbai through the APAC inference profile. | D-27 in `plan/11` |
 | What if a Spot instance is interrupted? | Batch retries the job. Training resumes from its last per-epoch checkpoint in S3. Loading into the register is idempotent, so a re-run creates no duplicates. | `03-SERVICES-USED` |
-| What does one km cost? | $0.0019 of perception compute (133 s on 4 vCPU per km at Spot price). | `08` §3 |
+| What does one km cost? | $0.0021 of perception compute (147 s on 4 vCPU per km at Spot price). | `08` §3 |
+| Did you tune on the test set? | No. The fine-tune's look-alike frames come from the *training* world (seed 07); the evaluation survey is a different world (seed 11). The look-alike check set is a different stretch of road and is never used to pick the model. | `07-MODEL-CARD` §4–5 |
 
 ## 5. Glossary
 
@@ -94,6 +98,7 @@ At the midpoint the **whole chain runs on AWS end to end**: upload a survey → 
 | **Recall** | Share of real defects the system found |
 | **Re-ID** | Recognising the same defect again on a later pass |
 | **Spot** | Spare AWS capacity at a large discount; can be interrupted |
+| **Hard negatives / look-alikes** | Training images of things that look like damage but are not (shadows, wet patches, manholes), labelled "not damage" |
 | **ENGINE_NEW** | OpenCV 5's new DNN inference engine |
 | **Task token** | The Step Functions "waiting for a human" mechanism; the agent never holds it |
 | **Grounding** | Every claim the agent makes must reference a defect that exists in the database |

@@ -1,0 +1,48 @@
+[
+ {
+  "defect_id": "seed11-pass1-clip04-d0000",
+  "s": 12402.98,
+  "d": -0.34,
+  "lat": 18.98895532942108,
+  "lon": 72.81013843803316,
+  "position_sigma_m": 2.06,
+  "area_m2": 0.2113,
+  "uncertainty_m2": 0.0339,
+  "length_m": 0.544,
+  "width_m": 0.461,
+  "confidence": 0.826,
+  "n_observations": 4,
+  "best_frame": 301,
+  "road_name": "Mumbai Coastal Road",
+  "segment_id": "seg008",
+  "is_control": true,
+  "measurement_status": "measured",
+  "frames": [
+   301,
+   304
+  ]
+ },
+ {
+  "defect_id": "seed11-pass1-clip04-d0006",
+  "s": 14799.16,
+  "d": -0.54,
+  "lat": 19.008450899303263,
+  "lon": 72.81290637812526,
+  "position_sigma_m": 2.06,
+  "area_m2": 0.1436,
+  "uncertainty_m2": 0.0269,
+  "length_m": 0.773,
+  "width_m": 0.241,
+  "confidence": 0.398,
+  "n_observations": 2,
+  "best_frame": 2133,
+  "road_name": "Mumbai Coastal Road - Phase I",
+  "segment_id": "seg009",
+  "is_control": true,
+  "measurement_status": "measured",
+  "frames": [
+   2130,
+   2133
+  ]
+ }
+]

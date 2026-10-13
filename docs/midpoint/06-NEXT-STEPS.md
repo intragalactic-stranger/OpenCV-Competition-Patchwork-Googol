@@ -31,8 +31,8 @@ The full bottom-up projection, with the GPU configuration, training hours, the b
 
 | Risk | Plan |
 |---|---|
-| False positives on shadows and wet patches (10/km at the midpoint; target 0.5) | Hard-negative fine-tune from the training world; temporal/shape check before a detection enters the register; measured on the Coastal Road control section |
-| Large shallow depressions under-measured (end-to-end MAPE 34%) | Soft-boundary labels, larger input, mask fusion across frames; oracle-mask geometry is already at 2.1% |
+| False positives (3.1/km over the whole survey after the `seg-v3` fine-tune, down from 10; control section 0.30/km, target 0.5 met) | Remaining causes are manhole covers and one defect split into two blobs: add manholes to the look-alike set, merge split masks before the register, temporal/shape check across frames |
+| Large shallow depressions under-measured (end-to-end MAPE 27.8%, 42% on depressions ≥ 1.5 m²) | Soft-boundary labels, larger input (SegFormer-B2 on GPU), mask fusion across frames; oracle-mask geometry is already at 2.1% |
 | Synthetic-to-real gap in segmentation | Report real-image metrics separately; add composites; licence-permitting, more real data |
 | Re-ID F1 below 0.90 | ORB on the surrounding texture (not the defect), plus chainage consistency; report the GNSS-only ablation honestly |
 | Agent regressions | Scenario suite in CI with recorded responses; hard gate on ungrounded IDs |

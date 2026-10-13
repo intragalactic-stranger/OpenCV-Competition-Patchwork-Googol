@@ -231,6 +231,7 @@ def main() -> int:
             f"Graviton Spot per km at ${vcpu_h:.4f}/vCPU-h, current Spot price)"
         )
 
+    net_mtd = round(sum(mtd.values()), 2) + 0.0  # + 0.0 turns -0.0 into 0.0
     summary = "\n".join(
         [
             "| Item | Value |",
@@ -239,12 +240,12 @@ def main() -> int:
             f"| Project usage (gross, before credits) | **${total:,.2f}** |",
             f"| Account usage since project start (gross) | ${since.get('Usage', 0):,.2f} |",
             f"| Paid by AWS promotional credits | ${-since.get('Credit', 0):,.2f} |",
-            f"| **Real money paid (net after credits)** | **${sum(since.values()):,.2f}** "
+            f"| **Real money paid (net after credits)** | **${round(sum(since.values()), 2) + 0.0:,.2f}** "
             f"(guarded by the `patchwork-real-spend` budget: alert at $0.01) |",
             "| Dev box (shared EC2 t3a.xlarge, us-east-1) | included above only if it is tagged |",
             f"| Planned monthly usage (from credits) | ${BUDGET_USD:,.2f} |",
             f"| Account usage this month to date | ${mtd.get('Usage', 0):,.2f} "
-            f"({mtd.get('Usage', 0) / BUDGET_USD * 100:.1f}% of plan); net paid ${sum(mtd.values()):,.2f} |",
+            f"({mtd.get('Usage', 0) / BUDGET_USD * 100:.1f}% of plan); net paid ${net_mtd:,.2f} |",
             f"| Kilometres processed (pipeline runs evaluated in `eval/results/end_to_end.json`) | {km:,.1f} |",
             f"| Perception compute cost per km (measured run time × Spot price) | {measured_per_km} |",
             f"| Upper bound: all processing-service spend ÷ km (also includes data rendering and training) "
@@ -263,16 +264,25 @@ def main() -> int:
 
     cov = ["| AWS service | Usage | Paid by credits | Real money (net) | Covered? |", "|---|---|---|---|---|"]
     uncovered = []
+    # Cost Explorer books the credit for inter-region data transfer (e.g. S3 in Mumbai -> dev box in us-east-1)
+    # under "AWS Data Transfer", while the usage stays under S3 / EC2. Let that credit pay those shortfalls first.
+    pool = -coverage.get("AWS Data Transfer", {}).get("Credit", 0.0) - coverage.get("AWS Data Transfer", {}).get(
+        "Usage", 0.0
+    )
     for name, d in sorted(coverage.items(), key=lambda kv: -kv[1].get("Usage", 0.0)):
         usage, credit = d.get("Usage", 0.0), d.get("Credit", 0.0)
         net = sum(d.values())
         if usage < 0.00005 and net < 0.00005:
             continue
+        via_transfer = min(max(net, 0.0), max(pool, 0.0)) if name != "AWS Data Transfer" else 0.0
+        pool -= via_transfer
+        net -= via_transfer
         ok = net <= 0.005
         if not ok:
             uncovered.append(name)
+        note = f" (incl. ${via_transfer:,.4f} data-transfer credit)" if via_transfer > 0.00005 else ""
         cov.append(
-            f"| {name} | ${usage:,.4f} | ${-credit:,.4f} | ${net:,.4f} | "
+            f"| {name} | ${usage:,.4f} | ${-credit + via_transfer:,.4f}{note} | ${net:,.4f} | "
             f"{'✅' if ok else '⚠️ NOT covered: stop using it'} |"
         )
     if len(cov) == 2:

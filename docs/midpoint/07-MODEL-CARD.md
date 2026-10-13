@@ -38,6 +38,7 @@ dashcam video → frame triage → privacy blur → [ THIS MODEL: which pixels a
 |---|---|---|---|---|
 | **Pothole Mix v2** (Ranieri, Moscoso Thompson, Biasotti; SHREC'22). Mendeley Data `10.17632/kfth5g2xk3.2` | Real photos with pixel masks of potholes (red) and cracks (green), merged from 6 public sets (pothole600, cracks-and-potholes-in-road, CNR road, crack500, GAPs384, EdmCrack600) | 3,340 train / 496 val / 504 test | CC BY-NC 3.0; each source keeps its own licence (GAPs384: academic use only). **Research / non-commercial.** | train, `val_real`, `test_real` |
 | **Patchwork synthetic survey, seed 07** (our generator, `src/patchwork/synth`) | Dashcam frames over the real 28.6 km Mumbai corridor (OpenStreetMap geometry) with **exact** damage masks. Also shadows, wet patches and repaired patches as false-positive traps. | Generated per run (see §7) | Ours (Apache-2.0) | train, `val_synth` |
+| **Look-alike frames (hard negatives)**, seed 07 (`training/prepare.py --hard-neg`) | Dashcam strips that contain **only** things that look like damage but are not: cast shadows, wet patches, manhole covers, tar seams, old repairs, speed breakers, oil stains. No damage in the strip. Added for seg-v3. | 1,788 train / 480 held-out (`hard_neg_val`, clips 08–09) | Ours | train (seg-v3), `hard_neg_val` |
 | Patchwork synthetic, **seed 11** | A *different* world: new defects, new shadows | not used in training | Ours | end-to-end test only (D1) |
 | RDD2022 India (Arya et al.) | Real Indian roads, bounding boxes only | 9,665 | CC BY-SA 4.0 | not used for training (no masks); used for the privacy check and detection checks |
 
@@ -56,6 +57,7 @@ dashcam video → frame triage → privacy blur → [ THIS MODEL: which pixels a
 | Optimiser | AdamW, lr 3e-4 (decoder 10×), weight decay 0.01, polynomial decay (power 0.9) |
 | Loss | cross-entropy (damage weight 2, cracks ignored) + soft Dice on the damage class |
 | Epochs | 12, or stop at the time budget (6 h). Checkpoint every epoch to S3, so a Spot interruption resumes rather than restarts. |
+| **seg-v3 fine-tune** | Starts from the seg-v2 weights; 4 more epochs at lr 1e-4 on the seg-v2 data **plus** the look-alike frames (9,578 images). The look-alike split is reported but **not** used to pick the epoch, so it stays an honest held-out check. 3 Spot interruptions during the run; each time Batch restarted the job and it resumed from the last S3 checkpoint. |
 | Model selection | best mean damage IoU over `val_real` and `val_synth` |
 | Reproduce | `docker/train.Dockerfile` → ECR → `scripts/aws/submit_train.py` (see §8) |
 
@@ -73,38 +75,43 @@ dashcam video → frame triage → privacy blur → [ THIS MODEL: which pixels a
 ## 7. Results
 
 <!-- MODEL-METRICS:BEGIN -->
-**Run:** `s3://patchwork-682839842398-artifacts/models/seg-v2` · architecture `segformer` · 7790 training images · 12 epochs in 3.9 h on CPU · runtime engine for these numbers: **ENGINE_NEW**
+**Run:** `s3://patchwork-682839842398-artifacts/models/seg-v3` · architecture `segformer` · 9578 training images · 4 epochs in 2.7 h on CPU · selected epoch **2** (best mean val IoU) · runtime engine for these numbers: **ENGINE_NEW**
+**Fine-tuned from:** `s3://patchwork-682839842398-artifacts/models/seg-v2/best.pt`
 
 | Evaluation set (never used for training) | Images | IoU (damage) | Image recall | False-positive images | ms / image |
 |---|---|---|---|---|---|
-| Real photos, held-out test split (Pothole Mix test) | 504 | **0.496** | 0.989 | 73 of 318 negatives | 156 |
-| Real photos, validation split (Pothole Mix val) | 496 | **0.419** | 0.913 | 82 of 208 negatives | 125 |
-| Synthetic Mumbai dashcam strips, held-out road stretch | 1266 | **0.428** | 0.592 | 64 of 719 negatives | 76 |
+| Real photos, held-out test split (Pothole Mix test) | 504 | **0.500** | 0.984 | 54 of 318 negatives | 216 |
+| Real photos, validation split (Pothole Mix val) | 496 | **0.425** | 0.868 | 55 of 208 negatives | 172 |
+| Synthetic Mumbai dashcam strips, held-out road stretch | 1266 | **0.569** | 0.591 | 23 of 719 negatives | 106 |
+| Synthetic look-alikes only (shadows, wet, manholes, seams, patches; no damage) | 480 | – | – | **41 of 480** negatives | 105 |
 
 | OpenCV 5 runtime check (same images through both runtimes) | Result |
 |---|---|
 | ENGINE_NEW loads the model | yes |
-| Max difference vs onnxruntime (logits) | 2.4e-05 (target ≤ 1e-3) |
+| Max difference vs onnxruntime (logits) | 2.0e-05 (target ≤ 1e-3) |
 | Pixels with the same decision | 100.0000% |
 | ENGINE_CLASSIC (OpenCV 4.x-style importer) | cannot load it (the SegFormer encoder uses dynamic Shape ops, which the classic importer rejects); the pipeline uses ENGINE_NEW, with onnxruntime as fallback |
 
 Training curve (validation IoU after each epoch, measured in PyTorch):
 
-| Epoch | Train loss | IoU val_real | IoU val_synth | Minutes |
-|---|---|---|---|---|
-| 0 | 0.9023 | 0.1683 | 0.0662 | 19.0 |
-| 1 | 0.8981 | 0.3292 | 0.1387 | 19.1 |
-| 2 | 0.8204 | 0.2778 | 0.1151 | 19.1 |
-| 3 | 0.7625 | 0.1622 | 0.1566 | 19.1 |
-| 4 | 0.6718 | 0.2387 | 0.0795 | 19.0 |
-| 5 | 0.6918 | 0.3726 | 0.2877 | 19.2 |
-| 6 | 0.6928 | 0.3336 | 0.1788 | 19.2 |
-| 7 | 0.5772 | 0.3192 | 0.3042 | 19.2 |
-| 8 | 0.5471 | 0.4941 | 0.3223 | 19.1 |
-| 9 | 0.4737 | 0.5518 | 0.2537 | 19.1 |
-| 10 | 0.4095 | 0.5122 | 0.4346 | 19.2 |
-| 11 | 0.4122 | 0.5199 | 0.3793 | 19.2 |
+| Epoch | Train loss | IoU val_real | IoU val_synth | Look-alike frames flagged | Minutes |
+|---|---|---|---|---|---|
+| 0 | 0.5094 | 0.4984 | 0.3452 | 36 | 40.3 |
+| 1 | 0.488 | 0.4979 | 0.4328 | 36 | 40.7 |
+| 2 | 0.4653 | 0.5197 | 0.5804 | 61 | 41.0 |
+| 3 | 0.3769 | 0.5314 | 0.5116 | 43 | 40.0 |
 <!-- MODEL-METRICS:END -->
+
+**seg-v2 → seg-v3 (same evaluator, OpenCV 5 `ENGINE_NEW`, same held-out images):**
+
+| Held-out set | IoU seg-v2 | IoU seg-v3 | False-positive images seg-v2 | False-positive images seg-v3 |
+|---|---|---|---|---|
+| Real photos, test (504) | 0.496 | 0.500 | 73 of 318 | **54 of 318** (−26%) |
+| Real photos, val (496) | 0.419 | 0.425 | 82 of 208 | **55 of 208** (−33%) |
+| Synthetic Mumbai, val (1,266) | 0.428 | **0.569** | 64 of 719 | **23 of 719** (−64%) |
+| Look-alikes only, no damage (480) | – | – | 86 of 480 | **41 of 480** (−52%) |
+
+Teaching the model what is *not* damage cut false alarms by a quarter to two thirds, and accuracy went up rather than down. On the look-alike frames, seg-v3 cleared 52 of seg-v2's 86 false alarms; 34 remain and 7 are new, giving 41. See `04-RESULTS` §2.4c for the same frames before and after. Image recall on real photos stayed at 0.98 (test). seg-v3 is the model the pipeline now uses. seg-v2's run is kept at `models/seg-v2` for comparison (`eval/results/seg_v2_hard_neg_val.json`).
 
 **How to read these:**
 - **IoU (damage):** overlap between predicted and true damage pixels, from 0 to 1. Above 0.5 is usable; above 0.7 is good.
@@ -116,4 +123,5 @@ Training curve (validation IoU after each epoch, measured in PyTorch):
 - **Licence:** the main model learns from Pothole Mix, which is research / non-commercial. The released weights carry that restriction (decision D-24). The `lraspp` model trained on synthetic data only is the licence-clean option.
 - **Domain gap:** most real training images are not Indian dashcam views (several are top-down close-ups). Indian-specific accuracy is measured on synthetic Mumbai-geometry frames and checked qualitatively on RDD2022-India images (boxes only, so no IoU is possible there).
 - **Cracks are not detected by design.** They are not area damage.
-- **Wet patches and fresh shadows** are the main expected false positives. The synthetic set contains them on purpose, and false positives per km on the control section are reported in the results table.
+- **Wet patches and fresh shadows** are still the main false positives. seg-v3 flags 41 of 480 look-alike frames (8.5%), down from 86 with seg-v2. False positives per km on the full survey are in the results table (`04-RESULTS`).
+- **Synthetic val recall is 0.59 per image:** small or very shallow synthetic defects are often missed at frame level. Across a pass, each defect is seen in many frames, so end-to-end recall is much higher (see `04-RESULTS`).

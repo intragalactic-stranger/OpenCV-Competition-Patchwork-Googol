@@ -1,7 +1,7 @@
 # Progress report
 
 > Living document, updated at the end of every work session.
-> **Last updated:** 2026-10-13 · **Current phase:** midpoint vertical slice complete (Phases 0–4 ✅, 5a ✅) · **Overall midpoint progress:** ▓▓▓▓▓▓▓▓▓░ 90% (remaining: hard-negative fine-tune to cut false positives, then re-run and regenerate)
+> **Last updated:** 2026-10-13 · **Current phase:** midpoint vertical slice complete (Phases 0–4 ✅, 5a ✅) · **Overall midpoint progress:** ▓▓▓▓▓▓▓▓▓▓ 97% (remaining: refresh the map/register and the agent demo with `seg-v3` output)
 
 ## At a glance
 
@@ -9,15 +9,15 @@
 |---|---|---|
 | Planning & design docs | ✅ | `docs/plan/*`, `docs/midpoint/*`, decisions D-01…D-30 |
 | Repo, environment, tests | ✅ | Python 3.12 (uv); `make check` (lint + tests) |
-| OpenCV 5 | ✅ | The **trained** SegFormer-B0 runs in `ENGINE_NEW`, identical to onnxruntime (2.4e-5); `ENGINE_CLASSIC` cannot load it |
+| OpenCV 5 | ✅ | The **trained** SegFormer-B0 runs in `ENGINE_NEW`, identical to onnxruntime (2.0e-5); `ENGINE_CLASSIC` cannot load it |
 | AWS guardrails | ✅ | Permissions boundary on every role; **real money paid $0.00**, all usage on promotional credits; `patchwork-real-spend` alarm |
 | AWS stack (Terraform) | ✅ | 42 resources in 13 services ([03](03-SERVICES-USED.md)): VPC (no NAT), S3, ECR, Batch Graviton Spot, Step Functions, EventBridge, Aurora Serverless v2 (PostGIS, auto-pause), CloudFront, Amazon Location, Bedrock (Nova), CloudWatch |
 | Synthetic survey data | ✅ | 2 worlds × 3 passes × 28.6 km rendered on Batch; seed 07 for training, seed 11 held out |
 | Geometry (calibration, bird's-eye view, m²) | ✅ | Oracle-mask area error **2.1%** (target ≤ 5%) |
 | Triage, privacy blur, localisation | ✅ | 284 frames/km with 0% defects lost; plates and faces blurred; **2.6 m** median position error |
-| Segmentation model `seg-v2` | ✅ trained · ⚠️ below aim | CPU only, 12 epochs, 3.9 h on Graviton Spot. IoU 0.50 on real photos, 0.43 on synthetic. [Model card](07-MODEL-CARD.md) |
-| **End-to-end cloud pipeline** | ✅ | Upload → EventBridge → Step Functions → Batch → Aurora → viewer; **56.8 km in two passes, 17–19 min per pass** |
-| End-to-end metrics | ⚠️ mixed | Recall **0.95** ✅ · cost **$0.0019/km** ✅ · area MAPE 34% ❌ · false positives 10/km ❌ (mostly shadows; see [04 §3](04-RESULTS-AND-OUTPUTS.md#3-commentary-honest-reading-of-the-numbers)) |
+| Segmentation model `seg-v3` | ✅ trained · ⚠️ IoU below aim | CPU only: `seg-v2` (12 epochs, 3.9 h) fine-tuned with look-alike frames (4 epochs, 2.7 h, survived 3 Spot interruptions). IoU 0.50 on real photos, 0.57 on synthetic; false alarms on look-alikes 86 → 41 of 480. [Model card](07-MODEL-CARD.md) |
+| **End-to-end cloud pipeline** | ✅ | Upload → EventBridge → Step Functions → Batch → Aurora → viewer; **56.8 km in two passes, 15–17 min per pass** |
+| End-to-end metrics | ⚠️ mixed | Recall **0.94** ✅ · control-section false positives **0.30/km** ✅ (was 3.87) · cost **$0.0021/km** ✅ · area MAPE 27.8% ❌ (was 33.7%) · re-ID F1 0.73 (was 0.57) · whole-survey false positives 3.1/km (was 10). See [04 §3](04-RESULTS-AND-OUTPUTS.md#3-commentary-honest-reading-of-the-numbers) |
 | Map viewer | ✅ | https://d3mt6jrs1ynczo.cloudfront.net (synthetic data, labelled) |
 | Agent slice on Amazon Nova + approval gate | ✅ | Run A/B on **pipeline output**: priority 2 → 1, hot-mix 0.05 → 0.40 t; approve → MOCK ticket, reject → override recorded; unknown IDs rejected |
 
@@ -41,14 +41,15 @@
 | 2026-10-13 | **`seg-v2` trained on CPU** (Graviton Spot, 3.9 h); model card | [`07-MODEL-CARD`](07-MODEL-CARD.md) |
 | 2026-10-13 | **Held-out survey end to end, 2 passes, 56.8 km**: recall 0.95, $0.0019/km; false positives analysed (shadows and wet patches) | [`04-RESULTS`](04-RESULTS-AND-OUTPUTS.md) |
 | 2026-10-13 | Run A/B on pipeline output passes; approve/reject exercised on pipeline packages | [`assets/ablation_ab.md`](assets/ablation_ab.md) |
+| 2026-10-13 | **Hard-negative fine-tune `seg-v3`** (CPU, 2.7 h; resumed from S3 checkpoints after 3 Spot interruptions). Same survey re-run through the cloud: false alarms 10.05 → 3.1 per km, control section 0.30/km (**target met**), area MAPE 33.7% → 27.8%, re-ID F1 0.57 → 0.73 | [`07-MODEL-CARD`](07-MODEL-CARD.md), [`04-RESULTS` §2.4c, §3](04-RESULTS-AND-OUTPUTS.md) |
 
 ## 🔄 In progress
 
-Nothing running. The midpoint slice is complete.
+- Refresh the Aurora register and the map viewer with the `seg-v3` survey, then re-run the agent demo and the run A/B on it. Needs one owner command first (the register reset; see Blockers). Until then the viewer and the agent demo show the `seg-v2` survey, whose numbers are kept in `eval/results/*_seg_v2.json`.
 
 ## ⏭ Next
 
-1. **Hard-negative fine-tune (`seg-v3`)**: shadows, wet patches, manholes and repair patches from the training world as "not damage" (about 1.5 h CPU, about $1 of credits). Then re-run both held-out passes and regenerate every table (`make eval-midpoint`, `make cost-report`).
+1. Manhole covers into the look-alike set; merge split masks of one defect before they reach the register (the two largest remaining false-alarm groups).
 2. Depression measurement (soft boundaries, larger input, mask fusion across frames) for the area error.
 3. Second half: see [06-NEXT-STEPS](06-NEXT-STEPS.md).
 
@@ -58,7 +59,8 @@ Nothing running. The midpoint slice is complete.
 |---|---|---|
 | Bedrock account verification | Agent slice (Nova) | ✅ cleared |
 | Check credit balance / expiry in **Billing → Credits** monthly | Zero-real-cost rule (D-27) | owner, about 1 minute a month |
-| SageMaker GPU quota requests (filed before the CPU-only decision) | not needed | open AWS support cases; harmless, can be ignored |
+| Register reset before the `seg-v3` refresh: `! uv run python -m patchwork.register.dataapi reset-survey --yes` | Map viewer + agent demo on `seg-v3` | owner (the assistant is not allowed to run bulk deletes) |
+| Close the old SageMaker GPU quota requests (Support Center → Cases) | **Second-half GPU training**: they use up the account's limit of open quota requests, so the EC2 G-instance request (`08` §5) cannot be filed until they are closed | owner, before the second half |
 
 ## Deviations from the proposal (summary)
 
@@ -79,3 +81,4 @@ See [`plan/02-requirements.md §4`](../plan/02-requirements.md#4-what-changed-fr
 | 2026-10-12 (b) | IAM boundary guard; Amazon Nova; corridor; synthetic world + renderer; RDD2022-India; calibration; bird's-eye view; pitch estimation; oracle geometry eval (2.1%) |
 | 2026-10-13 (a) | AWS live (bootstrap + dev stack); arm64 images; 60 synthetic clips rendered on Batch; triage, privacy, localisation; Pothole Mix; SegFormer-B0 training pipeline (CPU) + OpenCV 5 parity; model card; credits-only cost guard |
 | 2026-10-13 (b) | Aurora register, Step Functions pipeline, viewer, agent slice + approval gate; `seg-v2` trained; held-out survey (2 passes) through the cloud; end-to-end metrics, false-positive analysis; register within-pass linking fix |
+| 2026-10-13 (c) | Service mappings + second-half projection (`08`), reviewer walkthrough (`09`); hard-negative mining; `seg-v3` fine-tune; survey re-run on `seg-v3`; before/after figures; cost report accounts for data-transfer credits |

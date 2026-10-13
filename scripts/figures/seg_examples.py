@@ -1,7 +1,7 @@
 """Segmentation examples through the deployed runtime (OpenCV 5 DNN): real photos (top) and synthetic dashcam
 strips (bottom), including the worst cases on purpose. -> docs/midpoint/assets/seg_examples.jpg
 
-  uv run python scripts/figures/seg_examples.py --model runs/seg-v2/model.onnx --data data/train/v2-sample
+  uv run python scripts/figures/seg_examples.py --model runs/seg-v3/model.onnx --data data/train/v2-sample
 Green = ground truth outline, red fill = model prediction.
 """
 
@@ -25,8 +25,9 @@ def panel(img: np.ndarray, gt: np.ndarray, pred: np.ndarray, label: str, w: int 
     cnts, _ = cv2.findContours((gt == 1).astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(o, cnts, -1, (0, 255, 0), max(2, img.shape[1] // 400))
     o = cv2.resize(o, (w, int(o.shape[0] * w / o.shape[1])))
-    cv2.putText(o, label, (6, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 0, 0), 3)
-    cv2.putText(o, label, (6, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 255, 255), 1)
+    (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+    cv2.rectangle(o, (0, 0), (tw + 10, th + 10), (0, 0, 0), -1)
+    cv2.putText(o, label, (5, th + 4), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
     return o
 
 

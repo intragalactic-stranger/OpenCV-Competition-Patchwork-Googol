@@ -2,14 +2,14 @@
 
 > **One page for the reviewer.** It follows the system step by step, from raw data to a filed work order. For each step it gives the AWS service, its purpose, its resource name and the credits it consumed.
 > **Billing rule:** everything is paid by **AWS promotional credits**, and real money paid is **$0.00** (decision D-27).
-> **Figures** come from AWS Cost Explorer (`UnblendedCost`, record types *Usage* and *Credit*), as of **2026-10-13 12:00 UTC**. Refresh with `make cost-report`, which rewrites [02-COST-REPORT](02-COST-REPORT.md).
+> **Figures** come from AWS Cost Explorer (`UnblendedCost`, record types *Usage* and *Credit*), as of **2026-10-13 20:30 UTC**. Refresh with `make cost-report`, which rewrites [02-COST-REPORT](02-COST-REPORT.md).
 
 ## 0. The money in one table
 
 | Period | Usage (gross) | Paid by promotional credits | **Real money paid** |
 |---|---|---|---|
-| Project build (2026-10-12 → 13) | $4.69 | −$4.69 | **$0.00** |
-| October 2026 month to date (whole account) | $12.71 | −$12.71 | **$0.00** |
+| Project build (2026-10-12 → 13, whole account since the project started) | $9.23 | −$9.23 | **$0.00** |
+| October 2026 month to date (whole account) | $17.24 | −$17.24 | **$0.00** |
 | September 2026 (whole account, before the project) | $32.72 | −$32.72 | **$0.00** |
 
 A $1 budget, `patchwork-real-spend`, watches the cost **after credits**. It emails the owner at the first cent of real spend.
@@ -31,8 +31,9 @@ A $1 budget, `patchwork-real-spend`, watches the cost **after credits**. It emai
 | # | What happens | AWS service | Resource | Credits consumed |
 |---|---|---|---|---|
 | 2a | Build the training set (real + synthetic strips; hard negatives for `seg-v3`) | **AWS Batch** (4 vCPU) | `patchwork-prepare` | 1.1 vCPU-h ≈ **$0.01** (estimate) |
-| 2b | Train SegFormer-B0 on CPU: 12 epochs in 3.9 h. Export ONNX, check OpenCV 5 parity, evaluate | **AWS Batch on Graviton Spot** (32 vCPU) | `patchwork-train-cpu` | 155 vCPU-h ≈ **$1.97** (estimate; includes a stopped first attempt) |
-| 2c | Keep the model, checkpoints and metrics | **Amazon S3** | `…-artifacts/models/seg-v2/` | Included in S3 |
+| 2b | Train SegFormer-B0 on CPU (`seg-v2`): 12 epochs in 3.9 h. Export ONNX, check OpenCV 5 parity, evaluate | **AWS Batch on Graviton Spot** (32 vCPU, c7g.8xlarge) | `patchwork-train-cpu` | **$1.70 billed** (c7g.8xlarge Spot; includes a stopped first attempt) |
+| 2b′ | Fine-tune `seg-v2` → **`seg-v3`** with 1,788 look-alike frames as "not damage": 4 epochs, 2.7 h of training. AWS reclaimed the Spot instance 3 times; each time Batch restarted the job and it resumed from the last S3 checkpoint | **AWS Batch on Graviton Spot** (32 vCPU, c6g.8xlarge) | `patchwork-train-cpu` | 3.2 instance-h × $0.31–0.41 ≈ **$1.20** (estimate, not yet billed) |
+| 2c | Keep the models, checkpoints and metrics | **Amazon S3** | `…-artifacts/models/seg-v2/`, `…/seg-v3/` | Included in S3 |
 
 ### Step 3 · A survey pass is uploaded: the pipeline starts by itself
 
@@ -46,7 +47,7 @@ A $1 budget, `patchwork-real-spend`, watches the cost **after credits**. It emai
 
 | # | What happens | AWS service | Resource | Credits consumed |
 |---|---|---|---|---|
-| 4a | Per clip: frame triage, privacy blur, road-pitch estimate, **segmentation in OpenCV 5 `ENGINE_NEW`**, bird's-eye view, **area in m²** | **AWS Batch on Graviton Spot** (4 vCPU per clip, 10 clips in parallel) | `patchwork-perceive` | 9.5 vCPU-h ≈ **$0.12** (estimate) for 24 clip-runs. **Measured: $0.0019 per km** |
+| 4a | Per clip: frame triage, privacy blur, road-pitch estimate, **segmentation in OpenCV 5 `ENGINE_NEW`**, bird's-eye view, **area in m²** | **AWS Batch on Graviton Spot** (4 vCPU per clip, 10 clips in parallel) | `patchwork-perceive` | ≈ 19 vCPU-h ≈ **$0.25** (estimate) for 44 clip-runs (the held-out survey on `seg-v2` and again on `seg-v3`, plus tests). **Measured: $0.0021 per km** |
 | 4b | Per pass: localisation on the road, tracking, evidence images | **AWS Batch** | `patchwork-assemble` | 1.1 vCPU-h ≈ **$0.01** (estimate) |
 | 4c | Networking for the workers: public subnets, no NAT gateway, free S3 gateway endpoint | **Amazon VPC** | `patchwork` VPC 10.42.0.0/16 | Public IPv4 for Batch workers: **$0.04** |
 | 4d | Job logs and pipeline metrics | **Amazon CloudWatch** (Logs, dashboard `patchwork-pipeline`) | `/patchwork/batch` | **$0.00** (within free tier) |
@@ -84,22 +85,23 @@ A $1 budget, `patchwork-real-spend`, watches the cost **after credits**. It emai
 | 8c | Usage, credits and net per service for this report | **AWS Cost Explorer** (API, $0.01 per call) | used by `make cost-report` | **$0.24** (24 calls) |
 | 8d | Infrastructure as code, state stored in S3 | **Terraform → S3** | `patchwork-682839842398-tfstate` | Included in S3 |
 
-## 2. Per-service totals, as billed by AWS (2026-10-12 → 13)
+## 2. Per-service totals, as billed by AWS (2026-10-12 → 13, as of 20:30 UTC)
 
 | AWS service | Usage (gross) | Promotional credits | Main driver |
 |---|---|---|---|
-| Amazon EC2 – Compute | $3.03 | −$3.02 | **$3.01 is the development box** (t3a.xlarge, us-east-1, 20 h). Batch Spot so far: $0.008 billed (estimate ≈ $2.30 once billing catches up, see Step 1–4) |
-| Amazon S3 | $0.83 | −$0.41 | $0.42 cross-region transfer (Mumbai → dev box in us-east-1), $0.41 requests (74 k write/list requests: training images, clips, pipeline outputs) |
-| AWS Data Transfer (credit line) | – | −$0.50 | Credit applied to the S3 and EC2 transfer above |
-| EC2 – Other | $0.27 | −$0.21 | EBS disk of the dev box ($0.21), transfer |
-| AWS Cost Explorer | $0.24 | −$0.24 | Cost-report API calls |
-| Amazon Bedrock (Nova) | $0.16 | −$0.16 | Agent runs, A/B test |
-| Amazon VPC | $0.15 | −$0.15 | Public IPv4 addresses (dev box $0.11, Batch workers $0.04) |
-| Amazon Aurora (RDS) | $0.007 | −$0.007 | Register, mostly paused |
-| Amazon ECR | $0.0006 | −$0.0006 | Image storage |
-| Secrets Manager, Location, EventBridge, Step Functions | < $0.001 | covered | |
+| Amazon EC2 – Compute | $6.43 | −$6.41 | **$4.21 is the development box** (t3a.xlarge, us-east-1, about 28 h). **Batch Spot billed so far: $2.20**: `seg-v2` training on c7g.8xlarge $1.70, rendering and pipeline runs $0.49. The `seg-v3` fine-tune (≈ $1.20) and the `seg-v3` survey run (≈ $0.12) are not billed yet |
+| Amazon S3 | $0.86 | −$0.43 | $0.43 cross-region transfer (Mumbai → dev box in us-east-1), $0.43 requests (training images, clips, pipeline outputs) |
+| AWS Data Transfer (credit line) | – | −$0.51 | Credit applied to the S3 and EC2 cross-region transfer above |
+| Amazon Aurora (RDS) | $0.57 | −$0.57 | Register: 3.1 ACU-hours of Serverless v2 while loading passes and running the agent ($0.55), storage I/O ($0.02). Pauses when idle |
+| AWS Cost Explorer | $0.42 | −$0.42 | Cost-report API calls ($0.01 each) |
+| EC2 – Other | $0.40 | −$0.33 | EBS disk of the dev box ($0.28), Batch worker disks ($0.05), transfer ($0.07) |
+| Amazon Bedrock (Nova Pro) | $0.33 | −$0.33 | Agent runs and the A/B test: input tokens $0.26, output tokens $0.06 |
+| Amazon VPC | $0.22 | −$0.22 | Public IPv4 addresses (dev box $0.15, Batch workers $0.07) |
+| Secrets Manager, ECR, Location, EventBridge, Step Functions | $0.01 | covered | |
 | CloudFront, CloudWatch, KMS, Glue, ECS | $0.00 | – | Within the free tier |
-| **Total** | **$4.69** | **−$4.69** | **Net $0.00** |
+| **Total** | **$9.23** | **−$9.23** | **Net $0.00** |
+
+**Expected once Spot billing catches up:** about **$10.6** (the $9.23 above + ≈ $1.2 for the `seg-v3` fine-tune + ≈ $0.2 for the `seg-v3` survey run), all paid by credits.
 
 The per-service credit amounts do not always equal the per-service usage. AWS applies part of the credit on a separate "AWS Data Transfer" line. The **total** is exactly offset: net $0.0000000055.
 
@@ -107,9 +109,9 @@ The per-service credit amounts do not always equal the per-service usage. AWS ap
 
 | Measure | Value | Target |
 |---|---|---|
-| Perception compute per km: measured run time (133 s on 4 vCPU per km) × current Graviton Spot price ($0.0127/vCPU-h) | **$0.0019/km** | < $0.02 ✅ |
-| Upper bound: all processing spend so far ÷ km processed (includes data rendering and training) | $0.034/km | – |
-| A full 28.4 km pass | ≈ $0.05 of compute, 17–19 min wall-clock | – |
+| Perception compute per km: measured run time (147 s on 4 vCPU per km, `seg-v3`) × current Graviton Spot price ($0.0128/vCPU-h) | **$0.0021/km** | < $0.02 ✅ |
+| Upper bound: all processing spend so far ÷ km processed (includes data rendering and training) | $0.064/km | – |
+| A full 28.4 km pass | ≈ $0.06 of compute, 15–17 min wall-clock | – |
 
 ## 4. Services we chose **not** to use (and why)
 
@@ -179,7 +181,7 @@ The hours are a planning estimate. As decision D-27 requires, a 1-epoch trial ru
 | | Lower case (Spot always available, 30 live suite runs, dev box stopped at night) | | | ≈ $260 |
 | | Upper case (on-demand GPU, 80 live suite runs) | | | ≈ $470 |
 
-**Combined view for the grant:** the first half used about **$7** of project credits by the checkpoint ($4.69 billed + about $2.30 of Spot still being billed + the `seg-v3` fine-tune). The second half is projected at **≈ $370 (range $260–470)**. The extra spend goes on GPU training, live agent evaluation and an always-on demo database, the three items deliberately kept at zero or near zero in the first half.
+**Combined view for the grant:** the first half used about **$10.6** of credits by the checkpoint ($9.23 billed as of 2026-10-13 20:30 UTC + about $1.4 of Spot still being billed). Most of it was the development box; the cloud pipeline itself is cheap by design. The second half is projected at **≈ $370 (range $260–470)**. The extra spend goes on GPU training, live agent evaluation and an always-on demo database, the three items deliberately kept at zero or near zero in the first half.
 
 ### 5.3 Boundaries: what stops spend from running away
 
