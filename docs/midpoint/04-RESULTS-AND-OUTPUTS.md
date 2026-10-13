@@ -54,7 +54,7 @@ _Generated 2026-10-13 07:14 UTC by `uv run python -m eval.report`._
 
 ### 2.7 The register on a map
 ![Map viewer](assets/viewer.png)
-Live viewer: [[TBD: CloudFront URL]]
+Live viewer: https://d3mt6jrs1ynczo.cloudfront.net (synthetic survey over real Mumbai roads; clearly labelled as such on the page)
 
 ### 2.8 Agent preview: run A vs run B (stretch)
 See [`assets/ablation_ab.md`](assets/ablation_ab.md): same clip and prompt, different measured area → different plan.

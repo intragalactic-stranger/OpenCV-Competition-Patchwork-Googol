@@ -6,7 +6,7 @@
 
 | Phase | Deliverable | Why it matters for the competition |
 |---|---|---|
-| 5b | **Full agent**: 10 tools (context lookup, duplicate-ticket check, filing via approval only, re-inspection scheduling, repair verification), confidence floor, failure handling, memory | The Agentic Vision path is scored on task success, failure handling and human control |
+| 5b | **Agent on AgentCore**: move the 5 working tools behind AgentCore Gateway (Lambda) and host the Strands agent on AgentCore Runtime; then the **full agent**: 10 tools (context lookup, duplicate-ticket check, filing via approval only, re-inspection scheduling, repair verification), confidence floor, failure handling, memory | The Agentic Vision path is scored on task success, failure handling and human control |
 | 6 | **Repair verification across passes**: GNSS gate → ORB + homography → mask comparison → unchanged/repaired/degraded/new; VLM context attributes in OpenCV 5 | "Verification creates accountability", the core idea of the proposal |
 | 7 | **Web console**: upload, map, defect history, approve/reject, before/after; CloudWatch dashboard with **human override rate** on the front page | The live judged demo |
 | 8 | **Full evaluation**: 40 scripted agent scenarios in CI (including adversarial), baselines and ablations table, RDD2022 external check | "Metrics checked, not asserted" |
@@ -14,13 +14,15 @@
 
 ## 2. What the remaining grant pays for
 
-| Item | Estimate | Note |
+All AWS usage is paid by **promotional credits**, and real money paid stays at $0.00 (decision D-27, enforced by the `patchwork-real-spend` budget and the per-service coverage table in the cost report). The figures below are credit consumption.
+
+| Item | Estimate (credits) | Note |
 |---|---|---|
-| Additional SageMaker GPU training (label iteration, licence-clean model, severity calibration) | $30–60 | Spot, max-runtime capped |
-| Bedrock + AgentCore for agent development and the **40-scenario regression suite on every change** | $40–90 | The largest second-half cost; runs repeatedly, not once |
-| Processing 5+ more synthetic passes (D3 to 8 passes) + the false-positive zoo | $5–15 | Batch Graviton Spot |
-| Aurora, S3, API, CloudFront, Location, CloudWatch for 6 more weeks | $40–80 | Auto-pause keeps this low |
-| **Total second half (estimate)** | **≈ $115–245** | Refined from the actual first-half cost report |
+| CPU training runs on Batch Graviton Spot (licence-clean model, severity calibration, more real data) | $5–15 | About $1–2 per run (c7g.8xlarge Spot, a few hours); no GPU (D-25) |
+| Amazon Nova + AgentCore: agent development and the **40-scenario regression suite on every change** | $30–80 | Largest second-half item; about $0.02–0.05 per agent run today |
+| Processing more synthetic passes (D3 to 8 passes) + the false-positive zoo | $5–15 | Batch Graviton Spot, parallel per clip |
+| Aurora (auto-pause), S3, CloudFront, Location, CloudWatch, Step Functions for 6 more weeks | $30–70 | Scale-to-zero everywhere |
+| **Total second half (estimate)** | **≈ $70–180 of credits** | Refined from the actual first-half cost report ([02](02-COST-REPORT.md)) |
 
 ## 3. Risks carried into the second half
 
@@ -32,7 +34,8 @@
 
 ## 4. Milestones after the checkpoint
 
-[[TBD: dates relative to the checkpoint date]]
+Dates are relative to the checkpoint review.
+
 | Milestone | Target date |
 |---|---|
 | Full agent + 20 scenarios | checkpoint + 1.5 weeks |
