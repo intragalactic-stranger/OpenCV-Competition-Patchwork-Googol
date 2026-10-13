@@ -95,7 +95,7 @@ def write_csv(path: Path, cols: dict[str, np.ndarray], fmt: str = "%.6f") -> Non
             )
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--passes", default="1", help="comma list of passes to render, e.g. 1,2,3")
@@ -107,11 +107,13 @@ def main() -> None:
     ap.add_argument("--max-m", type=float, default=None, help="cap the rendered length")
     ap.add_argument("--clip-m", type=float, default=3000.0, help="split the pass into clips of this length")
     ap.add_argument("--truth-every", type=int, default=5, help="save GT masks every N frames (0 = never)")
+    ap.add_argument("--clips", default=None, help="comma list of clip indices to render (default: all)")
     ap.add_argument("--out", type=Path, default=ROOT / "data" / "synth")
     ap.add_argument("--corridor", type=Path, default=ROOT / "data" / "corridor")
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
 
     passes = [int(p) for p in args.passes.split(",")]
+    only_clips = {int(c) for c in args.clips.split(",")} if args.clips else None
     corridor = load_corridor(args.corridor)
     world = build_world(corridor, seed=args.seed, n_passes=args.n_passes or max(passes))
     cam = CameraModel()
@@ -134,7 +136,7 @@ def main() -> None:
         json.dumps(
             {
                 "seed": args.seed,
-                "n_passes": max(passes),
+                "n_passes": args.n_passes or max(passes),
                 "corridor_length_m": corridor.length_m,
                 "defects": len(world.defects),
                 "features": len(world.features),
@@ -164,7 +166,7 @@ def main() -> None:
         n_frames_total = 0
         for ci, (a, b) in enumerate(zip(bounds, bounds[1:], strict=False)):
             idx = np.where((traj.s >= a) & (traj.s < b if ci < len(bounds) - 2 else traj.s <= b))[0]
-            if len(idx) == 0:
+            if len(idx) == 0 or (only_clips is not None and ci not in only_clips):
                 continue
             cdir = pdir / f"clip_{ci:02d}"
             cdir.mkdir(parents=True, exist_ok=True)

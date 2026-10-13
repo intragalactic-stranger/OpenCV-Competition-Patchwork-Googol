@@ -7,8 +7,8 @@ __pycache__/
 *.egg-info/
 
 # Data and models (never committed)
-data/
-!data/.gitkeep
+/data/
+!/data/.gitkeep
 models/
 *.onnx
 *.mp4
@@ -27,3 +27,6 @@ models/
 *.log
 scratch/
 terraform.tfvars
+
+# Eval caches (regenerated)
+eval/results/cache/

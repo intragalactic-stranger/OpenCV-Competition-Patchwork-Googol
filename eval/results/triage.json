@@ -1,0 +1,62 @@
+{
+ "summary": {
+  "spacing_m": 3.0,
+  "clips": 2,
+  "frames": 3187,
+  "kept": 594,
+  "keep_rate_pct": 18.64,
+  "kept_per_km": 297.0,
+  "true_distance_km": 2.0,
+  "odometry_err_pct": -1.52,
+  "defects_covered": 24,
+  "recall_loss_pct": 0.0,
+  "covered_2plus_pct": 100.0,
+  "ms_per_frame": 12.4
+ },
+ "clips": [
+  {
+   "clip": "clip_00",
+   "frames": 1703,
+   "kept": 302,
+   "keep_rate": 0.1773,
+   "distance_m": 984.9,
+   "kept_per_km": 306.6,
+   "reasons": {
+    "spacing": 293,
+    "edge_spike": 9
+   },
+   "true_distance_m": 1000.0,
+   "odometry_err_pct": -1.51,
+   "step_abs_err_median_pct": 5.15,
+   "stopped_frames": 278,
+   "stopped_detected_pct": 99.6,
+   "defects_covered_all": 12,
+   "defects_covered_kept": 12,
+   "defects_covered_kept_2plus": 12,
+   "ms_per_frame": 12.2,
+   "pass": "pass_1"
+  },
+  {
+   "clip": "clip_00",
+   "frames": 1484,
+   "kept": 292,
+   "keep_rate": 0.1968,
+   "distance_m": 984.6,
+   "kept_per_km": 296.6,
+   "reasons": {
+    "spacing": 286,
+    "edge_spike": 6
+   },
+   "true_distance_m": 1000.0,
+   "odometry_err_pct": -1.54,
+   "step_abs_err_median_pct": 5.13,
+   "stopped_frames": 8,
+   "stopped_detected_pct": 100.0,
+   "defects_covered_all": 12,
+   "defects_covered_kept": 12,
+   "defects_covered_kept_2plus": 12,
+   "ms_per_frame": 12.7,
+   "pass": "pass_2"
+  }
+ ]
+}

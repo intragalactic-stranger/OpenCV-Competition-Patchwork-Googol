@@ -1,21 +1,24 @@
 # Cost report
 
 > **Generated** by `make cost-report` (`scripts/cost_report.py`) from **AWS Cost Explorer**. Do not edit the generated section by hand.
-> Scope: all resources tagged `Project=patchwork` in account `[[TBD: account id]]`, region ap-south-1, plus the shared dev box listed separately.
+> Scope: all resources tagged `Project=patchwork` in account `682839842398`, region ap-south-1, plus the shared dev box listed separately.
 
 ## Summary
 
 <!-- COST-SUMMARY:BEGIN -->
 | Item | Value |
 |---|---|
-| Period | [[TBD: start]] → [[TBD: end]] |
-| Total project spend (tagged) | [[TBD: $]] |
-| Dev box (shared EC2, untagged) | [[TBD: $]] |
+| Period | 2026-10-12 → 2026-10-14 (end exclusive) |
+| Total project spend | **$0.00** |
+| Dev box (shared EC2 t3a.xlarge, us-east-1) | included above only if it is tagged |
 | Monthly budget | $300.00 |
-| Budget used this month | [[TBD: %]] |
-| Kilometres processed (from the register) | [[TBD: km]] |
-| **Cost per km processed** (processing services only) | [[TBD: $/km]] |
+| Account spend this month to date | $0.00 (0.0% of budget) |
+| Kilometres processed (from the register) | 0.0 |
+| **Cost per km processed** (processing services only) | n/a (no km processed yet) |
 | Target cost per km (proposal) | < $0.02 |
+| Generated | 2026-10-13 03:45 UTC by `make cost-report` |
+
+⚠️ The `Project` cost-allocation tag is not active yet (or has no data), so this shows the **whole account**, including the dev box and anything unrelated.
 <!-- COST-SUMMARY:END -->
 
 ## Spend by AWS service
@@ -23,7 +26,8 @@
 <!-- COST-BY-SERVICE:BEGIN -->
 | AWS service | What it is used for | Spend to date |
 |---|---|---|
-| [[TBD: generated rows]] | | |
+| Amazon Elastic Compute Cloud - Compute | Batch Graviton Spot instances (and dev box if untagged) | $0.00 |
+| EC2 - Other | EBS volumes, data transfer | $0.00 |
 <!-- COST-BY-SERVICE:END -->
 
 ![Cost by service](assets/cost_by_service.png)
@@ -33,7 +37,7 @@
 <!-- COST-BY-PHASE:BEGIN -->
 | Phase | Spend |
 |---|---|
-| [[TBD: generated rows]] | |
+| (no tagged spend yet) | $0.00 |
 <!-- COST-BY-PHASE:END -->
 
 ## Where the money goes and why (narrative, maintained by hand)

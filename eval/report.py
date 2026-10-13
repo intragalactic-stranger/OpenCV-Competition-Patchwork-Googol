@@ -52,7 +52,22 @@ def build_table() -> str:
         )
     else:
         rows.append(_row("Damaged-area MAPE, oracle masks (geometry only)", "≤ 5%", None, None))
-    rows.append(_row("Median localisation error", "≤ 8 m", None, None))
+    loc = _load("localisation.json")
+    if loc:
+        lsum = loc["summary"]
+        tunnel = f"; tunnel (no GNSS) median {lsum['tunnel_median_m']} m" if lsum.get("tunnel_median_m") else ""
+        rows.append(
+            _row(
+                "Median localisation error",
+                "≤ 8 m",
+                f"{lsum['median_m']} m",
+                lsum["median_m"] <= 8,
+                f"p90 {lsum['p90_m']} m; raw GNSS median {lsum['gnss_only_median_m']} m{tunnel}; "
+                f"{lsum['frames']} frames",
+            )
+        )
+    else:
+        rows.append(_row("Median localisation error", "≤ 8 m", None, None))
     rows.append(_row("Segmentation mIoU (pothole), real images", "reported", None, None))
     rows.append(_row("Segmentation mIoU (pothole), synthetic val", "reported", None, None))
     if smoke and smoke.get("dnn", {}).get("runs"):
@@ -69,7 +84,21 @@ def build_table() -> str:
         )
     else:
         rows.append(_row("ONNX parity: OpenCV 5 ENGINE_NEW vs onnxruntime", "≤ 1e-3", None, None))
-    rows.append(_row("Frame triage keep rate", "8–12%", None, None))
+    triage = _load("triage.json")
+    if triage:
+        t = triage["summary"]
+        rows.append(
+            _row(
+                "Frame triage: kept frames per km (recall loss)",
+                "≤ 620/km, ≤ 2% loss",
+                f"{t['kept_per_km']:.0f}/km, {t['recall_loss_pct']}% loss",
+                t["kept_per_km"] <= 620 and t["recall_loss_pct"] <= 2,
+                f"{t['keep_rate_pct']}% of 15 fps frames; {t['covered_2plus_pct']}% of defects in ≥ 2 kept frames; "
+                f"odometry {t['odometry_err_pct']:+}% over {t['true_distance_km']} km",
+            )
+        )
+    else:
+        rows.append(_row("Frame triage: kept frames per km (recall loss)", "≤ 620/km, ≤ 2% loss", None, None))
     rows.append(_row("Processing time per km (Batch, Graviton)", "reported", None, None))
     rows.append(_row("Cost per km processed", "< $0.02", None, None))
     rows.append(_row("Cross-pass re-ID F1, basic matcher (stretch)", "≥ 0.90 (final)", None, None))

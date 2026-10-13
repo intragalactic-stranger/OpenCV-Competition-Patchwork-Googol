@@ -16,13 +16,13 @@
 | Segmentation mIoU (pothole), real images | reported | [[TBD]] | ⏭ |
 | Segmentation mIoU (pothole), synthetic val | reported | [[TBD]] | ⏭ |
 | ONNX parity: OpenCV 5 ENGINE_NEW vs onnxruntime (SegFormer-like smoke graph) | ≤ 1e-3 | 3.8e-06 · ENGINE_CLASSIC cannot load it | ✅ |
-| Frame triage keep rate | 8–12% | [[TBD]] | ⏭ |
+| Frame triage: kept frames per km (recall loss) | ≤ 620/km, ≤ 2% loss | 297/km, 0.0% loss · 18.64% of 15 fps frames; 100.0% of defects in ≥ 2 kept frames; odometry -1.52% over 2.0 km | ✅ |
 | Processing time per km (Batch, Graviton) | reported | [[TBD]] | ⏭ |
 | Cost per km processed | < $0.02 | [[TBD]] | ⏭ |
 | Cross-pass re-ID F1, basic matcher (stretch) | ≥ 0.90 (final) | [[TBD]] | ⏭ |
 | Run A/B: plan changes with measured area (stretch) | must change | [[TBD]] | ⏭ |
 
-_Generated 2026-10-12 12:21 UTC by `uv run python -m eval.report`._
+_Generated 2026-10-13 04:00 UTC by `uv run python -m eval.report`._
 <!-- METRICS:END -->
 
 ## 2. Visual outputs
