@@ -81,7 +81,10 @@ def main() -> None:
     if not members:
         raise SystemExit(f"India.zip not found in archive: {[m.filename for m in z.infolist()]}")
     total = sum(m.file_size for m in members)
-    print(f"archive {f.raw.size / 1e9:.1f} GB, {len(z.infolist())} members; fetching {members[0].filename} ({total / 1e6:.0f} MB)")
+    print(
+        f"archive {f.raw.size / 1e9:.1f} GB, {len(z.infolist())} members; "
+        f"fetching {members[0].filename} ({total / 1e6:.0f} MB)"
+    )
     if args.list:
         return
     OUT.mkdir(parents=True, exist_ok=True)
@@ -95,8 +98,10 @@ def main() -> None:
         "- Source: https://figshare.com/articles/dataset/21431547 (sekilab, CRDDC'2022), member folder `India/`\n"
         "- Licence: CC BY-SA 4.0 (sekilab README); Figshare page states CC BY 4.0. Treated as CC BY-SA 4.0.\n"
         "- Citation: Arya et al., RDD2022: A multi-national image dataset for automatic road damage detection (2024)\n"
-        f"- Fetched {dt.datetime.now(dt.UTC):%Y-%m-%d %H:%M} UTC via HTTP range requests (India.zip, {total / 1e6:.0f} MB, {len(names)} files)\n"
-        "- Annotations: Pascal VOC bounding boxes; D40 = pothole\n")
+        f"- Fetched {dt.datetime.now(dt.UTC):%Y-%m-%d %H:%M} UTC via HTTP range requests "
+        f"(India.zip, {total / 1e6:.0f} MB, {len(names)} files)\n"
+        "- Annotations: Pascal VOC bounding boxes; D40 = pothole\n"
+    )
     print(f"done -> {OUT}")
 
 

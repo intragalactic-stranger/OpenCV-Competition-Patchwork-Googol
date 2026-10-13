@@ -66,6 +66,18 @@ envs/dev/             composition, default_tags, variables
 | KMS, IAM, Secrets Manager | Security | One CMK, least-privilege roles | ✅ |
 | AWS Budgets + Cost Explorer | Cost guard and cost report | $300; alerts at 50/80/100% (actual) and 100% (forecast) | ✅ |
 
+## 3a. Paying with promotional credits only (decision D-27)
+
+The account runs on **AWS promotional credits**, and the owner must never pay real money.
+
+| Rule | How it is enforced |
+|---|---|
+| Real spend stays at $0.00 | Budget `patchwork-real-spend`: monthly, **cost after credits**, alert e-mail at > $0.01 actual or > $1 forecast (Terraform `bootstrap/`) |
+| Only first-party AWS services | No AWS Marketplace subscriptions, no third-party Bedrock models (Amazon Nova only, D-17), no Route 53 domain purchase, no Savings Plans / RIs, no paid Support plan. These are the usual promotional-credit exclusions. |
+| Credits really are applied | `make cost-report` shows gross usage, the amount covered by credits, and net paid, from Cost Explorer `RECORD_TYPE`. Verified: Sep 2026 $32.72 usage, $32.72 credits; Oct to date fully offset |
+| Credit balance and expiry | Not exposed by any API: the owner checks **Billing → Credits** (remaining amount, expiry date, eligible services) once a month |
+| Burn rate stays small | Spot everywhere, no NAT, no GPU (D-25), Aurora auto-pause, S3 lifecycle; planned usage ≤ $300/month of credits |
+
 ## 4. Cost model
 
 ### 4.1 Midpoint (about 4 weeks) estimate, in USD

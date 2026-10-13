@@ -5,9 +5,15 @@ variable "region" {
 }
 
 variable "monthly_budget_usd" {
-  description = "Monthly spend cap that triggers the budget alerts"
+  description = "Planned monthly usage paid from promotional credits (reported by make cost-report)"
   type        = number
   default     = 300
+}
+
+variable "real_spend_alert_usd" {
+  description = "Monthly budget on cost AFTER credits; alerts on the first cent of real spend"
+  type        = number
+  default     = 1
 }
 
 variable "alert_emails" {

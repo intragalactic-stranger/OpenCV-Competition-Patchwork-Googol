@@ -26,6 +26,11 @@
 | D-20 | 2026-10-12 | Survey loop = **28.6 km** routed on OSM through named-road waypoints: Coastal Road driven once (10.1 km control, of which 3.1 km tunnel); return via Worli Seaface → Haji Ali → Warden Rd → Kemps Corner → Marine Drive | Matches the proposal's corridor; the control section is driven once per pass | Hand-drawn route |
 | D-21 | 2026-10-12 | GNSS/IMU written as **CSV** (`gnss.csv`, `imu.csv`) instead of GPX | Simpler and lossless (HDOP, fix flag, NaN in tunnels) | GPX |
 | D-22 | 2026-10-12 | Camera model lives in `patchwork/camera.py`, **shared** by the renderer and perception | One definition of geometry on both sides | Separate copies |
+| D-23 | 2026-10-13 | Triage target restated fps-independently: **≤ 620 kept frames/km with ≤ 2% recall loss** (the proposal's 8–12% of 60 fps frames at 42 km/h). Spacing 3 m so every defect is in ≥ 2 kept frames | Our video is 15 fps (D-12); a percentage of frames is meaningless across frame rates | Keep "8–12%" (would mean 1 frame per 0.5 m at 15 fps) |
+| D-24 | 2026-10-13 | Real segmentation masks from **Pothole Mix v2** (4,340 pairs, CC BY-NC 3.0; sources keep their own licences). Weights trained on it are **research / non-commercial**. Indian Roads (e-Yantra) not used: GPL-2.0 and only 230 pothole images | Largest openly downloadable pothole-mask set, with no account needed; the competition entry is research | Indian Roads via Kaggle (account + GPL); Roboflow sets (account + mixed provenance) |
+| D-25 | 2026-10-13 | **Training on CPU only** (owner's instruction): AWS Batch on Graviton Spot, 32 vCPU, CPU-only PyTorch wheels. No SageMaker GPU | Cost; SegFormer-B0 is small (3.7 M params). The GPU quota for this new account is also 0 | SageMaker `ml.g5.xlarge` Spot (quota requested, unused) |
+| D-26 | 2026-10-13 | Heavy data steps (rendering, dataset preparation, training) run **on Batch, S3 to S3**; the dev box only orchestrates | The dev box has a 48 GB disk; rendering is 3× faster on Graviton (77 ms/frame) | Bigger dev box |
+| D-27 | 2026-10-13 | **Zero real spend: everything runs on AWS promotional credits** (owner's instruction). Only first-party AWS services. **Banned** because promotional credits typically exclude them: AWS Marketplace (incl. third-party models on Bedrock), Route 53 domain registration, Savings Plans / Reserved Instances upfront, paid Support plans. A `patchwork-real-spend` budget measures cost *after* credits and alerts at $0.01 | The owner pays nothing out of pocket; credits verified to cover EC2, EBS, VPC, S3 and Bedrock (Sep–Oct usage 100% offset) | Gross $300 budget only (would not notice an uncovered charge) |
 
 ## Risk register
 
@@ -36,7 +41,7 @@
 | R-03 | OpenCV 5 Python wheel missing for our platform or Python version | Low | High | Python 3.12; build from source in the container if needed (about 30 min, cached in ECR) | Claude |
 | R-04 | AWS permissions or Bedrock model access delays | Medium | Medium | Everything runs locally first (P1–P3 need only SageMaker; P3 can train on CPU at reduced scale) | User |
 | R-05 | Cost overrun | Low | Medium | Budgets, no NAT, Spot, auto-pause, teardown targets, weekly cost report | Claude |
-| R-06 | Indian Roads licence is non-permissive | Medium | Medium | Use only for training/eval (not redistributed); procedural defects + RDD (CC BY-SA) as alternatives | Claude |
+| R-06 | Real-mask datasets are non-commercial (Pothole Mix CC BY-NC; Indian Roads GPL) | Realised | Medium | D-24: research-licence weights; licence-clean LR-ASPP model trained on synthetic data only; never redistribute raw images | Claude |
 | R-07 | Cost-allocation tag takes 24 h; Cost Explorer needs payer access | Medium | Low (report delay) | Activate in P0; fallback to the service-level account view | User |
 | R-08 | Rendering a 25 km pass is slow on 4 vCPU | Medium | Low | Sub-route segments for iteration; Batch array jobs for full passes | Claude |
 | R-09 | AgentCore/Strands API changes | Low | Medium | Thin adapter; tools are plain Lambdas usable without AgentCore | Claude |

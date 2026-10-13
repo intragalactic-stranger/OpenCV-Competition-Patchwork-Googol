@@ -78,8 +78,13 @@ def fetch(ce, start: str, end: str, group_key: str, group_type: str, tag_filter:
         Metrics=["UnblendedCost"],
         GroupBy=[{"Type": group_type, "Key": group_key}],
     )
+    # gross usage only: credits are reported separately (otherwise every service nets to ~$0)
+    usage = {"Dimensions": {"Key": "RECORD_TYPE", "Values": ["Usage"]}}
     if tag_filter:
-        kwargs["Filter"] = {"Tags": {"Key": "Project", "Values": ["patchwork"], "MatchOptions": ["EQUALS"]}}
+        tag = {"Tags": {"Key": "Project", "Values": ["patchwork"], "MatchOptions": ["EQUALS"]}}
+        kwargs["Filter"] = {"And": [usage, tag]}
+    else:
+        kwargs["Filter"] = usage
     out: dict[str, float] = {}
     token = None
     while True:
@@ -95,13 +100,19 @@ def fetch(ce, start: str, end: str, group_key: str, group_type: str, tag_filter:
             return out
 
 
-def month_to_date(ce, today: dt.date) -> float:
-    start = today.replace(day=1).isoformat()
-    end = (today + dt.timedelta(days=1)).isoformat()
+def by_record_type(ce, start: str, end: str) -> dict[str, float]:
+    """Account-wide Usage / Credit / Tax / ... totals; net = sum (what is actually paid)."""
     resp = ce.get_cost_and_usage(
-        TimePeriod={"Start": start, "End": end}, Granularity="MONTHLY", Metrics=["UnblendedCost"]
+        TimePeriod={"Start": start, "End": end},
+        Granularity="MONTHLY",
+        Metrics=["UnblendedCost"],
+        GroupBy=[{"Type": "DIMENSION", "Key": "RECORD_TYPE"}],
     )
-    return sum(float(p["Total"]["UnblendedCost"]["Amount"]) for p in resp["ResultsByTime"])
+    out: dict[str, float] = {}
+    for p in resp["ResultsByTime"]:
+        for g in p["Groups"]:
+            out[g["Keys"][0]] = out.get(g["Keys"][0], 0.0) + float(g["Metrics"]["UnblendedCost"]["Amount"])
+    return out
 
 
 def write_chart_and_csv(rows: list[tuple[str, float]]) -> None:
@@ -151,7 +162,9 @@ def main() -> int:
                 "**whole account**, including the dev box and anything unrelated."
             )
         by_phase = fetch(ce, args.start, args.end, "Phase", "TAG", tag_filter=True)
-        mtd = month_to_date(ce, dt.date.today())
+        today = dt.date.today()
+        mtd = by_record_type(ce, today.replace(day=1).isoformat(), (today + dt.timedelta(days=1)).isoformat())
+        since = by_record_type(ce, args.start, args.end)
     except NoCredentialsError:
         print("No AWS credentials (attach the instance role first). Report left unchanged.", file=sys.stderr)
         return 2
@@ -170,10 +183,15 @@ def main() -> int:
             "| Item | Value |",
             "|---|---|",
             f"| Period | {args.start} → {args.end} (end exclusive) |",
-            f"| Total project spend | **${total:,.2f}** |",
+            f"| Project usage (gross, before credits) | **${total:,.2f}** |",
+            f"| Account usage since project start (gross) | ${since.get('Usage', 0):,.2f} |",
+            f"| Paid by AWS promotional credits | ${-since.get('Credit', 0):,.2f} |",
+            f"| **Real money paid (net after credits)** | **${sum(since.values()):,.2f}** "
+            f"(guarded by the `patchwork-real-spend` budget: alert at $0.01) |",
             "| Dev box (shared EC2 t3a.xlarge, us-east-1) | included above only if it is tagged |",
-            f"| Monthly budget | ${BUDGET_USD:,.2f} |",
-            f"| Account spend this month to date | ${mtd:,.2f} ({mtd / BUDGET_USD * 100:.1f}% of budget) |",
+            f"| Planned monthly usage (from credits) | ${BUDGET_USD:,.2f} |",
+            f"| Account usage this month to date | ${mtd.get('Usage', 0):,.2f} "
+            f"({mtd.get('Usage', 0) / BUDGET_USD * 100:.1f}% of plan); net paid ${sum(mtd.values()):,.2f} |",
             f"| Kilometres processed (from the register) | {km:,.1f} |",
             f"| **Cost per km processed** (processing services only) | {cost_per_km} |",
             "| Target cost per km (proposal) | < $0.02 |",
@@ -182,7 +200,7 @@ def main() -> int:
             note,
         ]
     )
-    svc = ["| AWS service | What it is used for | Spend to date |", "|---|---|---|"]
+    svc = ["| AWS service | What it is used for | Usage to date (gross, paid by credits) |", "|---|---|---|"]
     svc += [f"| {s} | {PURPOSE.get(s, '')} | ${v:,.2f} |" for s, v in rows] or ["| (no spend yet) | | $0.00 |"]
     phase_rows = sorted((k.split("$", 1)[-1] or "(untagged)", v) for k, v in by_phase.items() if v > 0)
     ph = ["| Phase | Spend |", "|---|---|"]

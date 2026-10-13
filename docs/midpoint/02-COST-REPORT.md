@@ -9,14 +9,17 @@
 | Item | Value |
 |---|---|
 | Period | 2026-10-12 → 2026-10-14 (end exclusive) |
-| Total project spend | **$0.00** |
+| Project usage (gross, before credits) | **$0.55** |
+| Account usage since project start (gross) | $0.55 |
+| Paid by AWS promotional credits | $0.55 |
+| **Real money paid (net after credits)** | **$0.00** (guarded by the `patchwork-real-spend` budget: alert at $0.01) |
 | Dev box (shared EC2 t3a.xlarge, us-east-1) | included above only if it is tagged |
-| Monthly budget | $300.00 |
-| Account spend this month to date | $0.00 (0.0% of budget) |
+| Planned monthly usage (from credits) | $300.00 |
+| Account usage this month to date | $8.57 (2.9% of plan); net paid $0.00 |
 | Kilometres processed (from the register) | 0.0 |
 | **Cost per km processed** (processing services only) | n/a (no km processed yet) |
 | Target cost per km (proposal) | < $0.02 |
-| Generated | 2026-10-13 03:45 UTC by `make cost-report` |
+| Generated | 2026-10-13 04:55 UTC by `make cost-report` |
 
 ⚠️ The `Project` cost-allocation tag is not active yet (or has no data), so this shows the **whole account**, including the dev box and anything unrelated.
 <!-- COST-SUMMARY:END -->
@@ -24,10 +27,12 @@
 ## Spend by AWS service
 
 <!-- COST-BY-SERVICE:BEGIN -->
-| AWS service | What it is used for | Spend to date |
+| AWS service | What it is used for | Usage to date (gross, paid by credits) |
 |---|---|---|
-| Amazon Elastic Compute Cloud - Compute | Batch Graviton Spot instances (and dev box if untagged) | $0.00 |
-| EC2 - Other | EBS volumes, data transfer | $0.00 |
+| Amazon Elastic Compute Cloud - Compute | Batch Graviton Spot instances (and dev box if untagged) | $0.45 |
+| EC2 - Other | EBS volumes, data transfer | $0.07 |
+| Amazon Virtual Private Cloud | Networking (no NAT) | $0.03 |
+| Amazon Simple Storage Service | Clips, crops, overlays, models, state | $0.00 |
 <!-- COST-BY-SERVICE:END -->
 
 ![Cost by service](assets/cost_by_service.png)
@@ -39,6 +44,10 @@
 |---|---|
 | (no tagged spend yet) | $0.00 |
 <!-- COST-BY-PHASE:END -->
+
+## Who pays: AWS promotional credits (no real money)
+
+Everything runs on **AWS promotional credits** (decision [D-27](../plan/11-decisions-and-risks.md)). The table above separates gross usage, the part paid by credits, and the **real money paid, which must stay $0.00**. A dedicated AWS Budget (`patchwork-real-spend`) measures cost *after* credits and e-mails the owner at the first cent. Services that credits usually exclude are not used: Marketplace, third-party Bedrock models, domain registration, Savings Plans, paid Support.
 
 ## Where the money goes and why (narrative, maintained by hand)
 

@@ -1,3 +1,5 @@
 service,usd
-Amazon Elastic Compute Cloud - Compute,0.0000
-EC2 - Other,0.0000
+Amazon Elastic Compute Cloud - Compute,0.4512
+EC2 - Other,0.0688
+Amazon Virtual Private Cloud,0.0284
+Amazon Simple Storage Service,0.0000

@@ -70,24 +70,30 @@ resource "aws_s3_bucket_lifecycle_configuration" "tfstate" {
   }
 }
 
-# Monthly cost guardrail for the whole account (tag filtering in Budgets needs the cost-allocation
-# tag to be active first, so the account-wide budget is the safe default).
-resource "aws_budgets_budget" "monthly" {
-  name         = "patchwork-monthly"
+# Real-money guardrail. The account runs on AWS promotional credits and nothing may cost real money.
+# With include_credit = true the budget measures cost *after* credits, so it stays at $0 while credits
+# cover everything; the first uncovered cent (e.g. a Marketplace product) emails the owner.
+# Account-wide on purpose (no tag filter): any real charge matters, not only Patchwork's.
+# Credit *consumption* (gross usage vs the $300/month plan) is tracked by `make cost-report`.
+resource "aws_budgets_budget" "real_spend" {
+  name         = "patchwork-real-spend"
   budget_type  = "COST"
-  limit_amount = tostring(var.monthly_budget_usd)
+  limit_amount = tostring(var.real_spend_alert_usd)
   limit_unit   = "USD"
   time_unit    = "MONTHLY"
 
-  dynamic "notification" {
-    for_each = [50, 80, 100]
-    content {
-      comparison_operator        = "GREATER_THAN"
-      threshold                  = notification.value
-      threshold_type             = "PERCENTAGE"
-      notification_type          = "ACTUAL"
-      subscriber_email_addresses = var.alert_emails
-    }
+  cost_types {
+    include_credit = true
+    include_refund = true
+  }
+
+  # > 1 % of $1 = the first cent of real (uncovered) spend
+  notification {
+    comparison_operator        = "GREATER_THAN"
+    threshold                  = 1
+    threshold_type             = "PERCENTAGE"
+    notification_type          = "ACTUAL"
+    subscriber_email_addresses = var.alert_emails
   }
 
   notification {

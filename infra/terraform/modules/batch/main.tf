@@ -35,8 +35,18 @@ resource "aws_ecr_repository" "batch" {
   }
 }
 
+resource "aws_ecr_repository" "train" {
+  name                 = "${var.name}-train"
+  image_tag_mutability = "MUTABLE"
+  force_delete         = true
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
 resource "aws_ecr_lifecycle_policy" "batch" {
-  repository = aws_ecr_repository.batch.name
+  for_each   = { batch = aws_ecr_repository.batch.name, train = aws_ecr_repository.train.name }
+  repository = each.value
   policy = jsonencode({
     rules = [{
       rulePriority = 1
@@ -201,7 +211,62 @@ resource "aws_batch_job_definition" "synth_render" {
   })
 }
 
+# CPU training (decision D-25) and dataset preparation, both from the training image
+locals {
+  train_image = "${aws_ecr_repository.train.repository_url}:${var.image_tag}"
+  train_jobs = {
+    prepare   = { vcpu = 4, memory = 15000, timeout = 7200, command = ["training.prepare", "--help"] }
+    train-cpu = { vcpu = 32, memory = 60000, timeout = 36000, command = ["training.train", "--help"] }
+  }
+}
+
+resource "aws_batch_job_definition" "train" {
+  for_each              = local.train_jobs
+  name                  = "${var.name}-${each.key}"
+  type                  = "container"
+  platform_capabilities = ["EC2"]
+  propagate_tags        = true
+  retry_strategy {
+    attempts = 3
+    evaluate_on_exit {
+      action           = "RETRY"
+      on_status_reason = "Host EC2*"
+    }
+    evaluate_on_exit {
+      action    = "EXIT"
+      on_reason = "*"
+    }
+  }
+  timeout {
+    attempt_duration_seconds = each.value.timeout
+  }
+  container_properties = jsonencode({
+    image      = local.train_image
+    command    = each.value.command
+    jobRoleArn = aws_iam_role.job.arn
+    resourceRequirements = [
+      { type = "VCPU", value = tostring(each.value.vcpu) },
+      { type = "MEMORY", value = tostring(each.value.memory) },
+    ]
+    linuxParameters = { sharedMemorySize = 8192 }
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = aws_cloudwatch_log_group.batch.name
+        "awslogs-region"        = data.aws_region.current.region
+        "awslogs-stream-prefix" = each.key
+      }
+    }
+  })
+}
+
 output "ecr_repository_url" { value = aws_ecr_repository.batch.repository_url }
+output "ecr_train_repository_url" { value = aws_ecr_repository.train.repository_url }
 output "job_queue" { value = aws_batch_job_queue.spot.name }
-output "job_definitions" { value = { synth_render = aws_batch_job_definition.synth_render.name } }
+output "job_definitions" {
+  value = merge(
+    { synth_render = aws_batch_job_definition.synth_render.name },
+    { for k, v in aws_batch_job_definition.train : k => v.name },
+  )
+}
 output "job_role_arn" { value = aws_iam_role.job.arn }

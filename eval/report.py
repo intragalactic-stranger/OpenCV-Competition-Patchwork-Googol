@@ -68,9 +68,45 @@ def build_table() -> str:
         )
     else:
         rows.append(_row("Median localisation error", "≤ 8 m", None, None))
-    rows.append(_row("Segmentation mIoU (pothole), real images", "reported", None, None))
-    rows.append(_row("Segmentation mIoU (pothole), synthetic val", "reported", None, None))
-    if smoke and smoke.get("dnn", {}).get("runs"):
+    seg = _load("segmentation.json")
+    real = seg.get("iou_test_real") if seg else None
+    synth = seg.get("iou_val_synth") if seg else None
+    note = f"{seg['arch']} in OpenCV {seg['engine']}; see 07-MODEL-CARD" if seg else ""
+    rows.append(
+        _row(
+            "Segmentation IoU (damage), real photos (test split)",
+            "reported (aim ≥ 0.55)",
+            None if real is None else f"{real:.3f}",
+            None if real is None else real >= 0.55,
+            note,
+        )
+    )
+    rows.append(
+        _row(
+            "Segmentation IoU (damage), synthetic held-out stretch",
+            "reported (aim ≥ 0.75)",
+            None if synth is None else f"{synth:.3f}",
+            None if synth is None else synth >= 0.75,
+            note,
+        )
+    )
+    par = (seg or {}).get("parity", {})
+    if par.get("ENGINE_NEW", {}).get("loaded"):
+        rows.append(
+            _row(
+                "ONNX parity: OpenCV 5 ENGINE_NEW vs onnxruntime (trained SegFormer-B0)",
+                "≤ 1e-3",
+                f"{par['ENGINE_NEW']['max_abs_diff']:.1e}",
+                par["ENGINE_NEW"]["max_abs_diff"] <= 1e-3,
+                f"{par['images']} images; {100 * par['ENGINE_NEW']['argmax_agreement']:.3f}% same pixel decisions; "
+                + (
+                    "ENGINE_CLASSIC cannot load it"
+                    if not par.get("ENGINE_CLASSIC", {}).get("loaded")
+                    else "CLASSIC loads"
+                ),
+            )
+        )
+    elif smoke and smoke.get("dnn", {}).get("runs"):
         worst = max(r["ENGINE_NEW"].get("max_abs_diff", 1) for r in smoke["dnn"]["runs"])
         classic = all(not r["ENGINE_CLASSIC"].get("loaded") for r in smoke["dnn"]["runs"])
         rows.append(

@@ -68,7 +68,8 @@ def main(which: str = "all") -> None:
         path.write_bytes(body)
         n = len(json.loads(body)["elements"])
         sha = hashlib.sha256(body).hexdigest()[:16]
-        lines.append(f"- `{path.name}`: {n} elements, sha256 {sha}…, fetched {dt.datetime.now(dt.UTC):%Y-%m-%d %H:%M} UTC")
+        now = f"{dt.datetime.now(dt.UTC):%Y-%m-%d %H:%M}"
+        lines.append(f"- `{path.name}`: {n} elements, sha256 {sha}…, fetched {now} UTC")
         print(f"{name}: {n} elements -> {path}")
     (OUT / "SOURCE.md").write_text("\n".join(lines) + "\n")
 

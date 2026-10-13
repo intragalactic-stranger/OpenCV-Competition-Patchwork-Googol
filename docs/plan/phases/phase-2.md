@@ -4,17 +4,17 @@
 **Midpoint track:** yes.
 
 ## Checklist
-- [ ] `calib.py`: ChArUco detection + `calibrateCamera`; RMS < 0.5 px; recovered K/dist vs synthetic truth (fx within 1%)
-- [ ] Undistort maps cached per calibration
-- [ ] `ipm.py`: homography from h/θ/φ; BEV at 1 cm/px over Y 3–15 m, X ±5 m
-- [ ] Lane-width self-check + pitch refinement
-- [ ] `triage.py`: variance, edge energy, LK optical flow, IMU speed gate, one frame per ~4 m; keep 8–12%
-- [ ] `privacy.py`: YuNet + plate detector; blur-before-write enforced by the type (`BlurredFrame`)
-- [ ] `measure.py`: BEV mask → area, L×W, uncertainty; multi-frame median fusion
-- [ ] `localise.py`: Kalman-smoothed pose, map-matching, defect lat/lon + chainage
+- [x] `calib.py`: ChArUco detection + `calibrateCamera`; RMS < 0.5 px; recovered K/dist vs synthetic truth (fx within 1%). RMS 0.164 px, fx within 0.02%
+- [x] Undistortion folded into the IPM remap (one `cv2.remap` from the distorted frame straight to the BEV)
+- [x] `ipm.py`: homography from h/θ/φ; BEV at 1 cm/px over Y 3–15 m, X ±5 m
+- [x] Pitch refinement from lane-line geometry (`pose.py`, pitch MAE 0.048°) · [ ] lane-width self-check (not yet)
+- [x] `triage.py`: Laplacian sharpness, edge energy, LK flow projected to the road plane (visual odometry), stop gate, one frame per 3 m. 297 frames/km, 0% recall loss (D-23)
+- [x] `privacy.py`: YuNet + character-row plate/text detector; `BlurredFrame` type; 4/4 injected plates; 0 of 112 pothole boxes blurred on RDD-India
+- [x] `measure.py`: BEV mask → area, L×W, uncertainty; multi-frame median fusion; edge/bonnet truncation rejected
+- [x] `localise.py`: KF [chainage, odometry scale, GNSS bias] + RTS smoother, windowed map-matching to the corridor. 3.9 m median vs 9.1 m raw GNSS
 - [ ] `track.py`: within-pass merge
 - [ ] `pipeline/runner.py --oracle-masks`: clip → observations.parquet + overlays (local)
-- [ ] Visuals for the midpoint pack: perspective vs BEV side-by-side with measured polygons; calibration board detection
+- [x] Visuals for the midpoint pack: perspective vs BEV side-by-side with measured polygons; calibration board detection
 
 ## Exit criteria
 | Check | Target | Command |
