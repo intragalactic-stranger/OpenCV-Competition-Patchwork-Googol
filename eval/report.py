@@ -197,7 +197,21 @@ def build_table() -> str:
     else:
         rows.append(_row("Processing time per km (Batch, Graviton)", "reported", None, None))
     rows.append(_row("Cost per km processed", "< $0.02", None, None))
-    rows.append(_row("Cross-pass re-ID F1, basic matcher (stretch)", "≥ 0.90 (final)", None, None))
+    reid = _load("reid.json")
+    if reid:
+        rows.append(
+            _row(
+                "Cross-pass re-ID F1, basic matcher (preview)",
+                "≥ 0.90 (final, second half)",
+                f"{reid['link_f1']:.2f}",
+                None,
+                f"passes {reid['passes'][0]}→{reid['passes'][1]}: precision {reid['link_precision']}, recall "
+                f"{reid['link_recall']}; repaired defects recognised as gone: {reid['repaired_recall']:.0%} "
+                f"of {reid['repaired_in_truth_and_detected_in_pass1']}",
+            )
+        )
+    else:
+        rows.append(_row("Cross-pass re-ID F1, basic matcher (stretch)", "≥ 0.90 (final)", None, None))
     ab = _load("ablation_ab.json")
     if ab:
         A, B = ab["A"], ab["B"]

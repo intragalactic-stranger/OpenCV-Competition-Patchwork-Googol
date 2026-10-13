@@ -27,6 +27,27 @@ from patchwork.synth.corridor import load_corridor
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def match_truth(det: list[dict], visible: list[dict], gate: float = 12.0) -> tuple[list[tuple[dict, dict]], list[dict]]:
+    """Greedy, most-confident first: each detection takes the nearest unmatched truth defect within the gate
+    (`gate` m along the road, 2 m across). Returns (matches, unmatched detections)."""
+    used: set[int] = set()
+    matches, fps = [], []
+    for d in sorted(det, key=lambda d: -d["confidence"]):
+        best, best_dist = None, None
+        for i, t in enumerate(visible):
+            if i in used:
+                continue
+            ds, dd = abs(d["s"] - t["centroid_s"]), abs(d["d"] - t["centroid_d"])
+            if ds <= gate and dd <= 2.0 and (best_dist is None or ds + dd < best_dist):
+                best, best_dist = i, ds + dd
+        if best is None:
+            fps.append(d)
+        else:
+            used.add(best)
+            matches.append((d, visible[best]))
+    return matches, fps
+
+
 def evaluate(pass_dir: Path, run_root: Path, gate: float = 12.0, lateral_view: float = 4.5) -> dict:
     corridor = load_corridor(ROOT / "data" / "corridor")
     truth = json.loads((pass_dir / "truth" / "defects.json").read_text())
@@ -59,21 +80,7 @@ def evaluate(pass_dir: Path, run_root: Path, gate: float = 12.0, lateral_view: f
         if t["area_m2"] is not None and abs(t["centroid_d"]) <= lateral_view and in_range(t["centroid_s"])
     ]
     patches = [t for t in truth if t["state"] == "repaired" and in_range(t["centroid_s"])]
-    used: set[int] = set()
-    matches, fps = [], []
-    for d in sorted(det, key=lambda d: -d["confidence"]):
-        best, best_dist = None, None
-        for i, t in enumerate(visible):
-            if i in used:
-                continue
-            ds, dd = abs(d["s"] - t["centroid_s"]), abs(d["d"] - t["centroid_d"])
-            if ds <= gate and dd <= 2.0 and (best_dist is None or ds + dd < best_dist):
-                best, best_dist = i, ds + dd
-        if best is None:
-            fps.append(d)
-        else:
-            used.add(best)
-            matches.append((d, visible[best]))
+    matches, fps = match_truth(det, visible, gate)
     on_patch = sum(
         any(abs(f["s"] - p["centroid_s"]) <= gate and abs(f["d"] - p["centroid_d"]) <= 2.0 for p in patches)
         for f in fps
