@@ -14,6 +14,8 @@ Mumbai has thousands of potholes. Finding them is a solved problem; any phone ap
 
 At the midpoint the **whole chain runs on AWS end to end**: upload a survey → defects measured → stored in a database → shown on a map → agent proposes work → human approves. Every number is checked against exact ground truth.
 
+> **Short on time or no live demo?** Use [`showcase/`](showcase/README.md): a 3-minute captioned screen recording and a 14-slide PDF with the same story and numbers.
+
 ## 2. What to open, in what order
 
 | If the reviewer asks… | Open | Section |

@@ -30,6 +30,7 @@ docs/
 │   ├── 07-MODEL-CARD.md            the trained model: data, configs, libraries, inputs/outputs, metrics
 │   ├── 08-SERVICE-MAPPINGS.md      step by step: which AWS service does what, credits used, second-half projection
 │   ├── 09-REVIEWER-WALKTHROUGH.md  START HERE before a review: story, order, what to show and say, Q&A
+│   ├── showcase/                   ready to show: captioned screen recording (MP4), 14-slide PDF, screenshots
 │   └── assets/                     screenshots, overlays, charts used by the pack
 │
 └── plan/         ◄ MAIN ENGINEERING PLAN: how the whole thing is built

@@ -94,7 +94,8 @@ map.on("load", async () => {
 
   const popup = (f) => {
     const p = f.properties;
-    const m = p.material || {};
+    // map-click features carry nested properties as JSON strings (MapLibre); list rows carry objects
+    const m = (typeof p.material === "string" ? JSON.parse(p.material) : p.material) || {};
     return `<div class="popup"><b>${p.road_name}</b> · chainage ${fmt(p.chainage_m, 0)} m<table>
       <tr><td>Damaged area</td><td><b>${fmt(p.latest_area_m2)} m²</b> ± ${fmt(p.area_uncertainty_m2)}</td></tr>
       <tr><td>Severity</td><td>${p.latest_severity}</td></tr>
