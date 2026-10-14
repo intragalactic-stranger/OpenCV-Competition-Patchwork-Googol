@@ -7,6 +7,8 @@
 
 ---
 
+> **Confused about where to start? Open [`OWNER-CHECKLIST.md`](OWNER-CHECKLIST.md)**: one ordered list of what to open, with paths.
+
 ## If you have 5 minutes
 
 | Read | Why |
@@ -19,6 +21,7 @@
 
 ```
 docs/
+├── OWNER-CHECKLIST.md  the ordered list: what to open before and during the review, and your AWS tasks
 ├── DATA-LICENSES.md  every dataset, model and map used, with its licence and what it means for release
 ├── midpoint/     ◄ GRANT CHECKPOINT PACK: show this to the grant reviewers
 │   ├── 00-MIDPOINT-SCOPE.md        what is in the halfway demo, and why
