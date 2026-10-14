@@ -1,9 +1,15 @@
 # 04: Data strategy: open data first, synthetic where needed
 
+> **As built at the midpoint (2026-10-14).**
+> - The real masks come from **Pothole Mix v2** (CC BY-NC 3.0), not Indian Roads (GPL-2.0, only 230 pothole images): D-24. Wherever this page says "Indian Roads", read Pothole Mix.
+> - One `damage` class (pothole, edge break, depression) plus background; cracks are ignored. The defect type comes from shape rules after measurement.
+> - Real cut-outs blended with `seamlessClone`, painted arrows and the 60 distractor clips (D4) are not built yet. Distractors are present in every pass, and `hard_neg_val` (480 look-alike frames) measures false alarms.
+> - What was actually built for D1–D3: [phase-1 checklist](phases/phase-1.md). Licences: [DATA-LICENSES](../DATA-LICENSES.md).
+
 ## 1. Principles
 
 1. **Open data for appearance, synthetic for truth.** Real images teach the model what Indian potholes look like. Synthetic passes give exact area, position and repair status, which no open dataset has.
-2. **Every byte has a licence noted** in `data/LICENSES.md` before it is used.
+2. **Every byte has a licence noted** in `data/raw/<source>/SOURCE.md` before it is used, and summarised in [`docs/DATA-LICENSES.md`](../DATA-LICENSES.md).
 3. **Everything synthetic is seeded and reproducible**: `make synth SEED=… PASS=…` regenerates identical data.
 4. **Privacy holds even for open data.** Every real image goes through the same face and plate blur before it is stored in our buckets.
 

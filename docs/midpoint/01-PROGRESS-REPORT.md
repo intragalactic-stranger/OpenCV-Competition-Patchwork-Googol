@@ -1,7 +1,7 @@
 # Progress report
 
 > Living document, updated at the end of every work session.
-> **Last updated:** 2026-10-13 · **Current phase:** midpoint vertical slice complete, on `seg-v3` (Phases 0–4 ✅, 5a ✅) · **Overall midpoint progress:** ▓▓▓▓▓▓▓▓▓▓ 100% of the midpoint scope
+> **Last updated:** 2026-10-14 · **Current phase:** midpoint vertical slice complete, on `seg-v3` (Phases 0–4 ✅, 5a ✅) · **Overall midpoint progress:** ▓▓▓▓▓▓▓▓▓▓ 100% of the midpoint scope
 
 ## At a glance
 
@@ -83,3 +83,4 @@ See [`plan/02-requirements.md §4`](../plan/02-requirements.md#4-what-changed-fr
 | 2026-10-13 (b) | Aurora register, Step Functions pipeline, viewer, agent slice + approval gate; `seg-v2` trained; held-out survey (2 passes) through the cloud; end-to-end metrics, false-positive analysis; register within-pass linking fix |
 | 2026-10-13 (c) | Service mappings + second-half projection (`08`), reviewer walkthrough (`09`); hard-negative mining; `seg-v3` fine-tune; survey re-run on `seg-v3`; before/after figures; cost report accounts for data-transfer credits |
 | 2026-10-14 | Register reset (owner-authorised) and rebuilt from the `seg-v3` survey (278 defects); viewer republished; run A/B and road-wide agent demo re-run on `seg-v3`; approve/reject exercised; 25 orphaned approval workflows from the old demo stopped |
+| 2026-10-14 (b) | Docs audit: phase checklists 0–5 brought up to the as-built state (deviations and open items marked), `docs/DATA-LICENSES.md` added, "as built" notes on plan pages 03/04/08/09/10, schema tagged `schema-v1.1`. Open items found: Pothole Mix not yet privacy-blurred, `lraspp` licence-clean model not trained, failure alarms and a re-upload idempotency test not yet run (all second half / Phase 9) |

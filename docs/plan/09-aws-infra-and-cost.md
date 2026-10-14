@@ -1,5 +1,7 @@
 # 09: AWS infrastructure, access and cost
 
+> **As built at the midpoint (2026-10-14).** The deployed services, their cost and the credits that paid for them are in [midpoint/03](../midpoint/03-SERVICES-USED.md) and [midpoint/08](../midpoint/08-SERVICE-MAPPINGS.md). Differences from this design: training on **Batch Graviton Spot (CPU)** instead of SageMaker (D-25); **no DynamoDB or SQS** (D-28, D-14); everything is paid from **promotional credits**, guarded by the `patchwork-real-spend` budget (alert at $0.01 after credits, D-27). The $300 gross-usage budget with 50/80/100% alerts is planned for the second half.
+
 Region: **ap-south-1 (Mumbai)**. Monthly cap: **$300**. Everything is in Terraform and tagged `Project=patchwork`, `Phase=<n>`, `Owner=googol`.
 
 ## 1. Access setup (one-time, done by you)

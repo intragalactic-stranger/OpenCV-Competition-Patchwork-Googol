@@ -1,5 +1,11 @@
 # 03: Architecture
 
+> **As built at the midpoint (2026-10-14).** This page is the design. Where the build differs, the decision log ([11](11-decisions-and-risks.md)) says why, and [midpoint/03-SERVICES-USED](../midpoint/03-SERVICES-USED.md) lists what is actually deployed:
+> - **Training** runs on AWS Batch, Graviton Spot, CPU only (D-25), not SageMaker.
+> - **No DynamoDB, no SQS, no Lambda in the pipeline.** EventBridge starts Step Functions directly; Batch retries plus the register's unique index give idempotency; the approval task token is stored in Aurora (D-28).
+> - **LLM** is Amazon Nova Pro (D-17), not Claude. The agent runs from the dev box with in-process tools; AgentCore Runtime and Gateway come in the second half.
+> - Terraform state uses S3-native locking (D-14), not a DynamoDB lock table.
+
 ## 1. The big picture
 
 ```

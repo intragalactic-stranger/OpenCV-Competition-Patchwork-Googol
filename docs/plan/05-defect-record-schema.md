@@ -1,6 +1,6 @@
 # 05: Defect record schema (the contract)
 
-> **Status:** v1 draft. **Freezes at the end of Phase 1** (tag `schema-v1`). After the freeze, changes are additive only (new nullable columns), and each one needs a decision-log entry.
+> **Status:** frozen as **v1.1** (git tag `schema-v1.1`): v1 plus the additive `approval_request` table (D-28). After the freeze, changes are additive only (new nullable columns), and each one needs a decision-log entry.
 
 Perception writes it. The agent reads it. The register stores it. Defined once in `src/patchwork/schema/` (pydantic models) and `src/patchwork/schema/ddl.sql` (PostGIS DDL). A test asserts the two agree.
 

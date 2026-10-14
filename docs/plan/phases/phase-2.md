@@ -12,8 +12,8 @@
 - [x] `privacy.py`: YuNet + character-row plate/text detector; `BlurredFrame` type; 4/4 injected plates; 0 of 112 pothole boxes blurred on RDD-India
 - [x] `measure.py`: BEV mask → area, L×W, uncertainty; multi-frame median fusion; edge/bonnet truncation rejected
 - [x] `localise.py`: KF [chainage, odometry scale, GNSS bias] + RTS smoother, windowed map-matching to the corridor. 3.9 m median vs 9.1 m raw GNSS
-- [ ] `track.py`: within-pass merge
-- [ ] `pipeline/runner.py --oracle-masks`: clip → observations.parquet + overlays (local)
+- [x] Within-pass merge: done inside `measure.py` (multi-frame fusion per defect) and the `assemble` step, no separate `track.py`. Known gap: one defect can still split into two blobs (second half)
+- [x] Oracle-mask path: `python -m eval.metrics.area --oracle` (true masks → our geometry → m²). Model path: `pipeline/runner.py perceive|assemble` → observations + overlays (local)
 - [x] Visuals for the midpoint pack: perspective vs BEV side-by-side with measured polygons; calibration board detection
 
 ## Exit criteria

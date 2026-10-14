@@ -1,5 +1,7 @@
 # 08: Evaluation plan
 
+> **As built at the midpoint (2026-10-14).** The midpoint metrics (§1) are computed by `eval/` and published in [midpoint/04](../midpoint/04-RESULTS-AND-OUTPUTS.md). Real-photo IoU is measured on **Pothole Mix** `val_real` / `test_real` (D-24), not Indian Roads. The 40-scenario agent suite, baselines, ablations other than run A/B, and CI are second-half work (Phase 8).
+
 Built like a production evaluation system: **fixed datasets, a regression suite on every commit, metrics computed by code and never typed by hand.**
 
 ## 1. Metrics (implementation in `eval/metrics/`)
@@ -13,7 +15,7 @@ Built like a production evaluation system: **fixed datasets, a regression suite 
 | Localisation error | Median and p90 of distance(observation geom, truth geom), m | `localisation.py` |
 | Re-ID F1 (D3) | Pairs (obs pass k, obs pass k+1) linked to the same defect, vs truth `truth_id` links | `reid.py` |
 | Repair-status accuracy | Per defect per transition: predicted status vs truth event; also a confusion matrix | `status.py` |
-| Segmentation mIoU | Per class on Indian Roads val (real) and the synthetic val set | `training/evaluate.py` |
+| Segmentation IoU | Damage class on Pothole Mix `val_real` / `test_real` (real) and `val_synth` | `training/evaluate.py` |
 | ONNX parity | max \|Δlogit\|, OpenCV ENGINE_NEW vs onnxruntime | `training/parity.py` |
 | Triage keep rate | Kept ÷ total frames; recall loss caused by triage | `triage_eval.py` |
 | Agent task success | Fraction of scenarios whose assertion passes | `eval/agent/run_scenarios.py` |

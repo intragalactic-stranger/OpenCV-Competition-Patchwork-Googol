@@ -18,9 +18,9 @@
 - [x] Entry point `python -m patchwork.pipeline.batch perceive|assemble` (D-29)
 
 ### Terraform (`infra/terraform/envs/dev`)
-- [x] modules: storage, network, db, batch, pipeline (incl. ingest + approval), viewer · [ ] observability (dashboard, alarms)
+- [x] modules: storage, network, db, batch, pipeline (incl. ingest + approval + a CloudWatch dashboard), viewer · [ ] alarms (below)
 - [x] Step Functions `process-pass`: read manifest → Batch perceive array (.sync) → Batch assemble (.sync: register + viewer). No Lambda needed
-- [ ] DLQ alarm, Batch failure alarm
+- [ ] Batch / Step Functions failure alarm (no SQS, so no DLQ: EventBridge starts Step Functions directly, and Batch retries + the unique index give idempotency). Second half
 - [x] `terraform apply` works incrementally (≈ 70 resources) · [ ] destroy from clean verified once (Phase 9)
 
 ### Viewer (midpoint)
@@ -29,8 +29,8 @@
 - [x] Served from CloudFront (private bucket + OAC)
 
 ### Pipeline metrics
-- [ ] CloudWatch EMF metrics: `KmProcessed`, `FramesKept`, `DefectsFound`, `StageSeconds{stage}`, `EstimatedCostUSD`
-- [ ] Small CloudWatch dashboard (pipeline only)
+- [x] CloudWatch EMF metrics printed by `pipeline/batch.py` (`emf()`) from the perceive and assemble jobs
+- [x] Small CloudWatch dashboard (pipeline only), in `modules/pipeline`
 
 ## Exit criteria
 | Check | How |
@@ -39,3 +39,9 @@
 | Idempotency | Re-upload the same clip → 0 new rows; Spot-interruption simulation (kill job) → retry → no duplicates |
 | Viewer live | CloudFront URL shows defects; screenshot to `docs/midpoint/assets/` |
 | Processing time and cost per km | Reported in the progress report (from metrics + Cost Explorer) |
+
+## Exit status at the midpoint (2026-10-14)
+- ✅ Full corridor end to end on AWS: held-out survey, 2 passes, 56.8 km, 15–17 min per pass, register in Aurora, map on CloudFront.
+- ✅ Spot interruptions: every job definition retries up to 3 times (the training job survived 3 real interruptions); the unique index (`ON CONFLICT DO NOTHING`) means a re-run cannot double-insert an observation.
+- ⏭ Not yet run as a deliberate test: re-upload the same clip and count 0 new rows; kill a job mid-run. Planned with the Phase 9 hardening, together with `terraform destroy` from clean.
+- ✅ Processing time and cost per km: 147 s/km, $0.0021/km ([04](../../midpoint/04-RESULTS-AND-OUTPUTS.md), [02](../../midpoint/02-COST-REPORT.md)).

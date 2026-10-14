@@ -10,7 +10,7 @@
 - [x] `pyproject.toml` (uv, Python 3.12) with dependency groups `dev` and `aws` (`synth`, `train` and `agent` groups are added in their phases)
 - [x] `Makefile` targets: `setup`, `check` (ruff + pytest), `test`, `smoke`, `cost-report` (`synth` added in Phase 1)
 - [x] Package skeleton `src/patchwork/{schema,synth,perception,register,pipeline,agent,api}`
-- [ ] (moved to Phase 1) `config/` with `local.yaml` / `aws.yaml` + `PATCHWORK_ENV` loader
+- [~] `config/` loader: not needed; settings come from `PATCHWORK_*` environment variables and Terraform outputs
 
 ### OpenCV 5 verification (`scripts/smoke/opencv5_smoke.py`)
 - [x] Confirm the installed version is 5.x (`cv2.__version__`) and which wheel/variant (contrib needed for ArUco? 5.x layout)
@@ -22,11 +22,11 @@
 
 ### AWS
 - [x] Install AWS CLI v2 and Terraform (user-local, `~/.local/bin`)
-- [ ] ⚠️ **User:** attach the instance role (see [09 §1.1](../09-aws-infra-and-cost.md#11-attach-an-iam-role-to-this-ec2-instance))
-- [ ] `aws sts get-caller-identity` OK; `aws configure set region ap-south-1`
-- [ ] (moved to Phase 5a) Amazon Nova model access check: `aws bedrock list-inference-profiles` → pin the model ID
-- [ ] Terraform `bootstrap/` **written and validated** (state bucket with S3-native locking + **Budget $300**, alerts 50/80/100% actual and 100% forecast); `apply` blocked on the instance role
-- [ ] Activate the cost-allocation tag `Project` (or ask the payer admin)
+- [x] **User:** attach the instance role (see [09 §1.1](../09-aws-infra-and-cost.md#11-attach-an-iam-role-to-this-ec2-instance))
+- [x] `aws sts get-caller-identity` OK; `aws configure set region ap-south-1`
+- [x] (done in Phase 5a) Amazon Nova model access check → `apac.amazon.nova-pro-v1:0`
+- [x] Terraform `bootstrap/` applied: state bucket with S3-native locking (D-14) + budget `patchwork-real-spend` (cost **after credits**, alert at $0.01, D-27). **Deviation:** the $300 gross-usage budget with 50/80/100% alerts is not created yet; it is planned for the second half ([08 §5](../../midpoint/08-SERVICE-MAPPINGS.md))
+- [x] Cost-allocation tag `Project` active (`Phase` still inactive; reports group by service instead)
 - [x] `scripts/cost_report.py` skeleton runs (even with $0)
 
 ### Docs

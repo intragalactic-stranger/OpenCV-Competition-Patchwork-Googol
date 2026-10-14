@@ -19,6 +19,7 @@
 
 ```
 docs/
+├── DATA-LICENSES.md  every dataset, model and map used, with its licence and what it means for release
 ├── midpoint/     ◄ GRANT CHECKPOINT PACK: show this to the grant reviewers
 │   ├── 00-MIDPOINT-SCOPE.md        what is in the halfway demo, and why
 │   ├── 01-PROGRESS-REPORT.md       ✅ achieved / 🔄 in progress / ⏭ next   (living document)
