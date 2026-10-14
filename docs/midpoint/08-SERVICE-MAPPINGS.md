@@ -72,7 +72,7 @@ A $1 budget, `patchwork-real-spend`, watches the cost **after credits**. It emai
 
 | # | What happens | AWS service | Resource | Credits consumed |
 |---|---|---|---|---|
-| 7a | Reasoning model of the "Ward Engineer's Assistant". Its tools query the register, group defects, estimate material and draft work orders | **Amazon Bedrock: Amazon Nova Pro / Lite** (first-party models only) | `apac.amazon.nova-pro-v1:0` | **$0.16** (about 148 k tokens in total; the 31-package planning run alone is about $0.12) |
+| 7a | Reasoning model of the "Ward Engineer's Assistant". Its tools query the register, group defects, estimate material and draft work orders | **Amazon Bedrock: Amazon Nova Pro / Lite** (first-party models only) | `apac.amazon.nova-pro-v1:0` | **$0.33** billed (all agent runs and A/B tests on both surveys; one road-wide planning run is 84–106 k tokens ≈ $0.10–0.12) |
 | 7b | Work orders (Markdown) and agent traces | **Amazon S3** | `…-artifacts/workorders/`, `…/traces/` | Included in S3 |
 | 7c | Approval gate: the workflow waits for a person; approve → MOCK ticket, reject → override recorded, no answer → expires after 7 days | **AWS Step Functions** (`waitForTaskToken`) | `patchwork-approve-work-package` | Included in Step 3c |
 

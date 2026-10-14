@@ -31,7 +31,7 @@ Open these tabs:
 | 6 | 5:00 | Viewer: click 2–3 defects | "Each dot: m² ± uncertainty, severity, material at a stated 5 cm thickness, and the evidence image (dashcam view + metric top-down view). We claim area, never depth." |
 | 7 | 6:00 | `make agent-demo`, then `make approvals` | "Amazon Nova plans the work: packages, priority from measured area and nearby schools/hospitals, materials, a work order. It can only *request* approval; the token lives in the database, never in the agent." |
 | 8 | 7:00 | `uv run python scripts/approve.py approve <id> --by "AE Ward D"` | "A human approves, and only then a (mock) ticket is filed. A rejection is recorded as an override." |
-| 9 | 7:45 | `assets/ablation_ab.md` | "Same defect, same prompt. Change only the measured area and the plan changes: priority 2 → 1, hot-mix 0.05 → 0.40 t. The vision drives the action. This runs on real pipeline output, a pothole measured at 0.38 m² (true area 0.40 m²)." |
+| 9 | 7:45 | `assets/ablation_ab.md` | "Same defect, same prompt. Change only the measured area and the plan changes: priority 2 → 1, hot-mix 0.05 → 0.40 t. The vision drives the action. This runs on real pipeline output, a pothole measured at 0.35 m² (true area 0.35 m²)." |
 | 10 | 8:30 | Results table, then `08-SERVICE-MAPPINGS.md` §0–3 (service → purpose → credits) | "Every number is computed by code. Real money spent: zero; everything runs on promotional credits." |
 | 11 | 9:15 | `08-SERVICE-MAPPINGS.md` §5 and `06-NEXT-STEPS.md` | "Second half: GPU training (g6.xlarge, about 110 GPU-hours), the full agent on AgentCore, repair verification over 8 passes, the console and the 40-scenario evaluation. Projected at about $370 of credits, line by line, with caps." |
 

@@ -1,7 +1,7 @@
 # Progress report
 
 > Living document, updated at the end of every work session.
-> **Last updated:** 2026-10-13 · **Current phase:** midpoint vertical slice complete (Phases 0–4 ✅, 5a ✅) · **Overall midpoint progress:** ▓▓▓▓▓▓▓▓▓▓ 97% (remaining: refresh the map/register and the agent demo with `seg-v3` output)
+> **Last updated:** 2026-10-13 · **Current phase:** midpoint vertical slice complete, on `seg-v3` (Phases 0–4 ✅, 5a ✅) · **Overall midpoint progress:** ▓▓▓▓▓▓▓▓▓▓ 100% of the midpoint scope
 
 ## At a glance
 
@@ -19,7 +19,7 @@
 | **End-to-end cloud pipeline** | ✅ | Upload → EventBridge → Step Functions → Batch → Aurora → viewer; **56.8 km in two passes, 15–17 min per pass** |
 | End-to-end metrics | ⚠️ mixed | Recall **0.94** ✅ · control-section false positives **0.30/km** ✅ (was 3.87) · cost **$0.0021/km** ✅ · area MAPE 27.8% ❌ (was 33.7%) · re-ID F1 0.73 (was 0.57) · whole-survey false positives 3.1/km (was 10). See [04 §3](04-RESULTS-AND-OUTPUTS.md#3-commentary-honest-reading-of-the-numbers) |
 | Map viewer | ✅ | https://d3mt6jrs1ynczo.cloudfront.net (synthetic data, labelled) |
-| Agent slice on Amazon Nova + approval gate | ✅ | Run A/B on **pipeline output**: priority 2 → 1, hot-mix 0.05 → 0.40 t; approve → MOCK ticket, reject → override recorded; unknown IDs rejected |
+| Agent slice on Amazon Nova + approval gate | ✅ | Run A/B on **`seg-v3` pipeline output**: priority 2 → 1, hot-mix 0.05 → 0.40 t; road-wide plan of 24 packages; approve → MOCK ticket, reject → override recorded; unknown IDs rejected |
 
 ## ✅ Achieved
 
@@ -42,10 +42,11 @@
 | 2026-10-13 | **Held-out survey end to end, 2 passes, 56.8 km**: recall 0.95, $0.0019/km; false positives analysed (shadows and wet patches) | [`04-RESULTS`](04-RESULTS-AND-OUTPUTS.md) |
 | 2026-10-13 | Run A/B on pipeline output passes; approve/reject exercised on pipeline packages | [`assets/ablation_ab.md`](assets/ablation_ab.md) |
 | 2026-10-13 | **Hard-negative fine-tune `seg-v3`** (CPU, 2.7 h; resumed from S3 checkpoints after 3 Spot interruptions). Same survey re-run through the cloud: false alarms 10.05 → 3.1 per km, control section 0.30/km (**target met**), area MAPE 33.7% → 27.8%, re-ID F1 0.57 → 0.73 | [`07-MODEL-CARD`](07-MODEL-CARD.md), [`04-RESULTS` §2.4c, §3](04-RESULTS-AND-OUTPUTS.md) |
+| 2026-10-14 | Register, map viewer, run A/B and agent demo refreshed on `seg-v3` output (24 work packages; one approved → MOCK ticket, one rejected) | [`assets/viewer.png`](assets/viewer.png), [`assets/ablation_ab.md`](assets/ablation_ab.md) |
 
 ## 🔄 In progress
 
-- Refresh the Aurora register and the map viewer with the `seg-v3` survey, then re-run the agent demo and the run A/B on it. Needs one owner command first (the register reset; see Blockers). Until then the viewer and the agent demo show the `seg-v2` survey, whose numbers are kept in `eval/results/*_seg_v2.json`.
+Nothing running. The register, the map viewer, the run A/B and the agent demo all use the `seg-v3` survey (refreshed 2026-10-14). Re-run `make cost-report` once the last Spot charges reach Cost Explorer (24–48 h).
 
 ## ⏭ Next
 
@@ -59,7 +60,6 @@
 |---|---|---|
 | Bedrock account verification | Agent slice (Nova) | ✅ cleared |
 | Check credit balance / expiry in **Billing → Credits** monthly | Zero-real-cost rule (D-27) | owner, about 1 minute a month |
-| Register reset before the `seg-v3` refresh: `! uv run python -m patchwork.register.dataapi reset-survey --yes` | Map viewer + agent demo on `seg-v3` | owner (the assistant is not allowed to run bulk deletes) |
 | Close the old SageMaker GPU quota requests (Support Center → Cases) | **Second-half GPU training**: they use up the account's limit of open quota requests, so the EC2 G-instance request (`08` §5) cannot be filed until they are closed | owner, before the second half |
 
 ## Deviations from the proposal (summary)
@@ -82,3 +82,4 @@ See [`plan/02-requirements.md §4`](../plan/02-requirements.md#4-what-changed-fr
 | 2026-10-13 (a) | AWS live (bootstrap + dev stack); arm64 images; 60 synthetic clips rendered on Batch; triage, privacy, localisation; Pothole Mix; SegFormer-B0 training pipeline (CPU) + OpenCV 5 parity; model card; credits-only cost guard |
 | 2026-10-13 (b) | Aurora register, Step Functions pipeline, viewer, agent slice + approval gate; `seg-v2` trained; held-out survey (2 passes) through the cloud; end-to-end metrics, false-positive analysis; register within-pass linking fix |
 | 2026-10-13 (c) | Service mappings + second-half projection (`08`), reviewer walkthrough (`09`); hard-negative mining; `seg-v3` fine-tune; survey re-run on `seg-v3`; before/after figures; cost report accounts for data-transfer credits |
+| 2026-10-14 | Register reset (owner-authorised) and rebuilt from the `seg-v3` survey (278 defects); viewer republished; run A/B and road-wide agent demo re-run on `seg-v3`; approve/reject exercised; 25 orphaned approval workflows from the old demo stopped |

@@ -20,9 +20,9 @@
 | Processing time per km (Batch, Graviton, 4 vCPU per clip) | reported | 2.4 vCPU-container-min/km · clips run in parallel: wall-clock per pass ≈ time of the slowest clip | ℹ️ |
 | Cost per km processed (perception compute, Graviton Spot) | < $0.02 | $0.0021 · 147 s × 4 vCPU per km at $0.01278/vCPU-h; upper bound incl. data rendering + training $0.0638/km; see 02-COST-REPORT | ✅ |
 | Cross-pass re-ID F1, basic matcher (preview) | ≥ 0.90 (final, second half) | 0.73 · passes 1→2: precision 0.606, recall 0.905; repaired defects recognised as gone: 53% of 32 | ℹ️ |
-| Run A/B: plan changes with measured area (agent on Amazon Nova) | must change | changed · 0.38 → 3.10 m²: priority 2 → 1, hot-mix 0.049 → 0.4007 t; register source: pipeline output; see assets/ablation_ab.md | ✅ |
+| Run A/B: plan changes with measured area (agent on Amazon Nova) | must change | changed · 0.35 → 3.10 m²: priority 2 → 1, hot-mix 0.0456 → 0.4007 t; register source: pipeline output; see assets/ablation_ab.md | ✅ |
 
-_Generated 2026-10-13 20:16 UTC by `uv run python -m eval.report`._
+_Generated 2026-10-14 02:19 UTC by `uv run python -m eval.report`._
 <!-- METRICS:END -->
 
 ## 2. Visual outputs
@@ -90,7 +90,8 @@ Files: `eval/results/end_to_end_seg_v2.json`, `reid_seg_v2.json` (before) and `e
 - **Measurement on small and medium potholes.** In the area scatter, potholes under about 0.6 m² sit close to the diagonal (median error 18%).
 - **OpenCV 5.** The trained model runs in `ENGINE_NEW` with outputs identical to onnxruntime (2.0e-5). The classic engine cannot load it at all.
 - **Cost.** Perception costs **$0.0021 per km** in measured compute on Graviton Spot, against a target below $0.02. Everything so far was paid by promotional credits; real money paid is $0.00.
-- **Agent.** The run A/B test uses **real pipeline output**: a pothole the pipeline measured at 0.38 m² (true area 0.40 m², seen on both passes). Changing only its measured area to 3.10 m² moves the plan from priority 2 to priority 1 and the hot-mix from 0.05 t to 0.40 t. The human gate also works on pipeline output: an approved package is `filed` with a MOCK ticket, and a rejected one is `rejected` and recorded as an override.
+- **Agent.** The run A/B test uses **real `seg-v3` pipeline output**: a pothole on Marine Drive the pipeline measured at 0.35 m² (true area 0.35 m², seen on both passes). Changing only its measured area to 3.10 m² moves the plan from priority 2 to priority 1 and the hot-mix from 0.05 t to 0.40 t. A road-wide run ("Plan repairs for Khan Abdul Gaffar Khan Marg") drafted **24 work packages** in 78 s (84 k Nova Pro tokens, about $0.10); on the `seg-v2` survey it drafted 31, the difference being mostly false alarms that are gone. The human gate works on pipeline output: the top package (3.40 m²) was approved and `filed` with a MOCK ticket, and a 0.02 m² package was `rejected` and recorded as an override.
+- **Honest note on the agent's prose:** its final text summary listed one package twice and left one out. The packages, priorities, quantities and approval requests in the database were all correct. Those come from code over the register, not from the model's text, which is why the design never trusts the prose for numbers. A check of the summary against the register is on the second-half list (40-scenario evaluation).
 
 **What does not work yet, and why.**
 1. **False positives: 3.1 per km over the whole survey.** We checked every pass-1 false alarm against the synthetic world, for both models:

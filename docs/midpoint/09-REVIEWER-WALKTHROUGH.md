@@ -55,7 +55,9 @@ At the midpoint the **whole chain runs on AWS end to end**: upload a survey → 
 ### Stop 5 · The agent and the human gate (2 min)
 - **Show:** `assets/ablation_ab.md`.
 - **Say:** "The agent runs on Amazon Nova. It queries the register, groups defects into work packages, ranks them by size and nearby schools and hospitals, estimates material and drafts a work order. It then **can only request approval**. A Step Functions workflow holds a token in the database that the agent never sees. A person approves (a **mock** ticket is filed, nothing goes to a real authority) or rejects (recorded as an override)."
-- **The key proof:** "Same pothole, same prompt, same model. We changed **only the measured area**, 0.38 → 3.10 m², and the plan changed: **priority 2 → 1, hot-mix 0.05 → 0.40 t**. So the decisions really come from the vision. This ran on the pipeline's own measurement of a simulated pothole whose true area (0.40 m²) we know exactly."
+- **The key proof:** "Same pothole, same prompt, same model. We changed **only the measured area**, 0.35 → 3.10 m², and the plan changed: **priority 2 → 1, hot-mix 0.05 → 0.40 t**. So the decisions really come from the vision. This ran on the pipeline's own measurement of a simulated pothole whose true area (0.35 m²) we know exactly."
+- **Road-wide run:** "Plan repairs for Khan Abdul Gaffar Khan Marg" → 24 packages in 78 s. Then approve the top one and reject a small one (`make approvals`).
+- **If they look closely at the agent's text summary:** it listed one package twice. Say so. The numbers in the database are right, because code computes them, and checking the prose against the register is part of the second-half evaluation.
 - **Grounding:** the agent can't invent a defect. Unknown IDs are rejected both by the tools and by a database trigger.
 
 ### Stop 6 · Honest results (2 min)

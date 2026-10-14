@@ -8,7 +8,7 @@
 <!-- COST-SUMMARY:BEGIN -->
 | Item | Value |
 |---|---|
-| Period | 2026-10-12 → 2026-10-14 (end exclusive) |
+| Period | 2026-10-12 → 2026-10-15 (end exclusive) |
 | Project usage (gross, before credits) | **$3.64** |
 | Account usage since project start (gross) | $9.23 |
 | Paid by AWS promotional credits | $9.23 |
@@ -20,7 +20,7 @@
 | Perception compute cost per km (measured run time × Spot price) | **$0.0021/km** (147 s of 4-vCPU Graviton Spot per km at $0.0128/vCPU-h, current Spot price) |
 | Upper bound: all processing-service spend ÷ km (also includes data rendering and training) | $0.0638/km |
 | Target cost per km (proposal) | < $0.02 |
-| Generated | 2026-10-13 20:17 UTC by `make cost-report` |
+| Generated | 2026-10-14 02:19 UTC by `make cost-report` |
 
 Filtered by cost-allocation tag `Project=patchwork`.
 <!-- COST-SUMMARY:END -->
