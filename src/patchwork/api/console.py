@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 import uuid
 
 import boto3
@@ -31,16 +32,27 @@ def _param(k, v):
     return {"name": k, "value": {"stringValue": str(v)}}
 
 
-def sql(statement: str, params: dict | None = None) -> list[dict]:
-    r = rds.execute_statement(
-        resourceArn=os.environ["DB_CLUSTER_ARN"],
-        secretArn=os.environ["DB_SECRET_ARN"],
-        database=os.environ.get("DB_NAME", "patchwork_final"),
-        sql=statement,
-        parameters=[_param(k, v) for k, v in (params or {}).items()],
-        formatRecordsAs="JSON",
-    )
-    return json.loads(r["formattedRecords"]) if r.get("formattedRecords") else []
+class DatabaseWaking(Exception):
+    """Aurora Serverless auto-pauses when idle (min 0 ACU, to save credits); resuming takes ~15-30 s."""
+
+
+def sql(statement: str, params: dict | None = None, wait_s: float = 24.0) -> list[dict]:
+    t0 = time.time()
+    while True:
+        try:
+            r = rds.execute_statement(
+                resourceArn=os.environ["DB_CLUSTER_ARN"],
+                secretArn=os.environ["DB_SECRET_ARN"],
+                database=os.environ.get("DB_NAME", "patchwork_final"),
+                sql=statement,
+                parameters=[_param(k, v) for k, v in (params or {}).items()],
+                formatRecordsAs="JSON",
+            )
+            return json.loads(r["formattedRecords"]) if r.get("formattedRecords") else []
+        except rds.exceptions.DatabaseResumingException:
+            if time.time() - t0 > wait_s:  # stay inside API Gateway's 30 s limit; the page retries
+                raise DatabaseWaking() from None
+            time.sleep(3)
 
 
 def reply(status: int, body) -> dict:
@@ -128,6 +140,8 @@ def handler(event, context):
             return get_package(pid)
         if route == "POST /packages/{id}/decision":
             return decide(pid, json.loads(event.get("body") or "{}"), f"console:{user}")
+    except DatabaseWaking:
+        return reply(503, {"error": "database waking up", "retry_after_s": 10})
     except sfn.exceptions.TaskTimedOut:
         return reply(409, {"error": "the approval request expired; ask the assistant to request approval again"})
     return reply(404, {"error": "unknown route"})

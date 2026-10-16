@@ -70,7 +70,14 @@ async function token() {
 async function api(path, opts = {}) {
   const t = await token();
   if (!t) return null;
-  const r = await fetch(API + path, { ...opts, headers: { authorization: t, "content-type": "application/json" } });
+  let r;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    r = await fetch(API + path, { ...opts, headers: { authorization: t, "content-type": "application/json" } });
+    if (r.status !== 503) break;  // the register database auto-pauses when idle; it is waking up
+    $(path === "/packages" ? "#list" : "#main").innerHTML =
+      '<span class="muted">The database is waking up after being idle (about 30 s)…</span>';
+    await new Promise((ok) => setTimeout(ok, 8000));
+  }
   const j = await r.json();
   if (!r.ok) throw new Error(j.error || r.status);
   return j;
