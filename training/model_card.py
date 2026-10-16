@@ -14,7 +14,7 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DOC = ROOT / "docs" / "midpoint" / "07-MODEL-CARD.md"
+DOC = ROOT / "docs" / "MODEL-CARD.md"  # the final model; the midpoint card (seg-v3) is docs/midpoint/07-MODEL-CARD.md
 SPLIT_NAMES = {
     "test_real": "Real photos, held-out test split (Pothole Mix test)",
     "val_real": "Real photos, validation split (Pothole Mix val)",
@@ -113,11 +113,12 @@ def render(m: dict, src: str) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("run")
+    ap.add_argument("--doc", type=Path, default=DOC, help="card to update (between the MODEL-METRICS markers)")
     args = ap.parse_args()
     m, src = load_run(args.run)
-    text = DOC.read_text()
+    text = args.doc.read_text()
     pat = re.compile(r"(<!-- MODEL-METRICS:BEGIN -->\n).*?(\n<!-- MODEL-METRICS:END -->)", re.S)
-    DOC.write_text(pat.sub(lambda g: g.group(1) + render(m, src) + g.group(2), text))
+    args.doc.write_text(pat.sub(lambda g: g.group(1) + render(m, src) + g.group(2), text))
     ev = m.get("opencv_eval") or {}
     seg = {
         "run": src,
@@ -132,7 +133,7 @@ def main() -> None:
     }
     out = ROOT / "eval" / "results" / "segmentation.json"
     out.write_text(json.dumps(seg, indent=1))
-    print(f"updated {DOC.relative_to(ROOT)} and {out.relative_to(ROOT)}")
+    print(f"updated {args.doc} and {out.relative_to(ROOT)}")
 
 
 if __name__ == "__main__":

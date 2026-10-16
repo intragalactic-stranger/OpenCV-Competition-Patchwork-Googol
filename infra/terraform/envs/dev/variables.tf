@@ -10,9 +10,9 @@ variable "phase" {
 }
 
 variable "batch_max_vcpus" {
-  description = "Upper bound for the Spot compute environment: 10 perceive clips x 4 vCPU + assemble in one wave (account Spot quota: 256 standard vCPU since 2026-10)"
+  description = "Upper bound for the Spot compute environment: 10 perceive clips x 4 vCPU + assemble in one wave, plus a 32-vCPU evaluation job alongside (account Spot quota: 256 standard vCPU since 2026-10)"
   type        = number
-  default     = 48
+  default     = 80
 }
 
 variable "db_name" {

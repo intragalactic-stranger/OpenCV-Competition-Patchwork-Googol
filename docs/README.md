@@ -7,6 +7,8 @@
 
 ---
 
+> **Final submission: start with [`FINAL-REPORT.md`](FINAL-REPORT.md)** (what was built, results, cost, limits), then [`MODEL-CARD.md`](MODEL-CARD.md). The midpoint pack below is kept unchanged.
+>
 > **Confused about where to start? Open [`OWNER-CHECKLIST.md`](OWNER-CHECKLIST.md)**: one ordered list of what to open, with paths.
 
 ## If you have 5 minutes
@@ -21,6 +23,8 @@
 
 ```
 docs/
+├── FINAL-REPORT.md     the final submission report: built, results vs targets, cost, limits, reproduce
+├── MODEL-CARD.md       the final segmentation model (seg-v4, SegFormer-B2 on GPU)
 ├── OWNER-CHECKLIST.md  the ordered list: what to open before and during the review, and your AWS tasks
 ├── DATA-LICENSES.md  every dataset, model and map used, with its licence and what it means for release
 ├── midpoint/     ◄ GRANT CHECKPOINT PACK: show this to the grant reviewers

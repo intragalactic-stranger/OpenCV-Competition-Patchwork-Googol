@@ -2,7 +2,7 @@
 
 Two halves. **The first half ends at the grant checkpoint** (the midpoint pack in `docs/midpoint/`).
 
-> **Status (2026-10-14): the first half is done.** Phases 0–4 and 5a met their exit criteria, with the deviations recorded in each [phase checklist](phases/) and the decision log. Two midpoint metrics missed their targets (area MAPE 27.8% vs ≤ 20%; real-photo IoU 0.50 vs aim 0.55); both are in the second-half plan ([midpoint/06](../midpoint/06-NEXT-STEPS.md)).
+> **Status (2026-10-16): both halves delivered; see [FINAL-REPORT](../FINAL-REPORT.md).** Midpoint status (2026-10-14): the first half was done. Phases 0–4 and 5a met their exit criteria, with the deviations recorded in each [phase checklist](phases/) and the decision log. Two midpoint metrics missed their targets (area MAPE 27.8% vs ≤ 20%; real-photo IoU 0.50 vs aim 0.55); both are in the second-half plan ([midpoint/06](../midpoint/06-NEXT-STEPS.md)).
 
 ```
 FIRST HALF (midpoint track)                                                SECOND HALF

@@ -47,7 +47,20 @@ dashcam video + GPS ─► S3 ─► EventBridge ─► Step Functions ─► AW
 
 ## 4. What is not done, and known limits
 
-<!-- FINAL-LIMITS -->
+Stated plainly, so nobody has to find it:
+
+| Item | Status |
+|---|---|
+| **Real-world capture** | None. The surveys are simulated on real OpenStreetMap geometry; the model learns from real pothole photos (Pothole Mix). Results on real dashcam video are not measured (decision D-01). |
+| **Repair verification** | "Repaired" means *not seen again* on a later pass that drove past. A repair patch that the model still detects as damage is reported as still present. An appearance check (patch texture) was tried on the midpoint survey and did not separate patches from potholes, so it was not built. |
+| **Approval console** | Built (Cognito sign-in → HTTP API → Lambda, `viewer/console.html`) but **not deployed**: it creates a public sign-in page, so the owner switches it on (`enable_console = true`, D-34). The same approvals work through `scripts/approve.py`. |
+| **AgentCore** | Not used. The agent runs with Strands + Amazon Nova from the development machine; its tools are plain Python over the Aurora Data API and would move behind AgentCore Gateway unchanged. |
+| **VLM attributes** | Not built. Context comes from rules and OpenStreetMap points of interest. |
+| **Passes** | 2 passes evaluated (pass 3 is rendered); the plan's 8 passes were not generated. |
+| **Model weights** | Not released (research-only training data and encoder licence); see [DATA-LICENSES.md](DATA-LICENSES.md). |
+| **Teardown** | `make teardown` is written, not run on this account. |
+| **Tickets** | Every filed ticket is a mock (`MOCK-…`). Nothing is sent to any authority. |
+
 
 ## 5. Reproduce
 
