@@ -1,0 +1,90 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Patchwork architecture</title>
+<style>
+body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1d2733;background:#fff}
+#d{width:1800px;height:1000px;position:relative;padding:28px 34px;box-sizing:border-box}
+h1{margin:0;font-size:30px;color:#12324f} .sub{color:#4a5866;font-size:16px;margin:4px 0 18px}
+.zone{position:absolute;border:2px solid;border-radius:12px;padding:30px 12px 10px;box-sizing:border-box}
+.zone>.t{position:absolute;top:6px;left:12px;font-weight:700;font-size:15px;letter-spacing:.3px}
+.b{background:#fff;border:1.5px solid #9fb3c8;border-radius:8px;padding:6px 9px;margin:6px 0;font-size:14px;line-height:1.25}
+.b b{display:block;font-size:14.5px}
+.cv{border-color:#5c2d91;background:#f6f0fd} .cv b{color:#5c2d91}
+.aw{border-color:#d4880f;background:#fff7ea} .aw b{color:#9a5a00}
+.ag{border-color:#1e8a4c;background:#eefaf3} .ag b{color:#146b39}
+.hu{border-color:#c0392b;background:#fdf0ee} .hu b{color:#a3281b}
+.ar{position:absolute;color:#4a5866;font-size:13px;font-weight:600}
+svg{position:absolute;left:0;top:0;pointer-events:none}
+.legend{position:absolute;bottom:14px;left:34px;font-size:14px;color:#4a5866}
+.legend span{display:inline-block;width:14px;height:14px;border-radius:3px;margin:0 6px -2px 16px;border:1.5px solid}
+</style></head><body><div id="d">
+<h1>Patchwork: architecture</h1>
+<div class="sub">Dashcam video → OpenCV 5 measurement (m²) → defect register → agent plans repairs → a human approves → next drive verifies the repair. All on AWS, in ap-south-1 (Mumbai).</div>
+
+<div class="zone" style="left:34px;top:110px;width:250px;height:470px;border-color:#9fb3c8"><div class="t" style="color:#4a5866">1 · CAPTURE (simulated)</div>
+<div class="b"><b>Dashcam + GNSS + IMU</b>synthetic survey on real OpenStreetMap roads (28.6 km Mumbai loop), exact ground truth</div>
+<div class="b"><b>ChArUco board views</b>for camera calibration</div>
+<div class="b aw"><b>S3 raw bucket</b>upload; manifest.json last</div>
+<div class="b aw"><b>EventBridge</b>manifest created → start</div>
+<div class="b aw"><b>Step Functions</b>process-pass: perceive ×N ‖ → assemble</div>
+</div>
+
+<div class="zone" style="left:310px;top:110px;width:560px;height:470px;border-color:#5c2d91"><div class="t" style="color:#5c2d91">2 · OPENCV 5 PERCEPTION · AWS Batch, Graviton Spot</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px">
+<div class="b cv"><b>Calibration</b>aruco.CharucoDetector · calibrateCamera (RMS 0.16 px)</div>
+<div class="b cv"><b>Frame triage</b>Laplacian sharpness · calcOpticalFlowPyrLK on the road plane (visual odometry)</div>
+<div class="b cv"><b>Privacy</b>FaceDetectorYN (YuNet) + plate/text blur before anything is stored</div>
+<div class="b cv"><b>Pose</b>lane lines → pitch per frame</div>
+<div class="b cv"><b>Bird's-eye view</b>road-plane homography · undistortion folded into one remap → 1 cm/px</div>
+<div class="b cv"><b>Segmentation</b>SegFormer-B2 ONNX in <u>dnn ENGINE_NEW</u> (ENGINE_CLASSIC cannot load it)</div>
+<div class="b cv"><b>Measurement</b>contours · polygon area · minAreaRect → m² ± uncertainty, fused over frames</div>
+<div class="b cv"><b>Localisation</b>Kalman filter + RTS smoother on GNSS + odometry → road chainage</div>
+</div>
+<div class="b" style="margin-top:8px"><b>Result per defect</b>position, area m², length × width, severity, hot-mix estimate, evidence image (dashcam | bird's-eye)</div>
+</div>
+
+<div class="zone" style="left:896px;top:110px;width:420px;height:470px;border-color:#d4880f"><div class="t" style="color:#9a5a00">3 · REGISTER &amp; VERIFICATION</div>
+<div class="b aw"><b>Aurora Serverless v2 + PostGIS</b>Data API · auto-pause · one database per survey</div>
+<div class="b"><b>Matcher v2</b>chainage + lateral offset + area ratio, one-to-one → unchanged / degraded / new</div>
+<div class="b"><b>Pass closing</b>known defect driven past but not seen → repaired ("not seen again")</div>
+<div class="b"><b>Grounding trigger</b>a work package may only cite defects that exist</div>
+<div class="b aw"><b>CloudFront + S3 (OAC)</b>public map: MapLibre + Amazon Location</div>
+</div>
+
+<div class="zone" style="left:1342px;top:110px;width:424px;height:470px;border-color:#1e8a4c"><div class="t" style="color:#146b39">4 · AGENT · Ward Engineer's Assistant</div>
+<div class="b ag"><b>Bedrock AgentCore Runtime</b>Strands agent, arm64 container, IAM-authenticated</div>
+<div class="b ag"><b>Amazon Nova Pro (Bedrock)</b>plans; temperature 0; first-party model only</div>
+<div class="b"><b>9 grounded tools</b>query · context (schools/hospitals/bus stops) · existing work · cluster + exposure score · materials · work order · request approval · re-inspection · verify repair</div>
+<div class="b"><b>Guards</b>unknown IDs rejected by tools + DB trigger; answer checked for unknown IDs; no filing tool</div>
+</div>
+
+<div class="zone" style="left:896px;top:625px;width:870px;height:310px;border-color:#c0392b"><div class="t" style="color:#a3281b">5 · HUMAN-IN-THE-LOOP</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 12px">
+<div class="b hu"><b>Step Functions approval</b>waitForTaskToken; token stored in Aurora, never shown to the model; 7-day timeout</div>
+<div class="b hu"><b>Approval console</b>CloudFront page · Cognito sign-in (PKCE) · API Gateway JWT · Lambda</div>
+<div class="b hu"><b>Decision</b>approve → mock ticket filed · reject → override recorded with the engineer's name</div>
+</div>
+<div class="b" style="margin-top:6px"><b>Closing the loop</b>next survey pass → <i>verify_repair</i> → package <b style="display:inline">verified</b> or <b style="display:inline">escalated</b></div>
+</div>
+
+<div class="zone" style="left:34px;top:625px;width:836px;height:310px;border-color:#9fb3c8"><div class="t" style="color:#4a5866">6 · TRAINING · OPERATIONS · SECURITY</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 12px">
+<div class="b aw"><b>SageMaker GPU (A10G)</b>SegFormer-B2 training → ONNX</div>
+<div class="b aw"><b>Batch Graviton</b>OpenCV 5 evaluation + parity vs onnxruntime</div>
+<div class="b aw"><b>ECR</b>pipeline, training, agent images</div>
+<div class="b aw"><b>CloudWatch</b>dashboard · EMF metrics · alarms → SNS email</div>
+<div class="b aw"><b>Budgets</b>real-spend alarm at $0.01</div>
+<div class="b aw"><b>IAM</b>least privilege; permissions boundary on every role</div>
+<div class="b"><b>Terraform</b>whole stack, S3 state with locking</div>
+<div class="b"><b>GitHub Actions CI</b>tests, OpenCV smoke, agent re-score, terraform validate</div>
+<div class="b aw"><b>Secrets Manager</b>DB credentials; no keys on disk</div>
+</div></div>
+
+<svg width="1800" height="1000"><defs><marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#4a5866"/></marker></defs>
+<g stroke="#4a5866" stroke-width="2.5" fill="none" marker-end="url(#m)">
+<line x1="284" y1="300" x2="306" y2="300"/><line x1="870" y1="300" x2="892" y2="300"/><line x1="1316" y1="300" x2="1338" y2="300"/>
+<line x1="1554" y1="582" x2="1554" y2="621"/><line x1="1100" y1="621" x2="1100" y2="584"/><line x1="452" y1="621" x2="452" y2="584"/>
+</g></svg>
+<div class="ar" style="left:1566px;top:592px">request approval</div>
+<div class="ar" style="left:1112px;top:592px">decisions, mock tickets</div>
+<div class="ar" style="left:464px;top:592px">model.onnx</div>
+<div class="legend">Legend:<span style="background:#f6f0fd;border-color:#5c2d91"></span>OpenCV 5<span style="background:#fff7ea;border-color:#d4880f"></span>AWS service<span style="background:#eefaf3;border-color:#1e8a4c"></span>agent (Bedrock)<span style="background:#fdf0ee;border-color:#c0392b"></span>human control</div>
+</div></body></html>

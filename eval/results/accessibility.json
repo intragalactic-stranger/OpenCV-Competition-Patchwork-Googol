@@ -1,0 +1,10 @@
+{
+ "tool": "axe-core 4.10 (WCAG 2.0 A/AA, WCAG 2.1 AA, best practice), run in headless Chromium against the live site",
+ "date": "2026-10-16",
+ "map_before": [{"id": "landmark-one-main", "impact": "moderate"}, {"id": "region", "impact": "moderate"}, {"id": "scrollable-region-focusable", "impact": "serious"}],
+ "map_after": [],
+ "console_list_after": [],
+ "console_detail_after": [],
+ "keyboard": "console: Tab reaches each work package (a button with an accessible name: priority, road, state); Enter opens it and moves focus to the detail; decision messages are announced (role=status)",
+ "other": "colour is never the only signal (severity and priority are also written as text); priority badges meet WCAG AA contrast with white text; layout stacks on phones (390 px tested)"
+}

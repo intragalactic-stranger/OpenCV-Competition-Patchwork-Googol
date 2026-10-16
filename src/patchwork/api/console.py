@@ -55,6 +55,28 @@ def sql(statement: str, params: dict | None = None, wait_s: float = 24.0) -> lis
             time.sleep(3)
 
 
+def emf(metrics: dict, dims: dict) -> None:
+    """CloudWatch embedded metric format: one log line becomes metrics (override rate = Overrides / Decisions)."""
+    print(
+        json.dumps(
+            {
+                "_aws": {
+                    "Timestamp": int(time.time() * 1000),
+                    "CloudWatchMetrics": [
+                        {
+                            "Namespace": "Patchwork",
+                            "Dimensions": [list(dims)],
+                            "Metrics": [{"Name": k} for k in metrics],
+                        }
+                    ],
+                },
+                **dims,
+                **metrics,
+            }
+        )
+    )
+
+
 def reply(status: int, body) -> dict:
     return {
         "statusCode": status,
@@ -123,6 +145,7 @@ def decide(pid: str, body: dict, user: str) -> dict:
         {"a": uuid.uuid4().hex, "p": pid, "d": decision, "by": user, "n": note, "o": decision == "reject"},
     )
     sql("DELETE FROM approval_request WHERE package_id = :p", {"p": pid})
+    emf({"Decisions": 1, "Overrides": int(decision == "reject")}, {"Decision": decision})
     return reply(200, {"package_id": pid, "decision": decision, "decided_by": user})
 
 

@@ -79,7 +79,7 @@ def publish(
         boto3.client("cloudfront").create_invalidation(
             DistributionId=distribution,
             InvalidationBatch={
-                "Paths": {"Quantity": 1, "Items": ["/index.html"]},
+                "Paths": {"Quantity": 2, "Items": ["/index.html", "/console.html"]},
                 "CallerReference": dt.datetime.now(dt.UTC).isoformat(),
             },
         )

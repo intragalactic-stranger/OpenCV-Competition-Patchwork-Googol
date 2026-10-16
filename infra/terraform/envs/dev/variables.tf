@@ -35,5 +35,5 @@ variable "alert_emails" {
 variable "agent_image_tag" {
   description = "Agent image tag in ECR; empty = create the repository only (first apply), then push, then set it"
   type        = string
-  default     = "v1"
+  default     = "v2"
 }

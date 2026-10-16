@@ -115,6 +115,7 @@ resource "aws_bedrockagentcore_agent_runtime" "agent" {
     PATCHWORK_DB_NAME          = var.db_name
     PATCHWORK_APPROVAL_SFN     = var.approval_state_machine_arn
     PATCHWORK_ARTIFACTS_BUCKET = var.artifacts_bucket
+    PATCHWORK_RUNTIME          = "agentcore"
   }
   depends_on = [aws_iam_role_policy.runtime]
 }

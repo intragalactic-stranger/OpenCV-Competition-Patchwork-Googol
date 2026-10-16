@@ -238,6 +238,33 @@ def run(
         "trace": trace_of(agent),
     }
     out["answer_check"] = check_answer(final, out["trace"], t)
+    calls = [x for x in out["trace"] if x["type"] == "tool_call"]
+    print(
+        json.dumps(
+            {  # CloudWatch embedded metric format (picked up from AgentCore / Lambda logs)
+                "_aws": {
+                    "Timestamp": int(time.time() * 1000),
+                    "CloudWatchMetrics": [
+                        {
+                            "Namespace": "Patchwork",
+                            "Dimensions": [["Runtime"]],
+                            "Metrics": [
+                                {"Name": k}
+                                for k in ("AgentRuns", "ToolCalls", "UngroundedIds", "AgentTokens", "AgentSeconds")
+                            ],
+                        }
+                    ],
+                },
+                "Runtime": os.environ.get("PATCHWORK_RUNTIME", "local"),
+                "AgentRuns": 1,
+                "ToolCalls": len(calls),
+                "UngroundedIds": len(out["answer_check"]["ungrounded_ids"]),
+                "AgentTokens": out["usage"].get("totalTokens", 0),
+                "AgentSeconds": out["seconds"],
+            }
+        ),
+        flush=True,
+    )
     d = out_dir or ROOT / "eval" / "results" / "agent"
     d.mkdir(parents=True, exist_ok=True)
     (d / f"{run_id}.json").write_text(json.dumps(out, indent=1, default=str))

@@ -23,12 +23,15 @@
   td:first-child { color:var(--muted); white-space:nowrap; }
   .maplibregl-popup-content { max-width:360px; } .popup img { width:100%; border-radius:4px; margin-top:6px; }
   .mono { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11.5px; word-break:break-all; }
-  #list { margin-top:12px; } #list .row { padding:6px 0; border-bottom:1px solid var(--line); cursor:pointer; }
+  #list { margin-top:6px; } #list .row { display:block; width:100%; text-align:left; font:inherit; color:inherit; background:none;
+    border:0; border-bottom:1px solid var(--line); padding:6px 2px; cursor:pointer; }
+  #list .row:focus-visible, a:focus-visible, #side:focus-visible { outline:3px solid #0b5cad; outline-offset:2px; }
+  .sev { color:var(--muted); font-size:12px; }
   #list .row:hover { background:#f6f7f9; }
 </style>
 </head>
 <body>
-<div id="side">
+<aside id="side" aria-label="Defect register: totals, legend and largest defects" tabindex="0">
   <h1>Patchwork</h1>
   <div class="sub">Road-defect register · damaged area in m² measured with OpenCV 5</div>
   <div class="banner"><b>Synthetic survey over real roads.</b> The roads, schools, hospitals and bus stops are real (OpenStreetMap). The dashcam video and the defects are <b>simulated</b>, so every measurement can be checked against exact ground truth. These are not real potholes.</div>
@@ -47,10 +50,13 @@
     <div><span class="dot" style="background:#fff;border:1px solid #5b6575"></span> school / hospital / bus stop (OSM)</div>
   </div>
   <div class="sub" style="margin-top:8px">* 5 cm patch × area × 2.35 t/m³ + 10% wastage. Depth is not measured.</div>
-  <div id="list"></div>
+  <h2 style="font-size:14px;margin:14px 0 2px">Largest defects</h2>
+  <div class="sub">Select one (click, or Tab then Enter) to zoom the map to it and open its details.</div>
+  <ul id="list" style="list-style:none;padding:0;margin:6px 0 0"></ul>
   <div class="sub" id="gen" style="margin-top:12px"></div>
-</div>
-<div id="map"></div>
+  <div class="sub"><a href="console.html">Engineers: approval console →</a></div>
+</aside>
+<main id="map" aria-label="Map of the survey loop; defects shown as dots coloured by severity and sized by measured area"></main>
 <script>
 const KEY = "__MAPS_KEY__";
 const SEV = { low: "#2e9e5b", medium: "#e0a100", high: "#d1352b" };
@@ -114,11 +120,14 @@ map.on("load", async () => {
 
   const list = document.getElementById("list");
   [...fs].sort((a, b) => (b.properties.latest_area_m2 || 0) - (a.properties.latest_area_m2 || 0)).slice(0, 25).forEach((f) => {
-    const p = f.properties, row = document.createElement("div");
+    const p = f.properties, row = document.createElement("button");
+    row.type = "button";
     row.className = "row";
-    row.innerHTML = `<span class="dot" style="background:${SEV[p.latest_severity]}"></span> <b>${fmt(p.latest_area_m2)} m²</b> · ${p.road_name}`;
+    row.innerHTML = `<span class="dot" style="background:${SEV[p.latest_severity]}" aria-hidden="true"></span> <b>${fmt(p.latest_area_m2)} m²</b> · ${p.road_name} <span class="sev">${p.latest_severity}, ${p.status}</span>`;
     row.onclick = () => { map.flyTo({ center: f.geometry.coordinates, zoom: 17.5 }); open(f); };
-    list.appendChild(row);
+    const li = document.createElement("li");
+    li.appendChild(row);
+    list.appendChild(li);
   });
 });
 </script>

@@ -121,7 +121,11 @@ module "alarms" {
     pipeline = module.pipeline.state_machine_arn
     approval = module.pipeline.approval_state_machine_arn
   }
-  job_queue_name = module.batch.job_queue
+  job_queue_name    = module.batch.job_queue
+  console_api_id    = var.enable_console ? split(".", replace(module.console[0].api_url, "https://", ""))[0] : ""
+  console_lambda    = var.enable_console ? "${local.name}-console-api" : ""
+  agent_runtime_arn = coalesce(module.agent.runtime_arn, "")
+  db_cluster_id     = "patchwork-register"
 }
 
 module "agent" {
