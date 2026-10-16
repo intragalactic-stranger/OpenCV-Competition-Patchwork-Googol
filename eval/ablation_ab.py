@@ -1,11 +1,12 @@
 """Run A / run B ablation: does the measured area change the agent's plan? (agent design §6)
 
 Same defect, same prompt, same model, temperature 0. The only difference: in run B the defect's latest
-observation is swapped (inside one recorded DB update) to a much larger measured area. The swap is undone
-afterwards. If the plan does not change, the agent is not using the vision, and this script fails.
+observation has a much larger measured area. Each run happens inside its own database transaction that is
+rolled back afterwards, so run A cannot influence run B (e.g. through the existing-work check) and the swap
+never reaches the real register. If the plan does not change, the agent is not using the vision.
 
   uv run python -m eval.ablation_ab [--defect-id ID] [--area-b 3.1]
-Writes docs/midpoint/assets/ablation_ab.md and eval/results/ablation_ab.json.
+Writes docs/assets/ablation_ab.md and eval/results/ablation_ab.json (the midpoint run is kept in docs/midpoint).
 """
 
 from __future__ import annotations
@@ -20,13 +21,14 @@ from patchwork.register.dataapi import Register
 from patchwork.schema.models import DefectType, Material, severity_v1
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_MD = ROOT / "docs" / "midpoint" / "assets" / "ablation_ab.md"
+OUT_MD = ROOT / "docs" / "assets" / "ablation_ab.md"
 
 
 def pick_defect(reg: Register) -> dict:
     rows = reg.sql(
         "SELECT d.defect_id, d.road_name, d.chainage_m, d.latest_area_m2, d.latest_severity, d.latest_obs_id "
         "FROM defect d WHERE d.latest_area_m2 BETWEEN 0.15 AND 0.45 AND d.latest_severity <> 'high' "
+        "AND NOT EXISTS (SELECT 1 FROM work_package w WHERE d.defect_id = ANY(w.defect_ids)) "
         "ORDER BY d.chainage_m LIMIT 1"
     )
     if not rows:
@@ -99,17 +101,18 @@ def main() -> None:
         else f"pipeline output (model {src['model_version']})"
     )
     res = {}
-    try:
-        res["A"] = summarise(
-            run(prompt, run_id=f"ablation-A-{d['defect_id'][-6:]}", tools=Tools(reg)), reg, d["defect_id"]
-        )
-        set_area(reg, d, args.area_b)
-        res["B"] = summarise(
-            run(prompt, run_id=f"ablation-B-{d['defect_id'][-6:]}", tools=Tools(reg)), reg, d["defect_id"]
-        )
-    finally:
-        set_area(reg, d, a_area)  # undo the fixture swap whatever happens
-    changed = (res["A"]["priority"], res["A"]["mass_t"]) != (res["B"]["priority"], res["B"]["mass_t"])
+    for side, area in (("A", None), ("B", args.area_b)):
+        tx = Register()
+        tx.begin()
+        try:
+            if area is not None:
+                set_area(tx, d, area)  # only inside this transaction
+            out = run(prompt, run_id=f"ablation-{side}-{d['defect_id'][-6:]}", tools=Tools(tx))
+            res[side] = summarise(out, tx, d["defect_id"])
+        finally:
+            tx.rollback()
+    both = res["A"]["priority"] is not None and res["B"]["priority"] is not None
+    changed = both and (res["A"]["priority"], res["A"]["mass_t"]) != (res["B"]["priority"], res["B"]["mass_t"])
     result = {
         "defect": {k: d[k] for k in ("defect_id", "road_name", "chainage_m")},
         "source": source,
@@ -126,8 +129,8 @@ def main() -> None:
         "",
         f"Same defect (`{d['defect_id']}`, {d['road_name']}, chainage {float(d['chainage_m']):.0f} m), same prompt, "
         "same model (Amazon Nova Pro, temperature 0). **Only the measured area differs**: in run B the observation "
-        f"was swapped from **{a_area:.2f} m²** to **{args.area_b:.2f} m²** for the duration of the run "
-        "(then restored).",
+        f"was **{args.area_b:.2f} m²** instead of the measured **{a_area:.2f} m²**. Each run ran in its own "
+        "database transaction, rolled back afterwards.",
         "",
         f"Register row source: **{source}**.",
         "",
