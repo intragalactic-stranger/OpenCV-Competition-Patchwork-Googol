@@ -11,11 +11,13 @@ import argparse
 import datetime as dt
 import json
 import os
+import re
 import time
 from pathlib import Path
 
 from strands import Agent, tool
 from strands.models import BedrockModel
+from strands.tools.executors import SequentialToolExecutor
 
 from patchwork.agent.tools import ToolError, Tools, tools_from_env
 from patchwork.schema.models import new_id
@@ -91,12 +93,64 @@ def build_agent(t: Tools, model_id: str = DEFAULT_MODEL) -> Agent:
         """
         return guard(t.request_human_approval, package_id)
 
+    @tool
+    def lookup_context(defect_id: str) -> dict:
+        """Schools and hospitals within 150 m and bus stops within 50 m of a defect (OpenStreetMap).
+
+        Args:
+            defect_id: a defect ID from query_defects
+        """
+        return guard(t.lookup_context, defect_id)
+
+    @tool
+    def check_existing_tickets(defect_ids: list[str]) -> list:
+        """Active work packages or filed tickets that already cover any of these defects. Call this before
+        clustering so a defect is never ordered twice.
+
+        Args:
+            defect_ids: defect IDs from query_defects
+        """
+        return guard(t.check_existing_tickets, defect_ids)
+
+    @tool
+    def schedule_reinspection(defect_ids: list[str], reason: str, package_id: str = "") -> dict:
+        """Ask the next survey pass to look again at these defects (low confidence, not measured, or a
+        repair to confirm).
+
+        Args:
+            defect_ids: defect IDs to look at again
+            reason: one sentence: why a second look is needed
+            package_id: the related package, if any ("" for none)
+        """
+        return guard(t.schedule_reinspection, defect_ids, reason, package_id or None)
+
+    @tool
+    def verify_repair(package_id: str) -> dict:
+        """Check whether a filed package's defects are gone in the latest survey pass. Marks the package
+        verified (all gone) or escalated (some remain).
+
+        Args:
+            package_id: a package ID
+        """
+        return guard(t.verify_repair, package_id)
+
     model = BedrockModel(model_id=model_id, region_name="ap-south-1", temperature=0.0, max_tokens=2048)
     return Agent(
         model=model,
         system_prompt=SYSTEM,
-        tools=[query_defects, cluster_into_packages, estimate_materials, draft_work_order, request_human_approval],
+        tools=[
+            query_defects,
+            lookup_context,
+            check_existing_tickets,
+            cluster_into_packages,
+            estimate_materials,
+            draft_work_order,
+            request_human_approval,
+            schedule_reinspection,
+            verify_repair,
+        ],
         callback_handler=None,
+        tool_executor=SequentialToolExecutor(),  # one tool at a time: deterministic order, one DB transaction
     )
 
 
@@ -129,7 +183,42 @@ def trace_of(agent: Agent) -> list[dict]:
     return steps
 
 
-def run(prompt: str, model_id: str = DEFAULT_MODEL, run_id: str | None = None, tools: Tools | None = None) -> dict:
+ULID = re.compile(r"\b01[0-9A-HJKMNP-TV-Z]{24}\b")
+
+
+def check_answer(final: str, trace: list[dict], t: Tools) -> dict:
+    """Grounding of the final prose (the database is already guarded; this checks what the model *says*):
+    every ID in the answer must exist, and every package created in this run should be mentioned once."""
+    cited = ULID.findall(final)
+    known = set()
+    if cited:
+        rows = t.reg.sql(
+            "SELECT defect_id AS i FROM defect WHERE defect_id = ANY(string_to_array(:ids, ',')) UNION "
+            "SELECT package_id FROM work_package WHERE package_id = ANY(string_to_array(:ids, ','))",
+            {"ids": ",".join(set(cited))},
+        )
+        known = {r["i"] for r in rows}
+    created = set()
+    cluster_calls = {s["id"] for s in trace if s["type"] == "tool_call" and s["tool"] == "cluster_into_packages"}
+    for s in trace:
+        if s["type"] == "tool_result" and s["id"] in cluster_calls and s.get("result"):
+            created |= set(re.findall(r"[\"']package_id[\"']:\s*[\"'](01[0-9A-HJKMNP-TV-Z]{24})", str(s["result"])))
+    return {
+        "ids_cited": len(set(cited)),
+        "ungrounded_ids": sorted(set(cited) - known),
+        "packages_created": len(created),
+        "packages_not_mentioned": sorted(created - set(cited)),
+        "packages_mentioned_more_than_once": sorted(i for i in created if cited.count(i) > 1),
+    }
+
+
+def run(
+    prompt: str,
+    model_id: str = DEFAULT_MODEL,
+    run_id: str | None = None,
+    tools: Tools | None = None,
+    out_dir: Path | None = None,
+) -> dict:
     run_id = run_id or f"agent-{dt.datetime.now(dt.UTC):%Y%m%d-%H%M%S}-{new_id()[-6:]}"
     t = tools or tools_from_env(run_id)
     t.run_id = run_id
@@ -137,16 +226,18 @@ def run(prompt: str, model_id: str = DEFAULT_MODEL, run_id: str | None = None, t
     t0 = time.time()
     result = agent(prompt)
     usage = result.metrics.accumulated_usage if hasattr(result, "metrics") else {}
+    final = str(result)
     out = {
         "run_id": run_id,
         "model": model_id,
         "prompt": prompt,
         "seconds": round(time.time() - t0, 1),
         "usage": dict(usage) if usage else {},
-        "final": str(result),
+        "final": final,
         "trace": trace_of(agent),
     }
-    d = ROOT / "eval" / "results" / "agent"
+    out["answer_check"] = check_answer(final, out["trace"], t)
+    d = out_dir or ROOT / "eval" / "results" / "agent"
     d.mkdir(parents=True, exist_ok=True)
     (d / f"{run_id}.json").write_text(json.dumps(out, indent=1, default=str))
     bucket = os.environ.get("PATCHWORK_ARTIFACTS_BUCKET")

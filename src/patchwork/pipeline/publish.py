@@ -30,6 +30,7 @@ def publish(
     distribution: str | None = None,
     key_name: str | None = None,
     register: Register | None = None,
+    console: dict | None = None,
 ) -> dict:
     bucket = bucket or os.environ["PATCHWORK_SITE_BUCKET"]
     distribution = distribution or os.environ.get("PATCHWORK_CF_DISTRIBUTION")
@@ -41,6 +42,11 @@ def publish(
 
     html = (ROOT / "viewer" / "index.html").read_text().replace("__MAPS_KEY__", maps_key(key_name))
     put("index.html", html.encode(), "text/html; charset=utf-8")
+    if console:  # approval console page, only when the console stack is deployed (enable_console)
+        page = (ROOT / "viewer" / "console.html").read_text()
+        for k, v in (("__API_URL__", "api_url"), ("__AUTH_DOMAIN__", "auth_domain"), ("__CLIENT_ID__", "client_id")):
+            page = page.replace(k, console[v])
+        put("console.html", page.encode(), "text/html; charset=utf-8")
     for name in ("corridor.geojson", "segments.geojson", "poi.geojson"):
         put(f"data/{name}", (ROOT / "data" / "corridor" / name).read_bytes(), "application/geo+json")
     gj = (register or Register()).geojson()

@@ -1,6 +1,7 @@
-"""Train the damage segmenter on CPU (decision D-25: Graviton Spot via AWS Batch, no GPU).
+"""Train the damage segmenter. CPU on Graviton Spot via AWS Batch (D-25), or GPU on SageMaker (D-31).
 
-Model : SegFormer-B0 (HF `nvidia/mit-b0` ImageNet encoder; NVIDIA research licence, see D-07/D-24) or
+Model : SegFormer (HF `nvidia/mit-b0` by default, `--backbone nvidia/mit-b2` on GPU; NVIDIA research licence,
+        see D-07/D-24) or
         `--arch lraspp` (torchvision LR-ASPP MobileNetV3-Large, BSD weights: the licence-clean fallback).
 Data  : training/prepare.py output (images/, masks/, splits.json); classes 0 bg, 1 damage, 255 ignore.
 Loss  : cross-entropy (ignore 255, damage weight 2) + soft Dice on the damage class.
@@ -143,13 +144,13 @@ class LRASPPLogits(nn.Module):
         return self.net(x)["out"]
 
 
-def build(arch: str) -> nn.Module:
-    return SegFormerLogits() if arch == "segformer" else LRASPPLogits()
+def build(arch: str, backbone: str = "nvidia/mit-b0") -> nn.Module:
+    return SegFormerLogits(backbone) if arch == "segformer" else LRASPPLogits()
 
 
 def loss_fn(logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     logits = F.interpolate(logits, size=target.shape[-2:], mode="bilinear", align_corners=False)
-    ce = F.cross_entropy(logits, target, weight=torch.tensor([1.0, 2.0]), ignore_index=255)
+    ce = F.cross_entropy(logits, target, weight=torch.tensor([1.0, 2.0], device=logits.device), ignore_index=255)
     valid = (target != 255).float()
     p = logits.softmax(1)[:, 1] * valid
     t = (target == 1).float() * valid
@@ -162,8 +163,12 @@ def evaluate(model: nn.Module, loader: DataLoader) -> dict:
     model.eval()
     inter = union = 0
     tp_img = fn_img = fp_img = 0
+    dev = next(model.parameters()).device
     for x, y in loader:
-        logits = F.interpolate(model(x), size=y.shape[-2:], mode="bilinear", align_corners=False)
+        x, y = x.to(dev, non_blocking=True), y.to(dev, non_blocking=True)
+        with torch.autocast(dev.type, dtype=torch.bfloat16, enabled=dev.type == "cuda"):
+            out = model(x)
+        logits = F.interpolate(out.float(), size=y.shape[-2:], mode="bilinear", align_corners=False)
         pred = logits.argmax(1)
         valid = y != 255
         p, t = (pred == 1) & valid, (y == 1) & valid
@@ -184,7 +189,7 @@ def evaluate(model: nn.Module, loader: DataLoader) -> dict:
 
 # ---------------------------------------------------------------- export
 def export_onnx(model: nn.Module, path: Path) -> None:
-    model.eval()
+    model = model.cpu().eval()
     x = torch.randn(1, 3, 352, 1440)
     torch.onnx.export(
         model,
@@ -211,6 +216,7 @@ def main() -> None:
     ap.add_argument("--data-s3", default=None, help="s3://bucket/prefix of the prepared set (synced to --data first)")
     ap.add_argument("--s3-out", default=None, help="s3://bucket/prefix to mirror checkpoints + outputs")
     ap.add_argument("--arch", choices=["segformer", "lraspp"], default="segformer")
+    ap.add_argument("--backbone", default="nvidia/mit-b0", help="SegFormer encoder, e.g. nvidia/mit-b2")
     ap.add_argument("--epochs", type=int, default=12)
     ap.add_argument("--batch", type=int, default=16)
     ap.add_argument("--lr", type=float, default=3e-4)
@@ -219,6 +225,11 @@ def main() -> None:
     ap.add_argument("--limit", type=int, default=None, help="debug: cap images per split")
     ap.add_argument("--max-hours", type=float, default=6.0)
     ap.add_argument("--synth-weight", type=float, default=1.0, help="sampling weight of synthetic vs real")
+    ap.add_argument(
+        "--skip-opencv-eval",
+        action="store_true",
+        help="GPU jobs: skip the slow CPU evaluation through OpenCV (run training.evaluate on Batch)",
+    )
     ap.add_argument("--init", default=None, help="fine-tune: start from these weights (best.pt path or s3:// URI)")
     args = ap.parse_args()
 
@@ -251,7 +262,9 @@ def main() -> None:
     }
     scored = ("val_real", "val_synth")  # model selection; hard_neg_val (no damage at all) is reported only
 
-    model = build(args.arch)
+    dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"device: {dev}" + (f" ({torch.cuda.get_device_name(0)})" if dev.type == "cuda" else ""), flush=True)
+    model = build(args.arch, args.backbone)
     if args.init:
         src = args.init
         if src.startswith("s3://"):
@@ -259,6 +272,7 @@ def main() -> None:
             src = str(args.out / "init.pt")
         model.load_state_dict(torch.load(src, map_location="cpu"))
         print(f"initialised from {args.init}", flush=True)
+    model.to(dev)
     head = [p for n, p in model.named_parameters() if "decode_head" in n or "classifier" in n]
     head_ids = {id(p) for p in head}
     body = [p for p in model.parameters() if id(p) not in head_ids]
@@ -269,7 +283,7 @@ def main() -> None:
     start_epoch, best, history = 0, -1.0, []
     ckpt = args.out / "last.pt"
     if ckpt.exists():
-        st = torch.load(ckpt, map_location="cpu", weights_only=False)
+        st = torch.load(ckpt, map_location=dev, weights_only=False)
         model.load_state_dict(st["model"])
         opt.load_state_dict(st["opt"])
         sched.load_state_dict(st["sched"])
@@ -281,7 +295,10 @@ def main() -> None:
     for epoch in range(start_epoch, args.epochs):
         te, run = time.time(), 0.0
         for it, (x, y) in enumerate(train_dl):
-            loss = loss_fn(model(x), y)
+            x, y = x.to(dev, non_blocking=True), y.to(dev, non_blocking=True)
+            with torch.autocast(dev.type, dtype=torch.bfloat16, enabled=dev.type == "cuda"):
+                out = model(x)
+            loss = loss_fn(out.float(), y)
             opt.zero_grad(set_to_none=True)
             loss.backward()
             opt.step()
@@ -315,20 +332,24 @@ def main() -> None:
             print("time budget reached: stopping early", flush=True)
             break
 
-    model.load_state_dict(torch.load(args.out / "best.pt", map_location="cpu"))
+    model.load_state_dict(torch.load(args.out / "best.pt", map_location=dev))
     export_onnx(model, args.out / "model.onnx")
     # the numbers that matter are measured through the deployed runtime: OpenCV 5 DNN, not PyTorch
     from training.evaluate import evaluate_onnx
     from training.parity import run_parity
 
     parity = run_parity(args.out / "model.onnx", args.data)
-    opencv_eval = evaluate_onnx(args.out / "model.onnx", args.data)
-    (args.out / "eval_opencv.json").write_text(json.dumps(opencv_eval, indent=1))
+    opencv_eval = None
+    if not args.skip_opencv_eval:
+        opencv_eval = evaluate_onnx(args.out / "model.onnx", args.data)
+        (args.out / "eval_opencv.json").write_text(json.dumps(opencv_eval, indent=1))
     (args.out / "class_map.json").write_text(json.dumps({"classes": CLASSES, "ignore": 255}))
     (args.out / "metrics.json").write_text(
         json.dumps(
             {
                 "arch": args.arch,
+                "backbone": args.backbone if args.arch == "segformer" else None,
+                "device": torch.cuda.get_device_name(0) if dev.type == "cuda" else "cpu",
                 "best_score": best,
                 "history": history,
                 "train_images": len(train_names),

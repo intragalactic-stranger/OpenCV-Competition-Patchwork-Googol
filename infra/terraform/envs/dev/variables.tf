@@ -14,3 +14,15 @@ variable "batch_max_vcpus" {
   type        = number
   default     = 32
 }
+
+variable "db_name" {
+  description = "Register database the console and the agent read (a fresh database per survey keeps old ones intact)"
+  type        = string
+  default     = "patchwork"
+}
+
+variable "enable_console" {
+  description = "Deploy the approval console (Cognito sign-in, HTTP API, Lambda). Off until the owner turns it on."
+  type        = bool
+  default     = false
+}

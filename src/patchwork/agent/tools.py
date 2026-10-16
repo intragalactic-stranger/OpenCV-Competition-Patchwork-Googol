@@ -1,9 +1,12 @@
-"""Agent tools (Phase 5a subset). Deterministic, auditable functions over the defect register.
+"""Agent tools. Deterministic, auditable functions over the defect register.
 
 The model decides *which* tool to call and explains the plan; every number (area, material, exposure,
 priority) is computed here from database rows, never by the model. Every tool that takes defect or
 package IDs validates them first and refuses unknown ones (UNGROUNDED_ID): a hallucinated pothole cannot
 become a work order. The database trigger on work_package is the second line of defence.
+
+There is deliberately no `file_complaint` tool: filing is a state of the approval workflow (Step Functions),
+reached only after a human approves. The model can request approval, never file.
 """
 
 from __future__ import annotations
@@ -22,6 +25,7 @@ REGION = "ap-south-1"
 SEVERITY_W = {"low": 1.0, "medium": 2.0, "high": 4.0}
 ROAD_W = {"primary": 1.5, "secondary": 1.2, "tertiary": 1.0, "motorway": 0.6, "motorway_link": 0.6}
 CONFIDENCE_FLOOR = 0.6
+ACTIVE_STATES = ("draft", "awaiting_approval", "approved", "filed")
 
 
 class ToolError(Exception):
@@ -80,6 +84,8 @@ class Tools:
         defect_ids: list[str] | None = None,
     ) -> list[dict]:
         """Defects in the register, largest first. Filters: road name (substring), minimum area, status, IDs."""
+        if defect_ids:
+            self._validate_defects(defect_ids)  # asking for an ID that does not exist is an error, not "no rows"
         rows = self.reg.sql(
             "SELECT d.defect_id, d.road_name, round(d.chainage_m::numeric, 1)::float8 AS chainage_m, d.latest_area_m2, "
             "d.latest_severity, d.status, o.measurement_status, o.detection_confidence, o.area_uncertainty_m2 "
@@ -280,6 +286,97 @@ class Tools:
             )["executionArn"]
         self.reg.sql("UPDATE work_package SET state = 'awaiting_approval' WHERE package_id = :p", {"p": package_id})
         return {"package_id": package_id, "state": "awaiting_approval", "workflow_started": arn is not None}
+
+    def check_existing_tickets(self, defect_ids: list[str]) -> list[dict]:
+        """Work packages (and mock tickets) that already cover any of these defects, so the same pothole is
+        not ordered twice. Returns one row per active package with the overlapping defect IDs."""
+        self._validate_defects(defect_ids)
+        rows = self.reg.sql(
+            "SELECT w.package_id, w.state, w.priority, array_to_string(w.defect_ids, ',') AS ids, "
+            "t.ticket_id FROM work_package w LEFT JOIN ticket t ON t.package_id = w.package_id "
+            "WHERE w.state IN (SELECT unnest(string_to_array(:states, ','))) "
+            "AND w.defect_ids && string_to_array(:ids, ',') ORDER BY w.created_at",
+            {"states": ",".join(ACTIVE_STATES), "ids": ",".join(defect_ids)},
+        )
+        asked = set(defect_ids)
+        return [
+            {
+                "package_id": r["package_id"],
+                "state": r["state"],
+                "priority": r["priority"],
+                "ticket_id": r["ticket_id"],
+                "overlapping_defect_ids": [d for d in r["ids"].split(",") if d in asked],
+            }
+            for r in rows
+        ]
+
+    def schedule_reinspection(self, defect_ids: list[str], reason: str, package_id: str | None = None) -> dict:
+        """Ask the next survey pass to look again at these defects (low confidence, not measured, or a repair
+        to confirm). One row per road segment, covering the defects' chainage +/- 20 m."""
+        rows = self._validate_defects(defect_ids)
+        if package_id:
+            self._package(package_id)
+        last = self.reg.sql("SELECT max(pass_id) AS p FROM observation")[0]["p"] or "pass0"
+        due = f"after:{last}"
+        out = []
+        for seg in sorted({r["road_segment_id"] for r in rows}):
+            ch = [r["chainage_m"] for r in rows if r["road_segment_id"] == seg]
+            rid = new_id()
+            self.reg.sql(
+                "INSERT INTO reinspection (reinspection_id, road_segment_id, chainage_from, chainage_to, due_pass, "
+                "reason, package_id) VALUES (:i, :seg, :a, :b, :due, :why, :p)",
+                {
+                    "i": rid,
+                    "seg": seg,
+                    "a": round(min(ch) - 20, 1),
+                    "b": round(max(ch) + 20, 1),
+                    "due": due,
+                    "why": reason[:500],
+                    "p": package_id,
+                },
+            )
+            out.append(
+                {
+                    "reinspection_id": rid,
+                    "road_segment_id": seg,
+                    "chainage_from_m": round(min(ch) - 20, 1),
+                    "chainage_to_m": round(max(ch) + 20, 1),
+                }
+            )
+        return {"due": due, "scheduled": out}
+
+    def verify_repair(self, package_id: str) -> dict:
+        """Did the filed repair happen? Compares the package's defects with the latest survey pass: a defect
+        that the later pass drove past without detecting is 'not seen again' (repaired); one still detected is
+        open. A filed package becomes `verified` when every defect is gone, `escalated` when any remains."""
+        p = self._package(package_id)
+        rows = self.reg.sql(
+            "SELECT d.defect_id, d.status::text AS status, d.last_seen_pass, "
+            "(SELECT e.evidence::text FROM status_event e WHERE e.defect_id = d.defect_id "
+            " ORDER BY e.event_id DESC LIMIT 1) AS evidence "
+            "FROM defect d WHERE d.defect_id IN (SELECT unnest(string_to_array(:ids, ',')))",
+            {"ids": ",".join(p["defect_ids"])},
+        )
+        gone = [r["defect_id"] for r in rows if r["status"] == "repaired"]
+        still = [r["defect_id"] for r in rows if r["status"] != "repaired"]
+        verdict = "verified" if not still else "not_yet_verified" if not gone else "partially_repaired"
+        new_state = None
+        if p["state"] == "filed":
+            new_state = "verified" if not still else "escalated" if gone else None
+            if new_state:
+                self.reg.sql(
+                    "UPDATE work_package SET state = :s WHERE package_id = :p", {"s": new_state, "p": package_id}
+                )
+        return {
+            "package_id": package_id,
+            "package_state_before": p["state"],
+            "package_state_after": new_state or p["state"],
+            "verdict": verdict,
+            "not_seen_again": gone,
+            "still_present": still,
+            "evidence": {r["defect_id"]: json.loads(r["evidence"]) if r["evidence"] else None for r in rows},
+            "note": "'not seen again' means a later pass drove past without detecting it; confirm on site if needed",
+        }
 
 
 def tools_from_env(run_id: str = "local") -> Tools:

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patchwork · approval console</title>
+<style>
+  :root { --ink:#1d2430; --muted:#5b6575; --line:#e3e6ea; --ok:#1a7f37; --no:#b42318; --p1:#d1352b; --p2:#e0a100; --p3:#2e9e5b; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; color:var(--ink); display:flex; height:100vh; }
+  #side { width:420px; border-right:1px solid var(--line); overflow:auto; padding:14px 16px; }
+  #main { flex:1; overflow:auto; padding:18px 24px; }
+  h1 { font-size:18px; margin:0 0 2px; } .sub { color:var(--muted); font-size:12.5px; margin-bottom:10px; }
+  .banner { background:#fff6e0; border:1px solid #f0d58a; border-radius:6px; padding:8px 10px; font-size:12.5px; margin-bottom:12px; }
+  .row { padding:8px 6px; border-bottom:1px solid var(--line); cursor:pointer; } .row:hover { background:#f6f7f9; }
+  .row.sel { background:#eef4ff; } .muted { color:var(--muted); font-size:12px; }
+  .pill { display:inline-block; border-radius:10px; padding:0 8px; font-size:12px; color:#fff; }
+  .p1 { background:var(--p1); } .p2 { background:var(--p2); } .p3 { background:var(--p3); }
+  .state { font-size:12px; border:1px solid var(--line); border-radius:10px; padding:0 7px; }
+  table { border-collapse:collapse; width:100%; font-size:13px; margin:8px 0 14px; }
+  th, td { text-align:left; padding:4px 6px; border-bottom:1px solid var(--line); }
+  pre { white-space:pre-wrap; background:#f7f8fa; border:1px solid var(--line); border-radius:6px; padding:10px; font-size:12.5px; }
+  button { font:inherit; padding:7px 14px; border-radius:6px; border:1px solid var(--line); cursor:pointer; background:#fff; }
+  button.ok { background:var(--ok); color:#fff; border-color:var(--ok); } button.no { background:var(--no); color:#fff; border-color:var(--no); }
+  textarea { width:100%; font:inherit; padding:6px; border:1px solid var(--line); border-radius:6px; }
+  .mono { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11.5px; word-break:break-all; }
+  a { color:#0b5cad; }
+</style>
+</head>
+<body>
+<div id="side">
+  <h1>Patchwork · approval console</h1>
+  <div class="sub">Work orders drafted by the Ward Engineer's Assistant (Amazon Nova). Nothing is filed until you approve.</div>
+  <div class="banner"><b>Synthetic survey data.</b> Approving files a <b>mock</b> ticket; nothing is sent to any authority. <a href="index.html">Map</a> · <a href="#" id="signout">Sign out</a></div>
+  <div id="list"><span class="muted">Loading…</span></div>
+</div>
+<div id="main"><p class="muted">Select a work package on the left.</p></div>
+<script>
+const API = "__API_URL__", AUTH = "__AUTH_DOMAIN__", CLIENT = "__CLIENT_ID__";
+const REDIRECT = location.origin + location.pathname;
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "–").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+// ---- sign-in: OAuth 2.0 authorization code + PKCE against the Cognito hosted UI (no secret in the page)
+const b64url = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+async function signIn() {
+  const verifier = b64url(crypto.getRandomValues(new Uint8Array(32)));
+  const challenge = b64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)));
+  sessionStorage.setItem("pkce", verifier);
+  location.href = `${AUTH}/oauth2/authorize?response_type=code&client_id=${CLIENT}&redirect_uri=${encodeURIComponent(REDIRECT)}` +
+    `&scope=openid&code_challenge_method=S256&code_challenge=${challenge}`;
+}
+async function token() {
+  const t = JSON.parse(sessionStorage.getItem("tok") || "null");
+  if (t && t.exp > Date.now() / 1000 + 60) return t.id;
+  const code = new URLSearchParams(location.search).get("code");
+  if (!code) { await signIn(); return null; }
+  const r = await fetch(`${AUTH}/oauth2/token`, {
+    method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ grant_type: "authorization_code", client_id: CLIENT, code, redirect_uri: REDIRECT,
+      code_verifier: sessionStorage.getItem("pkce") || "" }),
+  });
+  if (!r.ok) { await signIn(); return null; }
+  const j = await r.json();
+  const exp = JSON.parse(atob(j.id_token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))).exp;
+  sessionStorage.setItem("tok", JSON.stringify({ id: j.id_token, exp }));
+  history.replaceState({}, "", REDIRECT);
+  return j.id_token;
+}
+async function api(path, opts = {}) {
+  const t = await token();
+  if (!t) return null;
+  const r = await fetch(API + path, { ...opts, headers: { authorization: t, "content-type": "application/json" } });
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || r.status);
+  return j;
+}
+$("#signout").onclick = (e) => {
+  e.preventDefault(); sessionStorage.clear();
+  location.href = `${AUTH}/logout?client_id=${CLIENT}&logout_uri=${encodeURIComponent(REDIRECT)}`;
+};
+
+// ---- list and detail
+let current = null;
+async function load() {
+  const j = await api("/packages");
+  if (!j) return;
+  const rows = j.packages;
+  $("#list").innerHTML = rows.length ? rows.map((p) => `
+    <div class="row" data-id="${p.package_id}">
+      <span class="pill p${p.priority}">P${p.priority}</span> <b>${esc(p.road_name)}</b>
+      <span class="state">${p.waiting ? "waiting for you" : esc(p.state)}</span><br>
+      <span class="muted">${p.n_defects} defect(s) · ${(p.total_area_m2 ?? 0).toFixed(2)} m² · exposure ${(p.exposure_score ?? 0).toFixed(1)}
+      ${p.decided_by ? " · " + esc(p.decision) + " by " + esc(p.decided_by) : ""}${p.ticket_id ? " · " + esc(p.ticket_id) : ""}</span>
+    </div>`).join("") : '<span class="muted">No work packages yet.</span>';
+  document.querySelectorAll(".row").forEach((el) => (el.onclick = () => show(el.dataset.id)));
+  if (current) show(current);
+}
+async function show(id) {
+  current = id;
+  document.querySelectorAll(".row").forEach((el) => el.classList.toggle("sel", el.dataset.id === id));
+  const j = await api(`/packages/${id}`);
+  const p = j.package, m = p.material;
+  $("#main").innerHTML = `
+    <h2 style="margin:0">Work package <span class="mono">${esc(p.package_id)}</span></h2>
+    <p><span class="pill p${p.priority}">Priority ${p.priority}</span> · state <b>${esc(p.state)}</b> ·
+      exposure ${(p.exposure_score ?? 0).toFixed(2)} · confidence ${(p.confidence ?? 0).toFixed(2)}</p>
+    ${m ? `<p><b>Materials:</b> ${m.total_area_m2} m² × ${m.patch_thickness_m} m → ${m.volume_m3} m³ ≈ ${m.mass_t} t hot-mix
+      (incl. ${m.wastage_pct}% wastage). <span class="muted">${esc(m.assumption)}</span></p>` : ""}
+    <table><tr><th>Defect</th><th>Road</th><th>Chainage (m)</th><th>Area (m²)</th><th>Severity</th><th>Status</th></tr>
+    ${j.defects.map((d) => `<tr><td class="mono">${esc(d.defect_id)}</td><td>${esc(d.road_name)}</td><td>${d.chainage_m}</td>
+      <td>${d.latest_area_m2 == null ? "not measured" : d.latest_area_m2.toFixed(2)}</td><td>${esc(d.severity)}</td><td>${esc(d.status)}</td></tr>`).join("")}
+    </table>
+    ${j.waiting ? `<h3>Your decision</h3>
+      <textarea id="note" rows="2" placeholder="Note (optional; recorded with your decision)"></textarea>
+      <p><button class="ok" id="approve">Approve and file (mock)</button> <button class="no" id="reject">Reject</button>
+      <span id="msg" class="muted"></span></p>` : `<p class="muted">No decision pending for this package.</p>`}
+    <h3>Work order drafted by the assistant</h3><pre>${esc(j.work_order || p.rationale || "(no text)")}</pre>`;
+  if (j.waiting) {
+    const decide = async (decision) => {
+      $("#msg").textContent = "Sending…";
+      try {
+        await api(`/packages/${id}/decision`, { method: "POST", body: JSON.stringify({ decision, note: $("#note").value }) });
+        $("#msg").textContent = decision === "approve" ? "Approved: the workflow files a mock ticket." : "Rejected and recorded.";
+        setTimeout(load, 1500);
+      } catch (e) { $("#msg").textContent = "Error: " + e.message; }
+    };
+    $("#approve").onclick = () => decide("approve");
+    $("#reject").onclick = () => decide("reject");
+  }
+}
+load().catch((e) => ($("#list").innerHTML = `<span class="muted">Error: ${esc(e.message)}</span>`));
+</script>
+</body>
+</html>

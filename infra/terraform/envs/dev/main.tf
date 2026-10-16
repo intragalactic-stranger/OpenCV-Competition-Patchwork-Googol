@@ -89,6 +89,29 @@ module "pipeline" {
   cf_distribution_id = module.viewer.distribution_id
 }
 
+module "training" {
+  source           = "../../modules/training"
+  name             = local.name
+  boundary_arn     = local.boundary_arn
+  datasets_bucket  = module.storage.bucket_names["datasets"]
+  artifacts_bucket = module.storage.bucket_names["artifacts"]
+}
+
+module "console" {
+  count                      = var.enable_console ? 1 : 0
+  source                     = "../../modules/console"
+  name                       = local.name
+  prefix                     = local.prefix
+  boundary_arn               = local.boundary_arn
+  site_url                   = module.viewer.url
+  db_cluster_arn             = module.db.cluster_arn
+  db_secret_arn              = module.db.secret_arn
+  db_name                    = var.db_name
+  approval_state_machine_arn = module.pipeline.approval_state_machine_arn
+  artifacts_bucket           = module.storage.bucket_names["artifacts"]
+  source_file                = "${path.root}/../../../../src/patchwork/api/console.py"
+}
+
 output "buckets" { value = module.storage.bucket_names }
 output "ecr_repository_url" { value = module.batch.ecr_repository_url }
 output "job_queue" { value = module.batch.job_queue }
@@ -100,3 +123,12 @@ output "viewer_bucket" { value = module.viewer.bucket }
 output "viewer_distribution_id" { value = module.viewer.distribution_id }
 output "pipeline_state_machine" { value = module.pipeline.state_machine_arn }
 output "approval_state_machine" { value = module.pipeline.approval_state_machine_arn }
+output "sagemaker_role_arn" { value = module.training.role_arn }
+output "console" {
+  value = var.enable_console ? {
+    api_url      = module.console[0].api_url
+    user_pool_id = module.console[0].user_pool_id
+    client_id    = module.console[0].client_id
+    auth_domain  = module.console[0].auth_domain
+  } : null
+}

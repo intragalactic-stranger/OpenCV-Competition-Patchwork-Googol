@@ -3,15 +3,25 @@
   1,
   2
  ],
- "link_rule_m": 8.0,
- "predicted_links": 142,
- "correct_links": 86,
  "true_pairs_detected_in_both": 95,
- "link_precision": 0.606,
- "link_recall": 0.905,
- "link_f1": 0.726,
  "repaired_in_truth_and_detected_in_pass1": 32,
- "repaired_recall": 0.531,
- "still_present_but_not_resighted": 7,
- "still_present_detected_in_pass1": 99
+ "still_present_detected_in_pass1": 99,
+ "v1_rule": "same segment, within 8.0 m, nearest",
+ "v2_rule": "|ds| <= 12.0 m, |dd| <= 1.5 m, area ratio <= 4.0, one-to-one",
+ "v1": {
+  "predicted_links": 142,
+  "correct_links": 86,
+  "link_precision": 0.606,
+  "link_recall": 0.905,
+  "link_f1": 0.726,
+  "repaired_recall": 0.625,
+  "still_present_but_not_resighted": 10
+ },
+ "predicted_links": 134,
+ "correct_links": 89,
+ "link_precision": 0.664,
+ "link_recall": 0.937,
+ "link_f1": 0.777,
+ "repaired_recall": 0.594,
+ "still_present_but_not_resighted": 9
 }

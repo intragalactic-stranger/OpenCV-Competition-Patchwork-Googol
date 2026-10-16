@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: uv sync --group dev
+      - name: Lint
+        run: uv run ruff check src scripts tests eval training
+      - name: Unit tests (OpenCV 5 DNN ENGINE_NEW, ChArUco, geometry, schema, matcher)
+        run: uv run pytest -q
+      - name: OpenCV 5 smoke test
+        run: uv run python scripts/smoke/opencv5_smoke.py
+      - name: Agent scenarios, re-scored offline from the recorded traces
+        run: uv run python -m eval.agent.run_scenarios --rescore
+
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.5"
+      - name: Format
+        run: terraform fmt -check -recursive infra/terraform
+      - name: Validate
+        run: |
+          for d in infra/terraform/bootstrap infra/terraform/envs/dev; do
+            terraform -chdir=$d init -backend=false -input=false >/dev/null
+            terraform -chdir=$d validate
+          done

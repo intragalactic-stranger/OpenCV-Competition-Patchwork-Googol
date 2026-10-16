@@ -146,6 +146,11 @@ def cmd_assemble(args, s3, work: Path) -> None:
         summary["register"] = {
             k: sum(x[k] for x in loaded) for k in ("new_observations", "new_defects", "linked_to_existing")
         }
+        metas = [json.loads((c / "meta.json").read_text()) for c in sorted(pass_dir.glob("clip_*"))]
+        if metas:
+            summary["register"]["not_seen_again"] = reg.close_pass(
+                metas[0]["pass_id"], [tuple(m["chainage_m"]) for m in metas]
+            )
         if args.publish:
             summary["viewer"] = publish([run_pass], f"{pass_name} ({args.source})", register=reg)
     b, k = split(args.run_uri)

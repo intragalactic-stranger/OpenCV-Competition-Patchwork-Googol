@@ -22,6 +22,7 @@ from pathlib import Path
 import boto3
 from botocore.exceptions import ClientError
 
+from patchwork.register.match import LINK_S_M, Candidate, assign
 from patchwork.schema.models import (
     DefectType,
     Material,
@@ -35,7 +36,8 @@ ROOT = Path(__file__).resolve().parents[3]
 REGION = "ap-south-1"
 DDL = ROOT / "src" / "patchwork" / "schema" / "ddl.sql"
 PIPELINE_VERSION = "0.2"
-LINK_M = 8.0  # cross-pass: same defect if within this distance on the same road (localisation p90 ~6.5 m)
+LINK_M = 8.0  # v1 rule (midpoint): same road, within 8 m. Kept for the before/after comparison in eval.
+# v2 rule (register/match.py): gates on chainage, lateral offset and area, one-to-one assignment per clip.
 # Links are only made to defects last seen on an EARLIER pass: two tracks of one pass are separate defects
 # (perception already fused each defect's frames), so within-pass neighbours never get unchanged/degraded.
 
@@ -77,7 +79,7 @@ def split_sql(text: str) -> list[str]:
 
 
 class Register:
-    def __init__(self, cluster_arn: str | None = None, secret_arn: str | None = None, database: str = "patchwork"):
+    def __init__(self, cluster_arn: str | None = None, secret_arn: str | None = None, database: str | None = None):
         self.rds = boto3.client("rds-data", region_name=REGION)
         cluster_arn = cluster_arn or os.environ.get("PATCHWORK_DB_CLUSTER_ARN")
         secret_arn = secret_arn or os.environ.get("PATCHWORK_DB_SECRET_ARN")
@@ -86,7 +88,23 @@ class Register:
                 "DBClusters"
             ][0]
             cluster_arn, secret_arn = c["DBClusterArn"], c["MasterUserSecret"]["SecretArn"]
-        self.cluster_arn, self.secret_arn, self.database = cluster_arn, secret_arn, database
+        self.cluster_arn, self.secret_arn = cluster_arn, secret_arn
+        self.database = database or os.environ.get("PATCHWORK_DB_NAME", "patchwork")
+        self.tx: str | None = None
+
+    # A transaction lets the agent scenario suite run real tools on the real register and then roll back,
+    # so test runs leave no packages behind. Data API transactions expire after 3 min without a call.
+    def begin(self) -> None:
+        self.tx = self.rds.begin_transaction(
+            resourceArn=self.cluster_arn, secretArn=self.secret_arn, database=self.database
+        )["transactionId"]
+
+    def rollback(self) -> None:
+        if self.tx:
+            self.rds.rollback_transaction(
+                resourceArn=self.cluster_arn, secretArn=self.secret_arn, transactionId=self.tx
+            )
+            self.tx = None
 
     def sql(self, statement: str, params: dict | None = None) -> list[dict]:
         kw = dict(
@@ -97,6 +115,8 @@ class Register:
             parameters=[_param(k, v) for k, v in (params or {}).items()],
             formatRecordsAs="JSON",
         )
+        if self.tx:
+            kw["transactionId"] = self.tx
         for attempt in range(12):  # an auto-paused cluster takes ~15-30 s to resume
             try:
                 r = self.rds.execute_statement(**kw)
@@ -150,6 +170,7 @@ class Register:
         tracks = json.loads((run_dir / "defects.json").read_text())
         t0 = dt.datetime.fromisoformat(meta["start_time_utc"].replace("Z", "+00:00"))
         new_obs = new_def = linked = 0
+        links = self._assign(tracks, meta["pass_id"])
         for t in tracks:
             kind = DefectType.edge_break if abs(t["d"]) > 1.0 and t["d"] < -1.0 else DefectType.pothole
             sev, sev_conf = severity_v1(t["area_m2"], kind, t["length_m"])
@@ -205,15 +226,8 @@ class Register:
             if not ins:
                 continue  # already loaded (idempotent re-run)
             new_obs += 1
-            near = self.sql(
-                "SELECT defect_id, latest_area_m2 FROM defect WHERE road_segment_id = :seg AND last_seen_pass <> :p "
-                "AND ST_DWithin(geom::geography, ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography, :r) "
-                "ORDER BY geom::geography <-> ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography LIMIT 1",
-                {"seg": obs.road_segment_id, "lon": obs.lon, "lat": obs.lat, "r": LINK_M, "p": obs.pass_id},
-            )
-            if near and near[0]["defect_id"]:
-                did = near[0]["defect_id"]
-                prev = near[0].get("latest_area_m2")
+            if t["defect_id"] in links:
+                did, prev = links[t["defect_id"]]
                 status = "degraded" if prev and obs.area_m2 and obs.area_m2 > 1.25 * prev else "unchanged"
                 self.sql(
                     "UPDATE defect SET last_seen_pass = :p, status = CAST(:st AS defect_status), latest_obs_id = :o, "
@@ -235,7 +249,7 @@ class Register:
                         "d": did,
                         "p": obs.pass_id,
                         "st": status,
-                        "ev": json.dumps({"prev_area_m2": prev, "area_m2": obs.area_m2, "method": "gnss+chainage"}),
+                        "ev": json.dumps({"prev_area_m2": prev, "area_m2": obs.area_m2, "method": "match-v2"}),
                     },
                 )
                 linked += 1
@@ -267,6 +281,47 @@ class Register:
             "new_defects": new_def,
             "linked_to_existing": linked,
         }
+
+    def close_pass(self, pass_id: str, covered: list[tuple[float, float]], margin_m: float = 12.0) -> int:
+        """After every clip of a pass is loaded: a known defect inside the stretch this pass drove, that no
+        detection of this pass linked to, is marked `repaired` ("not seen again"). The status_event records the
+        evidence, so the agent's verify_repair tool and a human can tell this apart from a confirmed repair."""
+        n = 0
+        for s0, s1 in covered:
+            rows = self.sql(
+                "UPDATE defect SET status = 'repaired' WHERE last_seen_pass <> :p AND status <> 'repaired' "
+                "AND chainage_m BETWEEN :a AND :b RETURNING defect_id, last_seen_pass",
+                {"p": pass_id, "a": s0 + margin_m, "b": s1 - margin_m},
+            )
+            for row in rows:
+                self.sql(
+                    "INSERT INTO status_event (defect_id, pass_id, from_status, to_status, evidence) VALUES "
+                    "(:d, :p, NULL, 'repaired', CAST(:ev AS jsonb))",
+                    {
+                        "d": row["defect_id"],
+                        "p": pass_id,
+                        "ev": json.dumps({"method": "not re-detected", "last_seen_pass": row["last_seen_pass"]}),
+                    },
+                )
+            n += len(rows)
+        return n
+
+    def _assign(self, tracks: list[dict], pass_id: int) -> dict[str, tuple[str, float | None]]:
+        """Match this clip's tracks to defects from earlier passes (register/match.py), one-to-one."""
+        if not tracks:
+            return {}
+        lo, hi = min(t["s"] for t in tracks) - LINK_S_M, max(t["s"] for t in tracks) + LINK_S_M
+        rows = self.sql(
+            "SELECT d.defect_id, d.road_segment_id, d.latest_area_m2, o.chainage_m, o.lateral_offset_m "
+            "FROM defect d JOIN observation o ON o.obs_id = d.latest_obs_id "
+            "WHERE d.last_seen_pass <> :p AND o.chainage_m BETWEEN :lo AND :hi",
+            {"p": pass_id, "lo": lo, "hi": hi},
+        )
+        known = [Candidate(r["defect_id"], r["road_segment_id"], r["chainage_m"], r["lateral_offset_m"],
+                           r["latest_area_m2"]) for r in rows]
+        new = [Candidate(t["defect_id"], t["segment_id"], t["s"], t["d"], t["area_m2"]) for t in tracks]
+        area = {r["defect_id"]: r["latest_area_m2"] for r in rows}
+        return {nk: (kk, area[kk]) for nk, kk in assign(known, new).items()}
 
     def geojson(self) -> dict:
         rows = self.sql(
@@ -308,9 +363,14 @@ def main() -> None:
     elif args.cmd == "load-corridor":
         print("segments, pois:", reg.load_corridor())
     elif args.cmd == "load-run":
+        covered, pass_id = [], None
         for rd in sorted(args.run_dir.glob("clip_*")):
             meta = json.loads((args.pass_dir / rd.name / "meta.json").read_text())
             print(json.dumps(reg.load_clip(rd, meta, args.model, args.calibration)), flush=True)
+            covered.append(tuple(meta["chainage_m"]))
+            pass_id = meta["pass_id"]
+        if pass_id:
+            print(json.dumps({"pass": pass_id, "not_seen_again": reg.close_pass(pass_id, covered)}))
     elif args.cmd == "summary":
         for q in (
             "SELECT count(*) AS n FROM road_segment",
