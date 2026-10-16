@@ -3,10 +3,10 @@
 **Goal:** the full demo runs from a browser: upload → processing → map → defect detail → agent package → approve/reject → before/after.
 
 ## Checklist
-- [ ] Console (Vite + MapLibre, static on CloudFront): map, filters (status/severity/road), defect drawer (perspective crop, BEV overlay, history timeline), work-package list, approve/reject with note, upload a clip (presigned S3 PUT), read-only public view
-- [ ] Auth: Cognito user pool (engineer role can approve; public role read-only)
-- [ ] CloudWatch dashboard: pipeline (km, frames kept, stage timings, cost/km), agent (task success, escalation, **override rate**, time to approval, tokens/$ per work order), errors (DLQ, Batch failures, UNGROUNDED_ID count)
-- [ ] X-Ray / OTel trace links from the console to agent runs
+- [~] Approval console `viewer/console.html` (plain HTML, no build step): work-package list, defects, materials, the agent's work order, approve/reject with note; the map stays `viewer/index.html`. Built and validated, **deployed only when the owner sets `enable_console = true`** (D-34) · [ ] filters, history timeline, clip upload
+- [~] Auth: Cognito user pool (no self sign-up), hosted UI with PKCE, JWT authorizer on the HTTP API; the approver's name comes from the token (part of the console stack, D-34)
+- [x] CloudWatch dashboard for the pipeline (EMF metrics) · [x] failure alarms: any failed pipeline or approval execution, any failed Batch job → email (`modules/alarms`) · [ ] agent metrics on the dashboard
+- [ ] X-Ray / OTel: not built; every agent run's full trace is saved as JSON (`eval/results/agent/`, `s3://…/traces/`)
 
 ## Exit criteria
 - Demo guide steps 1–8 run end to end on the CloudFront URL

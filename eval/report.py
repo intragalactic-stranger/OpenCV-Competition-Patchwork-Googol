@@ -1,11 +1,13 @@
-"""Fill the metrics table in docs/midpoint/04-RESULTS-AND-OUTPUTS.md from eval/results/*.json.
+"""Fill a metrics table from result JSON files.
 
 Only numbers that exist in result files are written; everything else stays [[TBD]].
-Usage: uv run python -m eval.report
+  uv run python -m eval.report                       final report  <- eval/results/*.json
+  uv run python -m eval.report --midpoint            midpoint pack <- eval/results/midpoint/*.json (frozen)
 """
 
 from __future__ import annotations
 
+import argparse
 import datetime as dt
 import json
 import re
@@ -13,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "eval" / "results"
-DOC = ROOT / "docs" / "midpoint" / "04-RESULTS-AND-OUTPUTS.md"
+DOC = ROOT / "docs" / "FINAL-REPORT.md"
 
 
 def _load(name: str) -> dict | None:
@@ -210,7 +212,21 @@ def build_table() -> str:
         )
     )
     reid = _load("reid.json")
-    if reid:
+    if reid and "v2_rule" in reid:  # final: matcher v2, with v1 on the same detections for comparison
+        rows.append(
+            _row(
+                "Cross-pass re-ID F1 (matcher v2: chainage + lateral offset + area, one-to-one)",
+                "≥ 0.90",
+                f"{reid['link_f1']:.2f}",
+                reid["link_f1"] >= 0.90,
+                f"precision {reid['link_precision']}, recall {reid['link_recall']}; v1 rule on the same detections "
+                f"{reid['v1']['link_f1']:.2f}; repaired defects reported 'not seen again': "
+                f"{reid['repaired_recall']:.0%} of {reid['repaired_in_truth_and_detected_in_pass1']}; still-present "
+                f"defects wrongly reported gone: {reid['still_present_but_not_resighted']} of "
+                f"{reid['still_present_detected_in_pass1']}",
+            )
+        )
+    elif reid:
         rows.append(
             _row(
                 "Cross-pass re-ID F1, basic matcher (preview)",
@@ -240,12 +256,30 @@ def build_table() -> str:
         )
     else:
         rows.append(_row("Run A/B: plan changes with measured area (stretch)", "must change", None, None))
+    scn = _load("agent_scenarios.json")
+    if scn:
+        rows.append(
+            _row(
+                "Agent scenarios, live on Amazon Nova (planning, questions, adversarial, verification)",
+                "0 ungrounded IDs (hard gate)",
+                f"{scn['passed']}/{scn['ran']} passed",
+                scn["ungrounded_id_answers"] == 0,
+                f"answers citing an unknown ID: {scn['ungrounded_id_answers']}; by category "
+                + ", ".join(f"{k} {v}" for k, v in scn["by_category"].items())
+                + "; see eval/results/agent_scenarios.json",
+            )
+        )
     rows.append("")
     rows.append(f"_Generated {dt.datetime.now(dt.UTC):%Y-%m-%d %H:%M} UTC by `uv run python -m eval.report`._")
     return "\n".join(rows)
 
 
 def main() -> None:
+    global RES, DOC
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--midpoint", action="store_true", help="regenerate the frozen midpoint table")
+    if ap.parse_args().midpoint:
+        RES, DOC = RES / "midpoint", ROOT / "docs" / "midpoint" / "04-RESULTS-AND-OUTPUTS.md"
     text = DOC.read_text()
     pat = re.compile(r"(<!-- METRICS:BEGIN -->\n).*?(\n<!-- METRICS:END -->)", re.S)
     if not pat.search(text):

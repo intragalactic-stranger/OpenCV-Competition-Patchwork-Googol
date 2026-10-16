@@ -6,6 +6,9 @@ Two pose modes are reported:
   true_pose       per-frame TRUE pitch/roll/yaw (calibration + resampling error only)
   nominal_pose    fixed nominal pitch (no pose refinement)
   estimated_pose  per-frame pitch estimated from lane-line geometry (perception/pose.py): the real pipeline
+  no_rectification  ABLATION: mask pixel count x one fixed m²/pixel scale (the ground area of one pixel at 8 m,
+                  the middle of the measurement band), i.e. measuring in the camera image without the bird's-eye
+                  view. Same masks, same frames, same median fusion: only the homography is taken away
 
 Usage: uv run python -m eval.metrics.area --oracle data/synth/seed07/pass_1 [--calib data/calib/cam01-v1.json]
 """
@@ -41,12 +44,16 @@ def run(pass_dir: Path, cal_path: Path, pitch_bins: int = 40) -> dict:
         m: defaultdict(list) for m in ("true_pose", "nominal_pose", "estimated_pose")
     }
     ipm_cache: dict[tuple, IPM] = {}
+    flat: dict[int, list[float]] = defaultdict(list)  # no_rectification ablation
     for clip_dir in sorted(pass_dir.glob("clip_*")):
         meta = json.loads((clip_dir / "meta.json").read_text())
         frames = load_frames(clip_dir)
         base = camera_from_calibration(cal, meta["mount_height_m"], meta["nominal_pitch_deg"])
         nominal = ipm_cache.setdefault(("nominal",), IPM(base))
         estimator = PitchEstimator(base)
+        # one fixed scale: ground area of one pixel at the band centre (8 m ahead, on the optical axis)
+        sq = np.array([[-0.05, 7.95], [0.05, 7.95], [0.05, 8.05], [-0.05, 8.05]])
+        k_m2_per_px = 0.01 / cv2.contourArea(base.ground_to_pixel(sq, distort=True).astype(np.float32))
         tag = clip_dir.name.split("_")[1]
         masks = {int(mp.stem.split("_")[1]): mp for mp in (pass_dir / "truth" / "masks").glob(f"clip{tag}_*.png")}
         cap = cv2.VideoCapture(str(clip_dir / "clip.mp4"))
@@ -78,7 +85,35 @@ def run(pass_dir: Path, cal_path: Path, pitch_bins: int = 40) -> dict:
                     m = measure_bev(ipm.warp_mask(mask), ipm, truncated=cut)
                     if m:
                         per_mode[mode][int(iid) - 1].append(m)
+                        if mode == "nominal_pose":  # same frames the pipeline would measure
+                            flat[int(iid) - 1].append(float(mask.sum()) * k_m2_per_px)
     out = {}
+    rows = []
+    for idx, vals in flat.items():
+        t = truth.get(idx)
+        if t is None or t["area_m2"] is None:
+            continue
+        a = float(np.median(vals))
+        rows.append(
+            {
+                "truth_id": t["truth_id"],
+                "kind": t["kind"],
+                "true_m2": t["area_m2"],
+                "meas_m2": a,
+                "err_pct": 100 * (a - t["area_m2"]) / t["area_m2"],
+                "frames": len(vals),
+            }
+        )
+    if rows:
+        errs = np.array([abs(r["err_pct"]) for r in rows])
+        out["no_rectification"] = {
+            "n_measured": len(rows),
+            "mape_pct": round(float(errs.mean()), 2),
+            "median_ape_pct": round(float(np.median(errs)), 2),
+            "bias_pct": round(float(np.mean([r["err_pct"] for r in rows])), 2),
+            "p90_ape_pct": round(float(np.percentile(errs, 90)), 2),
+            "rows": rows,
+        }
     for mode, per in per_mode.items():
         rows = []
         for idx, ms in per.items():
@@ -145,7 +180,7 @@ def main() -> None:
             "p90_ape_pct": round(float(np.percentile(e, 90)), 2),
             "bias_pct": round(float(np.mean([r["err_pct"] for r in rows])), 2),
             "within_2sigma": round(
-                float(np.mean([abs(r["meas_m2"] - r["true_m2"]) <= 2 * r["unc_m2"] for r in rows])), 3
+                float(np.mean([abs(r["meas_m2"] - r["true_m2"]) <= 2 * r.get("unc_m2", 0) for r in rows])), 3
             ),
         }
         sm = summary[mode]

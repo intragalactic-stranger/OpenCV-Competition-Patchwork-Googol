@@ -1,0 +1,49 @@
+{
+ "defect": {
+  "defect_id": "01M4W2G8G608GKQFEZV0400AET",
+  "road_name": "Marine Drive",
+  "chainage_m": 3193.36
+ },
+ "source": "pipeline output (model seg-v3)",
+ "area_A": 0.3531,
+ "area_B": 3.1,
+ "plan_changed": true,
+ "A": {
+  "run_id": "ablation-A-400AET",
+  "tool_sequence": [
+   "query_defects",
+   "cluster_into_packages",
+   "estimate_materials",
+   "draft_work_order",
+   "request_human_approval"
+  ],
+  "package_id": "01M4W31G54BM9SBM5VV7RREEEF",
+  "priority": 2,
+  "exposure_score": 5.861,
+  "area_m2": 0.3531,
+  "mass_t": 0.0456,
+  "state": "awaiting_approval",
+  "final": "<thinking> The work order for the defect on Marine Drive has been successfully drafted and submitted for human approval. The defect has a medium severity, an area of 0.3531 m\u00b2, and is located near two hospitals, making it a priority for repair. The estimated materials required are 0.0177 m\u00b3 of hot-mix asphalt. </thinking>\n\nThe work order for the defect on Marine Drive (package_id: 01M4W31G54BM9SBM5VV7RREEEF) has been drafted and submitted for human approval. The defect has a medium severity, an area of 0.3531 m\u00b2, and is located near two hospitals, making it a priority for repair. The estimated materials required are 0.0177 m\u00b3 of hot-mix asphalt.\n",
+  "tokens": 12367,
+  "seconds": 11.0
+ },
+ "B": {
+  "run_id": "ablation-B-400AET",
+  "tool_sequence": [
+   "query_defects",
+   "cluster_into_packages",
+   "estimate_materials",
+   "draft_work_order",
+   "request_human_approval"
+  ],
+  "package_id": "01M4W31VPMGVFHPQ66FNYPXZAK",
+  "priority": 1,
+  "exposure_score": 21.699,
+  "area_m2": 3.1,
+  "mass_t": 0.4007,
+  "state": "awaiting_approval",
+  "final": "<thinking> The work order for the package 01M4W31VPMGVFHPQ66FNYPXZAK has been successfully requested for human approval. I will now summarize the package, its priority, and the reason for its priority. </thinking>\n\nThe work package 01M4W31VPMGVFHPQ66FNYPXZAK on Marine Drive has been requested for human approval. It has a priority of 1 due to its high severity, an area of 3.1 m\u00b2, and its proximity to two hospitals. The estimated materials for this package are 0.155 m\u00b3 of hot-mix asphalt, which will be used to repair the defect 01M4W2G8G608GKQFEZV0400AET.\n",
+  "tokens": 12359,
+  "seconds": 11.0
+ }
+}

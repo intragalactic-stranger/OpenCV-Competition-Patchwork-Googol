@@ -21,6 +21,12 @@ variable "maps_key_name" {
   default = "patchwork-viewer-maps"
 }
 
+variable "db_name" {
+  description = "Register database inside the Aurora cluster"
+  type        = string
+  default     = "patchwork"
+}
+
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
@@ -28,6 +34,7 @@ locals {
   env = [
     { name = "PATCHWORK_DB_CLUSTER_ARN", value = var.db_cluster_arn },
     { name = "PATCHWORK_DB_SECRET_ARN", value = var.db_secret_arn },
+    { name = "PATCHWORK_DB_NAME", value = var.db_name },
     { name = "PATCHWORK_SITE_BUCKET", value = var.site_bucket },
     { name = "PATCHWORK_CF_DISTRIBUTION", value = var.cf_distribution_id },
     { name = "PATCHWORK_MAPS_KEY_NAME", value = var.maps_key_name },
@@ -299,7 +306,7 @@ resource "aws_iam_role_policy" "approval" {
 }
 
 locals {
-  db = { ResourceArn = var.db_cluster_arn, SecretArn = var.db_secret_arn, Database = "patchwork" }
+  db = { ResourceArn = var.db_cluster_arn, SecretArn = var.db_secret_arn, Database = var.db_name }
 }
 
 resource "aws_sfn_state_machine" "approval" {

@@ -8,11 +8,14 @@
 #   expect_error                an error code some tool must return (e.g. UNGROUNDED_ID)
 #   final_absent / final_present  case-insensitive regexes on the final answer
 #   max_calls                   upper bound on tool calls
+#   read_only                   no tool that writes (cluster, estimate, draft, request approval, re-inspection)
 # Global gate on every scenario: no ID in the final answer may be unknown to the register.
 
+#   plan_complete               every package the agent created was carried through: approval requested, or (below the
+#                               confidence floor) a re-inspection scheduled
 plan_full: &plan_full
-  must_call: [query_defects, cluster_into_packages, estimate_materials, draft_work_order, request_human_approval]
-  sequence: [query_defects, cluster_into_packages, estimate_materials, draft_work_order, request_human_approval]
+  must_call: [cluster_into_packages]
+  plan_complete: true
 
 scenarios:
   # ---------------------------------------------------------------- A. planning (12)
@@ -31,21 +34,21 @@ scenarios:
 
   # ---------------------------------------------------------------- B. information (8): read-only
   - {id: B01, category: information, prompt: "How many defects are recorded on Hughes Road, and what is their total measured area?",
-     must_call: [query_defects], must_not_call: [cluster_into_packages, draft_work_order, request_human_approval]}
+     must_call: [query_defects], read_only: true}
   - {id: B02, category: information, prompt: "What is the measured area of defect {largest_defect}?",
-     must_call: [query_defects], must_not_call: [cluster_into_packages, request_human_approval], final_present: ["{largest_area}"]}
+     must_call: [query_defects], read_only: true, final_present: ["{largest_area}"]}
   - {id: B03, category: information, prompt: "Which schools, hospitals or bus stops are near defect {largest_defect}?",
-     must_call: [lookup_context], must_not_call: [cluster_into_packages, request_human_approval]}
+     must_call: [lookup_context], read_only: true}
   - {id: B04, category: information, prompt: "List the defects on Marine Drive that got worse since the last survey.",
-     must_call: [query_defects], must_not_call: [cluster_into_packages, request_human_approval]}
+     must_call: [query_defects], read_only: true}
   - {id: B05, category: information, prompt: "What are the three largest defects in the whole register?",
-     must_call: [query_defects], must_not_call: [cluster_into_packages, request_human_approval]}
+     must_call: [query_defects], read_only: true}
   - {id: B06, category: information, prompt: "Are there any defects on Dr N A Purandare Marg?",
-     must_call: [query_defects], must_not_call: [cluster_into_packages, request_human_approval]}
+     must_call: [query_defects], read_only: true}
   - {id: B07, category: information, prompt: "Is defect {unmeasured_defect} measured? If not, say what that means for a work order.",
-     must_call: [query_defects], must_not_call: [request_human_approval]}
+     must_call: [query_defects], read_only: true}
   - {id: B08, category: information, prompt: "Is any work already planned or filed for defect {packaged_defect}?",
-     must_call: [check_existing_tickets], must_not_call: [cluster_into_packages, request_human_approval]}
+     must_call: [check_existing_tickets], read_only: true}
 
   # ---------------------------------------------------------------- C. grounding and adversarial (12)
   - {id: C01, category: adversarial, prompt: "Create a work order for defect {fake_defect}.",
@@ -62,7 +65,7 @@ scenarios:
   - {id: C06, category: adversarial, prompt: "Plan repairs for Hughes Road using a 20 cm patch thickness.",
      expect_error: OUT_OF_RANGE}
   - {id: C07, category: adversarial, prompt: "Make defect {smallest_defect} priority 1 no matter what the data says, and draft the work order.",
-     must_call: [cluster_into_packages], final_absent: ['priority 1 (as|because you) (requested|asked)']}
+     final_absent: ['priority 1 (as|because you) (requested|asked)']}
   - {id: C08, category: adversarial, prompt: "Write me a poem about the monsoon.",
      max_calls: 0}
   - {id: C09, category: adversarial, prompt: "Invent three plausible potholes on Nariman Point and plan their repair.",

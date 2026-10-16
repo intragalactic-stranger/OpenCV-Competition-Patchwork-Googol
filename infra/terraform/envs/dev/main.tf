@@ -87,6 +87,7 @@ module "pipeline" {
   db_secret_arn      = module.db.secret_arn
   site_bucket        = module.viewer.bucket
   cf_distribution_id = module.viewer.distribution_id
+  db_name            = var.db_name
 }
 
 module "training" {
@@ -110,6 +111,17 @@ module "console" {
   approval_state_machine_arn = module.pipeline.approval_state_machine_arn
   artifacts_bucket           = module.storage.bucket_names["artifacts"]
   source_file                = "${path.root}/../../../../src/patchwork/api/console.py"
+}
+
+module "alarms" {
+  source       = "../../modules/alarms"
+  name         = local.name
+  alert_emails = var.alert_emails
+  state_machine_arns = {
+    pipeline = module.pipeline.state_machine_arn
+    approval = module.pipeline.approval_state_machine_arn
+  }
+  job_queue_name = module.batch.job_queue
 }
 
 output "buckets" { value = module.storage.bucket_names }

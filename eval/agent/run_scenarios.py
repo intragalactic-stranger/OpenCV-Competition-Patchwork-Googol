@@ -24,6 +24,14 @@ ROOT = Path(__file__).resolve().parents[2]
 SCENARIOS = Path(__file__).parent / "scenarios.yaml"
 TRACES = ROOT / "eval" / "results" / "agent" / "scenarios"
 SUMMARY = ROOT / "eval" / "results" / "agent_scenarios.json"
+WRITES = {
+    "cluster_into_packages",
+    "estimate_materials",
+    "draft_work_order",
+    "request_human_approval",
+    "schedule_reinspection",
+    "verify_repair",
+}
 FAKE_DEFECT = "01ZZZZZZZZZZZZZZZZZZZZZZZZ"
 FAKE_PACKAGE = "01ZZZZZZZZZZZZZZZZZZZZZZZY"
 NUM = re.compile(r"\d+(?:\.\d+)?")
@@ -76,6 +84,15 @@ def fill(x, ph: dict[str, str]):
     return x
 
 
+def _json(x):
+    if isinstance(x, (list, dict)):
+        return x
+    try:
+        return json.loads(x)
+    except (TypeError, ValueError):
+        return None
+
+
 def score(sc: dict, out: dict) -> dict:
     """Check one scenario's assertions against its trace. Returns {passed, failures}."""
     calls = [s["tool"] for s in out["trace"] if s["type"] == "tool_call"]
@@ -107,8 +124,32 @@ def score(sc: dict, out: dict) -> dict:
         except ValueError:
             if not re.search(pat, final, re.I):
                 fails.append(f"answer lacks /{pat}/")
+    if sc.get("read_only") and (w := sorted(set(calls) & WRITES)):
+        fails.append(f"read-only question, but called {w}")
+    if sc.get("plan_complete"):
+        ids = {s["id"]: s["tool"] for s in out["trace"] if s["type"] == "tool_call"}
+        created, low = set(), set()
+        for s in out["trace"]:
+            if s["type"] == "tool_result" and ids.get(s["id"]) == "cluster_into_packages" and s.get("result"):
+                for pkg in _json(s["result"]) if isinstance(_json(s["result"]), list) else []:
+                    created.add(pkg["package_id"])
+                    if pkg.get("below_confidence_floor"):
+                        low.add(pkg["package_id"])
+        asked = {
+            str(s["input"].get("package_id"))
+            for s in out["trace"]
+            if s["type"] == "tool_call" and s["tool"] == "request_human_approval"
+        }
+        reinspect = "schedule_reinspection" in calls
+        for pid in created:
+            if pid not in asked and not (pid in low and reinspect):
+                fails.append(f"package {pid} neither sent for approval nor (low confidence) re-inspected")
+        if not created:
+            fails.append("no package created")
     if (m := sc.get("max_calls")) is not None and len(calls) > m:
         fails.append(f"{len(calls)} tool calls > {m}")
+    if out.get("error"):
+        fails.append(f"run error: {out['error'][:120]}")
     chk = out.get("answer_check", {})
     ungrounded = [i for i in chk.get("ungrounded_ids", []) if i not in sc["prompt"]]  # echoing the user's ID is fine
     if ungrounded:
@@ -155,13 +196,20 @@ def main() -> None:
                 rows.append({"id": sc["id"], "category": sc["category"], "passed": None, "failures": ["skipped"]})
                 continue
             sc = {k: fill(v, ph) for k, v in sc.items()}
-            reg = Register()
-            reg.begin()
-            try:
-                t0 = time.time()
-                out = run(sc["prompt"], run_id=sc["id"], tools=Tools(reg), out_dir=TRACES)
-            finally:
-                reg.rollback()
+            t0, out = time.time(), None
+            for attempt in (1, 2):  # a model-side error (e.g. a malformed tool call) gets one retry, then counts
+                reg = Register()
+                reg.begin()
+                try:
+                    out = run(sc["prompt"], run_id=sc["id"], tools=Tools(reg), out_dir=TRACES)
+                    break
+                except Exception as e:  # noqa: BLE001 - recorded as a scenario failure, the suite continues
+                    err = f"{type(e).__name__}: {str(e)[:300]}"
+                    print(json.dumps({"id": sc["id"], "attempt": attempt, "error": err}), flush=True)
+                finally:
+                    reg.rollback()
+            if out is None:
+                out = {"trace": [], "final": "", "seconds": round(time.time() - t0, 1), "usage": {}, "error": err}
             out["scenario"] = sc
             (TRACES / f"{sc['id']}.json").write_text(json.dumps(out, indent=1, default=str))
             r = {

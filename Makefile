@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 PY := uv run python
 
-.PHONY: setup check lint test smoke cost-report services-inventory eval-midpoint upload-demo agent-demo ablation approvals help
+.PHONY: setup check lint test smoke cost-report services-inventory eval-midpoint upload-demo agent-demo ablation approvals scenarios teardown help
 
 help:
 	@echo "setup        create .venv (Python 3.12) and install deps"
@@ -49,3 +49,9 @@ ablation:
 
 approvals:
 	$(PY) scripts/approve.py list
+
+scenarios:
+	uv run --group agent python -m eval.agent.run_scenarios
+
+teardown:
+	./scripts/teardown.sh

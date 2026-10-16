@@ -194,7 +194,8 @@ def check_answer(final: str, trace: list[dict], t: Tools) -> dict:
     if cited:
         rows = t.reg.sql(
             "SELECT defect_id AS i FROM defect WHERE defect_id = ANY(string_to_array(:ids, ',')) UNION "
-            "SELECT package_id FROM work_package WHERE package_id = ANY(string_to_array(:ids, ','))",
+            "SELECT package_id FROM work_package WHERE package_id = ANY(string_to_array(:ids, ',')) UNION "
+            "SELECT reinspection_id FROM reinspection WHERE reinspection_id = ANY(string_to_array(:ids, ','))",
             {"ids": ",".join(set(cited))},
         )
         known = {r["i"] for r in rows}

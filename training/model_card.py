@@ -34,11 +34,19 @@ def load_run(src: str) -> tuple[dict, str]:
     else:
         d = Path(src)
     m = json.loads((d / "metrics.json").read_text())
+    # GPU jobs skip the OpenCV evaluation (--skip-opencv-eval); training.evaluate_job writes it next to the model
+    if not m.get("opencv_eval") and (d / "eval_opencv.json").exists():
+        m["opencv_eval"] = json.loads((d / "eval_opencv.json").read_text())
+    if (d / "parity.json").exists():
+        m["parity"] = json.loads((d / "parity.json").read_text())
     return m, src
 
 
 def render(m: dict, src: str) -> str:
-    ev, par, hist = m.get("opencv_eval", {}), m.get("parity", {}), m.get("history", [])
+    ev, par, hist = m.get("opencv_eval") or {}, m.get("parity") or {}, m.get("history", [])
+    device = m.get("device", "cpu")
+    where = "on CPU" if device == "cpu" else f"on GPU ({device})"
+    arch = m["arch"] + (f" {m['backbone']}" if m.get("backbone") else "")
     # summed per-epoch time: a Spot interruption splits training over several jobs, m["hours"] is the last one only
     hours = round(sum(h["minutes"] for h in hist) / 60, 1) if hist else m["hours"]
 
@@ -47,8 +55,8 @@ def render(m: dict, src: str) -> str:
 
     picked = f" · selected epoch **{max(hist, key=score)['epoch']}** (best mean val IoU)" if hist else ""
     rows = [
-        f"**Run:** `{src}` · architecture `{m['arch']}` · {m['train_images']} training images · "
-        f"{len(hist)} epochs in {hours} h on CPU{picked} · runtime engine for these numbers: "
+        f"**Run:** `{src}` · architecture `{arch}` · {m['train_images']} training images · "
+        f"{len(hist)} epochs in {hours} h {where}{picked} · runtime engine for these numbers: "
         f"**{ev.get('engine', '?')}**",
     ]
     if m.get("init"):
@@ -110,10 +118,12 @@ def main() -> None:
     text = DOC.read_text()
     pat = re.compile(r"(<!-- MODEL-METRICS:BEGIN -->\n).*?(\n<!-- MODEL-METRICS:END -->)", re.S)
     DOC.write_text(pat.sub(lambda g: g.group(1) + render(m, src) + g.group(2), text))
-    ev = m.get("opencv_eval", {})
+    ev = m.get("opencv_eval") or {}
     seg = {
         "run": src,
         "arch": m["arch"],
+        "backbone": m.get("backbone"),
+        "device": m.get("device", "cpu"),
         "engine": ev.get("engine"),
         **{f"iou_{k}": ev[k]["iou_damage"] for k in SPLIT_NAMES if k in ev},
         **{f"images_{k}": ev[k]["images"] for k in SPLIT_NAMES if k in ev},

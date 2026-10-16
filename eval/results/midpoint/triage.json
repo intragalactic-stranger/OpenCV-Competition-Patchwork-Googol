@@ -1,0 +1,235 @@
+{
+ "summary": {
+  "spacing_m": 3.0,
+  "clips": 10,
+  "frames": 37520,
+  "kept": 8115,
+  "keep_rate_pct": 21.63,
+  "kept_per_km": 284.2,
+  "true_distance_km": 28.558,
+  "odometry_err_pct": -0.6,
+  "defects_covered": 180,
+  "recall_loss_pct": 0.0,
+  "covered_2plus_pct": 98.9,
+  "ms_per_frame": 12.0
+ },
+ "clips": [
+  {
+   "clip": "clip_00",
+   "frames": 4745,
+   "kept": 893,
+   "keep_rate": 0.1882,
+   "distance_m": 2990.9,
+   "kept_per_km": 298.6,
+   "reasons": {
+    "spacing": 879,
+    "edge_spike": 14
+   },
+   "true_distance_m": 2999.6,
+   "odometry_err_pct": -0.29,
+   "step_abs_err_median_pct": 5.06,
+   "stopped_frames": 522,
+   "stopped_detected_pct": 90.8,
+   "defects_covered_all": 23,
+   "defects_covered_kept": 23,
+   "defects_covered_kept_2plus": 23,
+   "ms_per_frame": 12.7,
+   "pass": "pass_1"
+  },
+  {
+   "clip": "clip_01",
+   "frames": 3961,
+   "kept": 866,
+   "keep_rate": 0.2186,
+   "distance_m": 2998.1,
+   "kept_per_km": 288.8,
+   "reasons": {
+    "spacing": 851,
+    "edge_spike": 15
+   },
+   "true_distance_m": 2999.6,
+   "odometry_err_pct": -0.05,
+   "step_abs_err_median_pct": 4.18,
+   "stopped_frames": 298,
+   "stopped_detected_pct": 90.6,
+   "defects_covered_all": 22,
+   "defects_covered_kept": 22,
+   "defects_covered_kept_2plus": 22,
+   "ms_per_frame": 12.3,
+   "pass": "pass_1"
+  },
+  {
+   "clip": "clip_02",
+   "frames": 2643,
+   "kept": 864,
+   "keep_rate": 0.3269,
+   "distance_m": 3001.3,
+   "kept_per_km": 287.9,
+   "reasons": {
+    "spacing": 864
+   },
+   "true_distance_m": 2997.9,
+   "odometry_err_pct": 0.11,
+   "step_abs_err_median_pct": 1.87,
+   "stopped_frames": 1,
+   "stopped_detected_pct": 100.0,
+   "defects_covered_all": 0,
+   "defects_covered_kept": 0,
+   "defects_covered_kept_2plus": 0,
+   "ms_per_frame": 10.5,
+   "pass": "pass_1"
+  },
+  {
+   "clip": "clip_03",
+   "frames": 2294,
+   "kept": 753,
+   "keep_rate": 0.3282,
+   "distance_m": 2997.9,
+   "kept_per_km": 251.2,
+   "reasons": {
+    "spacing": 753
+   },
+   "true_distance_m": 2998.8,
+   "odometry_err_pct": -0.03,
+   "step_abs_err_median_pct": 1.7,
+   "stopped_frames": 1,
+   "stopped_detected_pct": 100.0,
+   "defects_covered_all": 0,
+   "defects_covered_kept": 0,
+   "defects_covered_kept_2plus": 0,
+   "ms_per_frame": 10.4,
+   "pass": "pass_1"
+  },
+  {
+   "clip": "clip_04",
+   "frames": 2294,
+   "kept": 746,
+   "keep_rate": 0.3252,
+   "distance_m": 3015.4,
+   "kept_per_km": 247.4,
+   "reasons": {
+    "spacing": 746
+   },
+   "true_distance_m": 2998.8,
+   "odometry_err_pct": 0.55,
+   "step_abs_err_median_pct": 1.77,
+   "stopped_frames": 1,
+   "stopped_detected_pct": 100.0,
+   "defects_covered_all": 0,
+   "defects_covered_kept": 0,
+   "defects_covered_kept_2plus": 0,
+   "ms_per_frame": 10.5,
+   "pass": "pass_1"
+  },
+  {
+   "clip": "clip_05",
+   "frames": 4443,
+   "kept": 877,
+   "keep_rate": 0.1974,
+   "distance_m": 2989.3,
+   "kept_per_km": 293.4,
+   "reasons": {
+    "spacing": 863,
+    "edge_spike": 14
+   },
+   "true_distance_m": 2999.0,
+   "odometry_err_pct": -0.32,
+   "step_abs_err_median_pct": 4.83,
+   "stopped_frames": 409,
+   "stopped_detected_pct": 97.1,
+   "defects_covered_all": 19,
+   "defects_covered_kept": 19,
+   "defects_covered_kept_2plus": 18,
+   "ms_per_frame": 12.7,
+   "pass": "pass_1"
+  },
+  {
+   "clip": "clip_06",
+   "frames": 4194,
+   "kept": 887,
+   "keep_rate": 0.2115,
+   "distance_m": 2982.7,
+   "kept_per_km": 297.4,
+   "reasons": {
+    "spacing": 868,
+    "edge_spike": 19
+   },
+   "true_distance_m": 2999.4,
+   "odometry_err_pct": -0.56,
+   "step_abs_err_median_pct": 5.0,
+   "stopped_frames": 100,
+   "stopped_detected_pct": 87.0,
+   "defects_covered_all": 28,
+   "defects_covered_kept": 28,
+   "defects_covered_kept_2plus": 27,
+   "ms_per_frame": 12.8,
+   "pass": "pass_1"
+  },
+  {
+   "clip": "clip_07",
+   "frames": 5138,
+   "kept": 883,
+   "keep_rate": 0.1719,
+   "distance_m": 2891.1,
+   "kept_per_km": 305.4,
+   "reasons": {
+    "spacing": 853,
+    "edge_spike": 30
+   },
+   "true_distance_m": 2999.5,
+   "odometry_err_pct": -3.61,
+   "step_abs_err_median_pct": 6.57,
+   "stopped_frames": 164,
+   "stopped_detected_pct": 93.3,
+   "defects_covered_all": 37,
+   "defects_covered_kept": 37,
+   "defects_covered_kept_2plus": 37,
+   "ms_per_frame": 12.8,
+   "pass": "pass_1"
+  },
+  {
+   "clip": "clip_08",
+   "frames": 5505,
+   "kept": 885,
+   "keep_rate": 0.1608,
+   "distance_m": 2958.7,
+   "kept_per_km": 299.1,
+   "reasons": {
+    "spacing": 863,
+    "edge_spike": 22
+   },
+   "true_distance_m": 2999.1,
+   "odometry_err_pct": -1.35,
+   "step_abs_err_median_pct": 5.71,
+   "stopped_frames": 863,
+   "stopped_detected_pct": 96.1,
+   "defects_covered_all": 35,
+   "defects_covered_kept": 35,
+   "defects_covered_kept_2plus": 35,
+   "ms_per_frame": 12.6,
+   "pass": "pass_1"
+  },
+  {
+   "clip": "clip_09",
+   "frames": 2303,
+   "kept": 461,
+   "keep_rate": 0.2002,
+   "distance_m": 1562.2,
+   "kept_per_km": 295.1,
+   "reasons": {
+    "spacing": 457,
+    "edge_spike": 4
+   },
+   "true_distance_m": 1566.8,
+   "odometry_err_pct": -0.3,
+   "step_abs_err_median_pct": 5.02,
+   "stopped_frames": 126,
+   "stopped_detected_pct": 92.1,
+   "defects_covered_all": 16,
+   "defects_covered_kept": 16,
+   "defects_covered_kept_2plus": 16,
+   "ms_per_frame": 13.0,
+   "pass": "pass_1"
+  }
+ ]
+}

@@ -1,5 +1,13 @@
 {
  "summary": {
+  "no_rectification": {
+   "n": 20,
+   "mape_pct": 46.9,
+   "median_ape_pct": 47.69,
+   "p90_ape_pct": 69.95,
+   "bias_pct": -45.38,
+   "within_2sigma": 0.0
+  },
   "true_pose": {
    "n": 13,
    "mape_pct": 1.4,
@@ -26,6 +34,170 @@
   }
  },
  "detail": {
+  "no_rectification": {
+   "rows": [
+    {
+     "truth_id": "T07-00012",
+     "kind": "pothole",
+     "true_m2": 0.23858,
+     "meas_m2": 0.12694117298950122,
+     "err_pct": -46.79303672164422,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00025",
+     "kind": "pothole",
+     "true_m2": 0.34346,
+     "meas_m2": 0.16034674482884365,
+     "err_pct": -53.31428846769823,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00032",
+     "kind": "edge_break",
+     "true_m2": 0.41819,
+     "meas_m2": 0.1855053161203484,
+     "err_pct": -55.64090099707109,
+     "frames": 2
+    },
+    {
+     "truth_id": "T07-00003",
+     "kind": "depression",
+     "true_m2": 0.95138,
+     "meas_m2": 0.38395529132844197,
+     "err_pct": -59.642278445159455,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00017",
+     "kind": "pothole",
+     "true_m2": 0.10845,
+     "meas_m2": 0.06242666237477116,
+     "err_pct": -42.43737909195836,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00024",
+     "kind": "depression",
+     "true_m2": 2.16496,
+     "meas_m2": 1.8383503752838128,
+     "err_pct": -15.086173634440698,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00030",
+     "kind": "edge_break",
+     "true_m2": 0.40064,
+     "meas_m2": 0.09457952527013824,
+     "err_pct": -76.39289005837205,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00009",
+     "kind": "pothole",
+     "true_m2": 0.34608,
+     "meas_m2": 0.23592685111535588,
+     "err_pct": -31.828810935230038,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00010",
+     "kind": "edge_break",
+     "true_m2": 0.54936,
+     "meas_m2": 0.1595116055328601,
+     "err_pct": -70.96410267714064,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00019",
+     "kind": "pothole",
+     "true_m2": 0.10128,
+     "meas_m2": 0.060338814134812256,
+     "err_pct": -40.423761715232764,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00018",
+     "kind": "pothole",
+     "true_m2": 0.20844,
+     "meas_m2": 0.127358742637493,
+     "err_pct": -38.89908720135626,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00011",
+     "kind": "edge_break",
+     "true_m2": 0.88641,
+     "meas_m2": 0.3833289368564543,
+     "err_pct": -56.7548948165686,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00025",
+     "kind": "pothole",
+     "true_m2": 0.34346,
+     "meas_m2": 0.19552698767215113,
+     "err_pct": -43.071394726561714,
+     "frames": 4
+    },
+    {
+     "truth_id": "T07-00032",
+     "kind": "edge_break",
+     "true_m2": 0.54898,
+     "meas_m2": 0.2575360803989305,
+     "err_pct": -53.088258151675745,
+     "frames": 2
+    },
+    {
+     "truth_id": "T07-00003",
+     "kind": "depression",
+     "true_m2": 0.95138,
+     "meas_m2": 0.49335853910228844,
+     "err_pct": -48.14285153121902,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00030",
+     "kind": "edge_break",
+     "true_m2": 0.40064,
+     "meas_m2": 0.2113946342958388,
+     "err_pct": -47.23576420331499,
+     "frames": 2
+    },
+    {
+     "truth_id": "T07-00009",
+     "kind": "pothole",
+     "true_m2": 0.34608,
+     "meas_m2": 0.2789365248585092,
+     "err_pct": -19.401142840236584,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00010",
+     "kind": "edge_break",
+     "true_m2": 0.69563,
+     "meas_m2": 0.2098287481158696,
+     "err_pct": -69.8361559858158,
+     "frames": 3
+    },
+    {
+     "truth_id": "T07-00019",
+     "kind": "pothole",
+     "true_m2": 0.10128,
+     "meas_m2": 0.1167107166137026,
+     "err_pct": 15.235699658079186,
+     "frames": 4
+    },
+    {
+     "truth_id": "T07-00018",
+     "kind": "pothole",
+     "true_m2": 0.20844,
+     "meas_m2": 0.09624980386210537,
+     "err_pct": -53.823736393156125,
+     "frames": 3
+    }
+   ]
+  },
   "true_pose": {
    "rows": [
     {
