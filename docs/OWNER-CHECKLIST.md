@@ -32,13 +32,8 @@ All paths are from the repo root `/home/ubuntu/opencv/`.
 
 You don't need `docs/plan/` for the review. It is the engineering detail behind everything above.
 
-## D. Your AWS tasks (only you can do these)
+## D. Account tasks (account owner only)
 
-- [ ] 9. **AWS Console → Support Center → Your support cases**: read the reply and paste it to Claude
-- [ ] 10. Close the two old SageMaker GPU cases: **179186331200104** (ml.g5.xlarge) and **179186313400853** (ml.g4dn.xlarge). Reply "no longer needed, please close" or click *Resolve case*
-- [ ] 11. Once they are closed, tell Claude "go" to file the EC2 GPU Spot quota request for the second half
-- [ ] 12. Once a month: **Billing → Credits**, check the balance and expiry date
-
-## E. Claude's remaining task
-
-- [ ] 13. Tomorrow (2026-10-15): re-run `make cost-report` once the last Spot charges appear in billing (expected total ≈ $10.6, all paid by credits), and update `02` and `08`
+- [x] 9. GPU quota support cases: answered by AWS; SageMaker GPU training quotas granted (2026-10-15)
+- [x] 10. Old SageMaker GPU quota cases closed (2026-10-15)
+- [ ] 11. Once a month: **Billing → Credits**, check the balance and expiry date

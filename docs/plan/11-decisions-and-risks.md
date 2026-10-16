@@ -39,13 +39,13 @@
 
 | ID | Risk | Likelihood | Impact | Mitigation | Owner |
 |---|---|---|---|---|---|
-| R-01 | **Synthetic → real domain gap**: the model looks great on synthetic data, poor on real | High | High | Train on a mix with real Indian Roads masks; always report real-val mIoU separately; composites with real cut-outs | Claude |
-| R-02 | OpenCV 5 `ENGINE_NEW` fails on a SegFormer op | Medium | Medium | Parity test in P0 (tiny model) and P3; opset/graph simplification (onnxsim); fallback chain (§06 [5]) | Claude |
-| R-03 | OpenCV 5 Python wheel missing for our platform or Python version | Low | High | Python 3.12; build from source in the container if needed (about 30 min, cached in ECR) | Claude |
+| R-01 | **Synthetic → real domain gap**: the model looks great on synthetic data, poor on real | High | High | Train on a mix with real Indian Roads masks; always report real-val mIoU separately; composites with real cut-outs | Author |
+| R-02 | OpenCV 5 `ENGINE_NEW` fails on a SegFormer op | Medium | Medium | Parity test in P0 (tiny model) and P3; opset/graph simplification (onnxsim); fallback chain (§06 [5]) | Author |
+| R-03 | OpenCV 5 Python wheel missing for our platform or Python version | Low | High | Python 3.12; build from source in the container if needed (about 30 min, cached in ECR) | Author |
 | R-04 | AWS permissions or Bedrock model access delays | Medium | Medium | Everything runs locally first (P1–P3 need only SageMaker; P3 can train on CPU at reduced scale) | User |
-| R-05 | Cost overrun | Low | Medium | Budgets, no NAT, Spot, auto-pause, teardown targets, weekly cost report | Claude |
-| R-06 | Real-mask datasets are non-commercial (Pothole Mix CC BY-NC; Indian Roads GPL) | Realised | Medium | D-24: research-licence weights; licence-clean LR-ASPP model trained on synthetic data only; never redistribute raw images | Claude |
+| R-05 | Cost overrun | Low | Medium | Budgets, no NAT, Spot, auto-pause, teardown targets, weekly cost report | Author |
+| R-06 | Real-mask datasets are non-commercial (Pothole Mix CC BY-NC; Indian Roads GPL) | Realised | Medium | D-24: research-licence weights; licence-clean LR-ASPP model trained on synthetic data only; never redistribute raw images | Author |
 | R-07 | Cost-allocation tag takes 24 h; Cost Explorer needs payer access | Medium | Low (report delay) | Activate in P0; fallback to the service-level account view | User |
-| R-08 | Rendering a 25 km pass is slow on 4 vCPU | Medium | Low | Sub-route segments for iteration; Batch array jobs for full passes | Claude |
-| R-09 | AgentCore/Strands API changes | Low | Medium | Thin adapter; tools are plain Lambdas usable without AgentCore | Claude |
-| R-10 | Synthetic data judged "too easy" by reviewers | Medium | Medium | Distractor zoo (D4), photometric degradations, real-image validation numbers shown next to synthetic ones | Claude |
+| R-08 | Rendering a 25 km pass is slow on 4 vCPU | Medium | Low | Sub-route segments for iteration; Batch array jobs for full passes | Author |
+| R-09 | AgentCore/Strands API changes | Low | Medium | Thin adapter; tools are plain Lambdas usable without AgentCore | Author |
+| R-10 | Synthetic data judged "too easy" by reviewers | Medium | Medium | Distractor zoo (D4), photometric degradations, real-image validation numbers shown next to synthetic ones | Author |
