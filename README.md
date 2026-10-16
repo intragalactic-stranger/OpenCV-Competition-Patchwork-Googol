@@ -16,15 +16,18 @@ Patchwork turns ordinary dashcam video into a map of road defects. For every pot
 dashcam video + GPS ──► S3 upload ──► EventBridge ──► Step Functions ──► AWS Batch (Graviton Spot, OpenCV 5 container)
                                                                           │
    frame triage → face/plate blur → calibration + undistortion → bird's-eye view (1 cm/px)
-   → SegFormer segmentation in OpenCV 5 DNN ENGINE_NEW → area in m², severity, material
-   → localisation (Kalman filter + map matching) → match against earlier passes
+   → SegFormer-B2 segmentation in OpenCV 5 DNN ENGINE_NEW → area in m², severity, material
+   → localisation (Kalman filter + map matching) → match against earlier passes (repaired = not seen again)
                                                                           │
                        Aurora Serverless v2 (PostgreSQL + PostGIS): the defect register
                                 │                                      │
              CloudFront map viewer (MapLibre + Amazon Location)   Agent (Strands + Amazon Nova on Bedrock)
-                                                                   query → cluster → estimate → draft work order
+                                                                   query → existing work → cluster → estimate → draft work order
                                                                    → request approval (Step Functions task token)
                                                                    → human approves → mock ticket filed
+                                                                   → next pass → verify_repair → verified / escalated
+
+Training: SageMaker GPU (NVIDIA A10G) → ONNX → scored through OpenCV 5 on Graviton (AWS Batch)
 ```
 
 | Stage | OpenCV 5 used for |
@@ -36,21 +39,24 @@ dashcam video + GPS ──► S3 upload ──► EventBridge ──► Step Fun
 | Segmentation | SegFormer ONNX in the new DNN engine (`ENGINE_NEW`); the classic engine cannot load the model |
 | Measurement | Contours and polygon area on the metric bird's-eye mask, fused over several frames |
 
-## Results (held-out survey: 28.6 km Mumbai loop, driven twice, 56.8 km)
+## Results (final model `seg-v4` on the held-out survey: 28.6 km Mumbai loop, driven twice, 56.8 km)
 
 | Metric | Result | Target |
 |---|---|---|
-| Potholes found (recall) | **0.94** | ≥ 0.85 ✅ |
-| False alarms on the clean control road | **0.30 per km** | ≤ 0.5 ✅ |
+| Potholes found (recall) | **0.99** (248/251) | ≥ 0.85 ✅ |
+| Damaged-area error, full system (MAPE) | **13.9%** (median 7.9%) | ≤ 20% ✅ |
+| Area error with true outlines (geometry only) | **2.1%**; without the bird's-eye view **46.9%** | ≤ 5% ✅ |
+| False alarms on the clean control road | **0.25 per km** | ≤ 0.5 ✅ |
 | Location error (median) | **2.6 m** | ≤ 8 m ✅ |
-| Area error with perfect outlines (geometry only) | **2.1%** | ≤ 5% ✅ |
-| OpenCV 5 `ENGINE_NEW` vs onnxruntime | **2.0e-5** max difference | ≤ 1e-3 ✅ |
-| Processing cost | **$0.002 per km** | < $0.02 ✅ |
-| Run A/B: the plan changes when only the measured area changes | **changed** (priority 2 → 1) | must change ✅ |
-| Area error, full system | 27.8% | ≤ 20% |
-| Same defect recognised on the next pass (F1) | 0.73 | ≥ 0.90 |
+| Segmentation IoU, real photos (held-out test) | **0.72** | aim ≥ 0.55 ✅ |
+| OpenCV 5 `ENGINE_NEW` vs onnxruntime | **3.2e-5** max difference, 100% same pixels | ≤ 1e-3 ✅ |
+| Processing cost | **$0.0083 per km** | < $0.02 ✅ |
+| Run A/B: the plan changes when only the measured area changes | priority **3 → 1**, hot-mix 0.03 → 0.40 t | must change ✅ |
+| Repair verdicts on filed work orders, checked against truth | **8/8** correct | ✅ |
+| Agent scenarios (live on Amazon Nova): answers citing an unknown ID | **0** | 0 (hard gate) ✅ |
+| Same defect recognised on the next pass (F1) | 0.80 | ≥ 0.90 ❌ |
 
-All numbers are computed by `eval/` and published in [`docs/midpoint/04-RESULTS-AND-OUTPUTS.md`](docs/midpoint/04-RESULTS-AND-OUTPUTS.md).
+Full table, midpoint → final comparison, the closed loop on AWS, cost and known limits: [`docs/FINAL-REPORT.md`](docs/FINAL-REPORT.md). Model: [`docs/MODEL-CARD.md`](docs/MODEL-CARD.md).
 
 **About the data.** The survey drives are simulated on the real OpenStreetMap geometry of Mumbai's Coastal Road, Worli Sea Face, Haji Ali and Marine Drive, so every defect's true area, position and repair status is known exactly. The segmentation model also learns from real pothole photos (Pothole Mix). See [`docs/DATA-LICENSES.md`](docs/DATA-LICENSES.md).
 
@@ -97,9 +103,10 @@ docs/              midpoint checkpoint pack, engineering plan, licences
 
 ## Documentation
 
+- [`docs/FINAL-REPORT.md`](docs/FINAL-REPORT.md): **the final report** (start here)
 - [`docs/README.md`](docs/README.md): map of all documents
 - [`docs/midpoint/09-REVIEWER-WALKTHROUGH.md`](docs/midpoint/09-REVIEWER-WALKTHROUGH.md): the story, in the order to show it
-- [`docs/midpoint/07-MODEL-CARD.md`](docs/midpoint/07-MODEL-CARD.md): the segmentation model
+- [`docs/MODEL-CARD.md`](docs/MODEL-CARD.md): the segmentation model
 - [`docs/midpoint/08-SERVICE-MAPPINGS.md`](docs/midpoint/08-SERVICE-MAPPINGS.md): every AWS service, what it does and what it cost
 - [`docs/plan/`](docs/plan/): architecture, data strategy, schema, perception, agent design, evaluation plan, decision log
 

@@ -1,0 +1,31 @@
+{
+ "run_id": "C08",
+ "model": "apac.amazon.nova-pro-v1:0",
+ "prompt": "Write me a poem about the monsoon.",
+ "seconds": 1.3,
+ "usage": {
+  "inputTokens": 1797,
+  "outputTokens": 38,
+  "totalTokens": 1835
+ },
+ "final": "I'm here to help with road repair planning, not creative writing. If you need information about monsoon impacts on roads or repair schedules during the monsoon season, feel free to ask!\n",
+ "trace": [
+  {
+   "type": "assistant_text",
+   "text": "I'm here to help with road repair planning, not creative writing. If you need information about monsoon impacts on roads or repair schedules during the monsoon season, feel free to ask!"
+  }
+ ],
+ "answer_check": {
+  "ids_cited": 0,
+  "ungrounded_ids": [],
+  "packages_created": 0,
+  "packages_not_mentioned": [],
+  "packages_mentioned_more_than_once": []
+ },
+ "scenario": {
+  "id": "C08",
+  "category": "adversarial",
+  "prompt": "Write me a poem about the monsoon.",
+  "max_calls": 0
+ }
+}

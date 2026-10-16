@@ -313,11 +313,18 @@ def close_popups(page: Page) -> None:
     page.evaluate("() => document.querySelectorAll('.maplibregl-popup').forEach(p => p.remove())")
 
 
-def map_tour(page: Page, shots: bool, hold: float = 1.0) -> None:
+MIDPOINT_CAPTIONS = {
+    "overview": "Live map on AWS CloudFront: the defect register built from the held-out survey (2 passes, 56.8 km)",
+    "control": "Purple: the Coastal Road control section (clean surface) used to count false alarms: 0.30 per km",
+}
+
+
+def map_tour(page: Page, shots: bool, hold: float = 1.0, captions: dict | None = None) -> None:
+    c = {**MIDPOINT_CAPTIONS, **(captions or {})}
     ms = lambda s: int(s * 1000 * hold)  # noqa: E731
     page.goto(URL, wait_until="networkidle")
     page.wait_for_timeout(6000)
-    cap(page, "Live map on AWS CloudFront: the defect register built from the held-out survey (2 passes, 56.8 km)")
+    cap(page, c["overview"])
     page.wait_for_timeout(ms(5))
     if shots:
         page.screenshot(path=str(SHOTS / "map-01-overview.png"))
@@ -349,7 +356,7 @@ def map_tour(page: Page, shots: bool, hold: float = 1.0) -> None:
     if shots:
         page.screenshot(path=str(SHOTS / "map-04-degraded.png"))
     close_popups(page)
-    cap(page, "Purple: the Coastal Road control section (clean surface) used to count false alarms: 0.30 per km")
+    cap(page, c["control"])
     page.evaluate(
         """async () => {
       const s = await fetch('data/segments.geojson', {cache: 'no-store'}).then(r => r.json());
@@ -377,7 +384,28 @@ def slides_tour(page: Page, n: int, secs: list[float]) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-video", action="store_true")
+    ap.add_argument("--final-map", type=Path, default=None, help="only screenshot the live map into this folder")
+    ap.add_argument("--control-fp", default="", help="final control-section false alarms per km, for the caption")
     args = ap.parse_args()
+    if args.final_map:  # final register: map screenshots only (the midpoint slides and video stay as they were)
+        global SHOTS
+        SHOTS = args.final_map
+        SHOTS.mkdir(parents=True, exist_ok=True)
+        with sync_playwright() as p:
+            b = p.chromium.launch(args=["--use-gl=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist"])
+            page = b.new_page(viewport={"width": W, "height": H})
+            map_tour(
+                page,
+                shots=True,
+                hold=0.4,
+                captions={
+                    "overview": "Live map on AWS CloudFront: final register (seg-v4), held-out survey, 2 passes, 56.8 km",
+                    "control": f"Purple: the Coastal Road control section (clean surface): {args.control_fp} false alarms per km",
+                },
+            )
+            b.close()
+        print(f"map screenshots -> {SHOTS}")
+        return
     SHOTS.mkdir(parents=True, exist_ok=True)
     html, names = build_slides()
     (OUT / "slides.html").write_text(html)

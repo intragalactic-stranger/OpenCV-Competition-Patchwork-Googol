@@ -3,25 +3,25 @@
   1,
   2
  ],
- "true_pairs_detected_in_both": 95,
- "repaired_in_truth_and_detected_in_pass1": 32,
- "still_present_detected_in_pass1": 99,
+ "true_pairs_detected_in_both": 105,
+ "repaired_in_truth_and_detected_in_pass1": 33,
+ "still_present_detected_in_pass1": 106,
  "v1_rule": "same segment, within 8.0 m, nearest",
  "v2_rule": "|ds| <= 12.0 m, |dd| <= 1.5 m, area ratio <= 4.0, one-to-one",
  "v1": {
-  "predicted_links": 142,
-  "correct_links": 86,
-  "link_precision": 0.606,
-  "link_recall": 0.905,
-  "link_f1": 0.726,
-  "repaired_recall": 0.625,
-  "still_present_but_not_resighted": 10
+  "predicted_links": 144,
+  "correct_links": 96,
+  "link_precision": 0.667,
+  "link_recall": 0.914,
+  "link_f1": 0.771,
+  "repaired_recall": 0.606,
+  "still_present_but_not_resighted": 7
  },
- "predicted_links": 134,
- "correct_links": 89,
- "link_precision": 0.664,
- "link_recall": 0.937,
- "link_f1": 0.777,
- "repaired_recall": 0.594,
- "still_present_but_not_resighted": 9
+ "predicted_links": 141,
+ "correct_links": 98,
+ "link_precision": 0.695,
+ "link_recall": 0.933,
+ "link_f1": 0.797,
+ "repaired_recall": 0.576,
+ "still_present_but_not_resighted": 6
 }

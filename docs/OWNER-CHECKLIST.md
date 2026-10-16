@@ -2,6 +2,15 @@
 
 All paths are from the repo root `/home/ubuntu/opencv/`.
 
+## 0. Final submission (2026-10-16)
+
+- [ ] Open `docs/FINAL-REPORT.md`: what was built, results vs targets, the closed loop on AWS, cost, limits
+- [ ] Open `docs/MODEL-CARD.md`: the final model (seg-v4)
+- [ ] Submit the repository link: https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol
+- [ ] Optional: switch on the browser approval console (`terraform apply -var enable_console=true` in `infra/terraform/envs/dev`, then `uv run python scripts/aws/deploy_viewer.py`), then create an engineer login in Cognito
+
+The sections below are the midpoint review guide, kept as it was.
+
 ## A. Before the review (about 30 minutes, in this order)
 
 - [ ] 1. `docs/midpoint/showcase/README.md`: what is in the showcase folder (1 minute)

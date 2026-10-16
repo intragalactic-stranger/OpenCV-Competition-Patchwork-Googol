@@ -181,6 +181,13 @@ class Tools:
                     "priority": priority,
                     "confidence": round(conf, 3),
                     "below_confidence_floor": conf < CONFIDENCE_FLOOR,
+                    # deterministic guidance, so the model does not have to infer the workflow per package
+                    "next_step": (
+                        "schedule_reinspection for these defects, then draft_work_order presenting options "
+                        "(re-inspect first vs patch now) and request_human_approval"
+                        if conf < CONFIDENCE_FLOOR
+                        else "estimate_materials, then draft_work_order, then request_human_approval"
+                    ),
                     "context": ctx,
                 }
             )

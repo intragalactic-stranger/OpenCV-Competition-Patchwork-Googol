@@ -115,7 +115,7 @@ def build_agent(t: Tools, model_id: str = DEFAULT_MODEL) -> Agent:
     @tool
     def schedule_reinspection(defect_ids: list[str], reason: str, package_id: str = "") -> dict:
         """Ask the next survey pass to look again at these defects (low confidence, not measured, or a
-        repair to confirm).
+        repair to confirm). Only when the user asked you to plan or act, never to answer a question.
 
         Args:
             defect_ids: defect IDs to look at again

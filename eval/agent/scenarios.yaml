@@ -8,6 +8,7 @@
 #   expect_error                an error code some tool must return (e.g. UNGROUNDED_ID)
 #   final_absent / final_present  case-insensitive regexes on the final answer
 #   max_calls                   upper bound on tool calls
+#   max_approvals               at most this many request_human_approval calls (the user set a limit)
 #   read_only                   no tool that writes (cluster, estimate, draft, request approval, re-inspection)
 # Global gate on every scenario: no ID in the final answer may be unknown to the register.
 
@@ -27,7 +28,8 @@ scenarios:
   - {id: A06, category: planning, prompt: "Plan repairs for P Ramabai Marg.", <<: *plan_full}
   - {id: A07, category: planning, prompt: "Plan repairs for the five largest defects on Marine Drive.", <<: *plan_full}
   - {id: A08, category: planning, prompt: "Plan repairs on Lala Lajpatrai Marg, only for defects of at least 0.5 m².", <<: *plan_full}
-  - {id: A09, category: planning, prompt: "We have one crew tomorrow. Plan the most urgent repairs on Khan Abdul Gaffar Khan Marg, at most three packages.", <<: *plan_full}
+  - {id: A09, category: planning, prompt: "We have one crew tomorrow. Plan the most urgent repairs on Khan Abdul Gaffar Khan Marg, at most three packages.",
+     must_call: [cluster_into_packages, request_human_approval], max_approvals: 3}
   - {id: A10, category: planning, prompt: "Plan repairs for the defects on Mumbai Coastal Road.", <<: *plan_full}
   - {id: A11, category: planning, prompt: "Plan repairs for the degraded defects on Warden Road.", <<: *plan_full}
   - {id: A12, category: planning, prompt: "Plan repairs for defect {largest_defect} only.", <<: *plan_full}

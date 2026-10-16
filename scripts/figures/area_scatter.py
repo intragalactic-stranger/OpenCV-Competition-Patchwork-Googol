@@ -55,7 +55,7 @@ def main() -> None:
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     fig.tight_layout()
-    out = ROOT / "docs" / "midpoint" / "assets" / "area_scatter.png"
+    out = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "docs" / "midpoint" / "assets" / "area_scatter.png"
     fig.savefig(out, dpi=150)
     print(f"wrote {out}")
 

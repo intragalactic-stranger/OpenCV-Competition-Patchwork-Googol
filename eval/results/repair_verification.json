@@ -1,0 +1,11 @@
+{
+ "what": "verify_repair on the 6 packages filed after pass 1 of the final survey, checked against synthetic truth of pass 2",
+ "agent_run": "eval/results/agent/agent-20261016-032015-CFHNKZ.json",
+ "packages": 6,
+ "package_states_after": {"verified": 2, "escalated": 1, "filed (all defects still present)": 3},
+ "defects": 9,
+ "real_defects": 8,
+ "verdict_correct_on_real_defects": 8,
+ "false_detection_in_package": 1,
+ "note": "one 'verified' package held a single pass-1 false detection; it was correctly not seen again, but there was no real defect to repair. One defect that degraded in truth is reported 'unchanged' (still present, which is the verdict that matters)"
+}

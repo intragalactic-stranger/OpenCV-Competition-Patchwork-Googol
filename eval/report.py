@@ -120,7 +120,9 @@ def build_table() -> str:
     seg = _load("segmentation.json")
     real = seg.get("iou_test_real") if seg else None
     synth = seg.get("iou_val_synth") if seg else None
-    note = f"{seg['arch']} in OpenCV {seg['engine']}; see 07-MODEL-CARD" if seg else ""
+    card = "MODEL-CARD" if seg and seg.get("backbone") else "07-MODEL-CARD"
+    arch = f"{seg['arch']} {seg.get('backbone') or 'mit-b0'}" if seg else ""
+    note = f"{arch} in OpenCV {seg['engine']}; see {card}" if seg else ""
     rows.append(
         _row(
             "Segmentation IoU (damage), real photos (test split)",
@@ -143,7 +145,8 @@ def build_table() -> str:
     if par.get("ENGINE_NEW", {}).get("loaded"):
         rows.append(
             _row(
-                "ONNX parity: OpenCV 5 ENGINE_NEW vs onnxruntime (trained SegFormer-B0)",
+                "ONNX parity: OpenCV 5 ENGINE_NEW vs onnxruntime (trained SegFormer-"
+                + ("B2)" if seg and "b2" in str(seg.get("backbone")) else "B0)"),
                 "≤ 1e-3",
                 f"{par['ENGINE_NEW']['max_abs_diff']:.1e}",
                 par["ENGINE_NEW"]["max_abs_diff"] <= 1e-3,
@@ -206,7 +209,11 @@ def build_table() -> str:
             f"${cost['usd_per_km']:.4f}" if cost else None,
             cost["usd_per_km"] < 0.02 if cost else None,
             f"{cost['seconds_per_km']:.0f} s × {cost['vcpu']} vCPU per km at ${cost['spot_usd_per_vcpu_h']}/vCPU-h; "
-            f"upper bound incl. data rendering + training ${cost['upper_bound_usd_per_km']}/km; see 02-COST-REPORT"
+            + (
+                f"upper bound incl. data rendering + training ${cost['upper_bound_usd_per_km']}/km; see 02-COST-REPORT"
+                if cost.get("upper_bound_usd_per_km")
+                else f"{cost.get('model', '')}; midpoint model: $0.0021/km"
+            )
             if cost
             else "",
         )
@@ -256,6 +263,43 @@ def build_table() -> str:
         )
     else:
         rows.append(_row("Run A/B: plan changes with measured area (stretch)", "must change", None, None))
+    area = _load("area_oracle.json") or {}
+    flat = area.get("summary", {}).get("no_rectification")
+    if flat:
+        rows.append(
+            _row(
+                "Ablation: area without the bird's-eye view (same true masks, one fixed m²/pixel)",
+                "worse than with it",
+                f"{flat['mape_pct']:.1f}% MAPE",
+                None,
+                f"vs {area['summary']['estimated_pose']['mape_pct']:.2f}% with OpenCV rectification; "
+                f"bias {flat['bias_pct']:+.0f}% (distant damage shrinks in the image); n={flat['n']}",
+            )
+        )
+    ver = _load("repair_verification.json")
+    if ver:
+        rows.append(
+            _row(
+                "Repair verification on filed work orders (verify_repair after the next pass)",
+                "correct verdicts",
+                f"{ver['verdict_correct_on_real_defects']}/{ver['real_defects']} correct",
+                ver["verdict_correct_on_real_defects"] == ver["real_defects"],
+                f"{ver['packages']} filed packages → verified {ver['package_states_after']['verified']}, escalated "
+                f"{ver['package_states_after']['escalated']}, still open "
+                f"{ver['package_states_after']['filed (all defects still present)']}; checked against truth",
+            )
+        )
+    idem = _load("idempotency.json")
+    if idem:
+        rows.append(
+            _row(
+                "Idempotency: re-loading a processed pass",
+                "0 new rows",
+                f"{idem['new_observations']} new observations, {idem['new_defects']} new defects",
+                idem["new_observations"] == 0 and idem["new_defects"] == 0,
+                f"{idem['tracks']} tracks re-loaded",
+            )
+        )
     scn = _load("agent_scenarios.json")
     if scn:
         rows.append(

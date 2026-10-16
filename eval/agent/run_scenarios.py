@@ -124,6 +124,8 @@ def score(sc: dict, out: dict) -> dict:
         except ValueError:
             if not re.search(pat, final, re.I):
                 fails.append(f"answer lacks /{pat}/")
+    if (mx := sc.get("max_approvals")) is not None and calls.count("request_human_approval") > mx:
+        fails.append(f"{calls.count('request_human_approval')} approvals requested > {mx}")
     if sc.get("read_only") and (w := sorted(set(calls) & WRITES)):
         fails.append(f"read-only question, but called {w}")
     if sc.get("plan_complete"):
