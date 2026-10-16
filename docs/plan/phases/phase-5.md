@@ -8,7 +8,7 @@
 - [x] Grounding guard in every tool (`_validate_defects`, `_package` → `UNGROUNDED_ID`) + DB trigger; both verified with a fake ID
 - [x] Exposure score + priority (deterministic, PostGIS POI context, in `cluster_into_packages`)
 - [x] Strands agent + system prompt (`agent/run.py`, `prompts/system.md`); about 25 s and 12–30 k tokens per run
-- [ ] Deploy to AgentCore Runtime; tools via AgentCore Gateway: **moved to the second half** (D-27 trial rule applies). The agent runs from the dev box with the same tools
+- [x] Deployed to **AgentCore Runtime** (`modules/agent`, `docker/agent.Dockerfile`, `scripts/aws/invoke_agent.py`); tools in-process in the container, not behind AgentCore Gateway (D-37)
 - [x] Approval state machine (`waitForTaskToken`). **Deviation:** the token is written by Step Functions into Aurora (`approval_request`, decision D-28), not DynamoDB; approve/reject via `scripts/approve.py` (endpoint comes with the console)
 - [x] On approve → **mock** ticket (`MOCK-…`) + package `filed`; on reject → `rejected` + override recorded · [ ] `schedule_reinspection` row (5b)
 - [~] Work order as **Markdown** in S3 (quantities, assumptions, rationale, confidence, defect IDs; all numbers from the DB). PDF with photo + BEV overlay: 5b

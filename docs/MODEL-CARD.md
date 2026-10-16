@@ -22,7 +22,7 @@ dashcam video → frame triage → privacy blur → [ THIS MODEL: which pixels a
 | Size | **27 M parameters**, 110 MB as ONNX (B0 was 3.7 M) |
 | Starting weights | MiT-B2 encoder pre-trained on ImageNet-1k (`nvidia/mit-b2`, Hugging Face); decoder from scratch |
 | Classes | `0 background`, `1 damage` (pothole, edge break, depression); cracks are *ignore* (not area damage) |
-| Licence-clean alternative | `--arch lraspp` (LR-ASPP MobileNetV3-Large, BSD weights), implemented, not trained (D-07) |
+| Licence-clean alternative | `seg-clean-v1`, LR-ASPP MobileNetV3-Large trained on synthetic data only, **published** (§9, D-39) |
 
 ## 3. Input and output
 
@@ -124,7 +124,32 @@ The training data is identical (`train/v3`); the gain comes from the larger enco
 
 ## 8. Known limits
 
-- **Licence:** trained on Pothole Mix (research / non-commercial) and an NVIDIA research-licensed encoder, so the weights are **not released**; the code is Apache-2.0 ([DATA-LICENSES.md](DATA-LICENSES.md)).
+- **Licence:** trained on Pothole Mix (research / non-commercial) and an NVIDIA research-licensed encoder, so the `seg-v4` weights are **not released**; the code is Apache-2.0 ([DATA-LICENSES.md](DATA-LICENSES.md)). The licence-clean model in §9 is released.
 - **Speed on CPU:** B2 is about 5.5× slower than B0 per frame in OpenCV on CPU. The pipeline still costs under 2 ¢/km (see the final report), but it is the main cost of a survey.
 - **Domain gap:** most real training photos are not Indian dashcam views; Indian-road accuracy is measured on the synthetic Mumbai frames.
 - **Cracks are not detected by design.**
+
+## 9. Licence-clean model `seg-clean-v1` (released)
+
+A second model whose weights can be shared without the research-only restrictions (decision D-39).
+
+| Item | Value |
+|---|---|
+| Architecture | **LR-ASPP MobileNetV3-Large** (torchvision); backbone pre-trained on ImageNet-1k by torchvision (**BSD-3**), segmentation head from scratch |
+| Training data | **only our synthetic frames** of world seed 07 (6,238 images incl. look-alike negatives); no Pothole Mix, no MiT encoder |
+| Training | SageMaker `ml.g5.2xlarge` (A10G), 16 epochs × 1.1 min, **22 billable minutes (≈ $0.70)**, selected epoch by mean val IoU |
+| Size / speed | 3.2 M parameters, 13 MB ONNX; **33 ms per image** in OpenCV 5 on 32-vCPU Graviton (SegFormer-B2: about 2 s) |
+| Download | GitHub release `v1.0` of this repository: `seg-clean-v1.onnx`, `class_map.json`, `eval_opencv.json`, `parity.json` |
+| Licence | Apache-2.0 (our synthetic data and code; torchvision backbone weights BSD-3) |
+
+Results through OpenCV 5 `ENGINE_NEW` (same held-out sets as above):
+
+| Held-out set | IoU | False-positive images |
+|---|---|---|
+| Synthetic Mumbai, val (1,266) | **0.773** | 7 of 719 |
+| Look-alikes only (480) | – | **15 of 480** (seg-v4: 37) |
+| Real photos, test (504) | 0.000 | 83 of 318 |
+| Real photos, val (496) | 0.011 | 143 of 208 |
+| Parity vs onnxruntime | max difference **1.06e-3** (target ≤ 1e-3, just above); 100% same pixel decisions | |
+
+**Use it for the synthetic survey only.** It has never seen a real photo and does not work on real roads; that is the price of a licence-clean training set. On the synthetic world it is as accurate as SegFormer-B2 and about 60× faster.

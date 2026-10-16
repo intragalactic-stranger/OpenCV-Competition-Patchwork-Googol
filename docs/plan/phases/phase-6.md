@@ -8,7 +8,7 @@
 - [ ] Obscured detection (specular / water) → re-queue: not built
 - [x] `status_event` with evidence (method, previous and new area, last pass seen) · [ ] before/after crops
 - [x] `verify_repair` tool: filed package + later pass → `verified` (all defects gone) or `escalated` (some remain)
-- [ ] VLM attributes: not built. Context comes from rules (lateral offset) and OpenStreetMap POIs (`lookup_context`)
+- [x] VLM attributes with Amazon Nova Lite / Pro on evidence images (`perception/vlm.py`, `scripts/vlm_attributes.py`), scored against truth: neither beats a constant answer, so the exposure score does not read them (D-38)
 - [ ] Passes 4–8: not generated; passes 1→2 are evaluated (pass 3 exists for both worlds)
 
 ## Exit criteria

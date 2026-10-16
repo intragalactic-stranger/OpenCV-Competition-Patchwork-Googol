@@ -7,7 +7,9 @@ All paths are from the repo root `/home/ubuntu/opencv/`.
 - [ ] Open `docs/FINAL-REPORT.md`: what was built, results vs targets, the closed loop on AWS, cost, limits
 - [ ] Open `docs/MODEL-CARD.md`: the final model (seg-v4)
 - [ ] Submit the repository link: https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol
-- [ ] Optional: switch on the browser approval console (`terraform apply -var enable_console=true` in `infra/terraform/envs/dev`, then `uv run python scripts/aws/deploy_viewer.py`), then create an engineer login in Cognito
+- [x] Approval console switched on: https://d3mt6jrs1ynczo.cloudfront.net/console.html
+- [ ] Sign in once as `ward-engineer` with the temporary password from the chat and set your own password (14+ characters, upper, lower, number). Two Hughes Road packages planned by the agent on AgentCore are waiting for you
+- [ ] Download the released model from the v1.0 release if you want it: https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol/releases/tag/v1.0
 
 The sections below are the midpoint review guide, kept as it was.
 

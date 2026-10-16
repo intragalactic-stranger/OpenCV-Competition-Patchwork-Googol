@@ -17,10 +17,11 @@ Not used: **Indian Roads** (IIT-B e-Yantra), because it is GPL-2.0 and has only 
 
 | Model | Used for | Licence | What it means for us |
 |---|---|---|---|
-| **SegFormer `nvidia/mit-b0`** ImageNet encoder (Hugging Face) | Starting weights for `seg-v1…v3` | NVIDIA Source Code License for SegFormer (**research / non-commercial**) | Our SegFormer weights are research-only (D-07). The licence-clean option is `--arch lraspp` (torchvision, BSD-3), implemented but not trained yet |
+| **SegFormer `nvidia/mit-b0`** ImageNet encoder (Hugging Face) | Starting weights for `seg-v1…v3` | NVIDIA Source Code License for SegFormer (**research / non-commercial**) | Our SegFormer weights are research-only and not published (D-07). The licence-clean model `seg-clean-v1` (`--arch lraspp`, torchvision BSD-3 backbone, synthetic data only) is published as a GitHub release (D-39) |
+| **torchvision MobileNetV3-Large** ImageNet weights | Backbone of the licence-clean model `seg-clean-v1` | BSD-3 | Attribution |
 | **YuNet** face detector, `face_detection_yunet_2023mar.onnx` (OpenCV Zoo) | Privacy blur | MIT | Attribution |
 | Plate / text blur | Privacy blur | Our own rule-based detector in `perception/privacy.py` | No third-party model |
-| **Amazon Nova Pro** on Bedrock | Agent | AWS service terms | Used as a service; nothing redistributed |
+| **Amazon Nova Pro / Lite** on Bedrock | Agent; image attributes (evaluated) | AWS service terms | Used as a service; nothing redistributed |
 
 ## Map
 
@@ -28,4 +29,4 @@ The viewer uses the Amazon Location Service **Standard** map style; its attribut
 
 ## Before any public release (Phase 9)
 1. Run the privacy blur over every real image kept in our buckets. This has not been done for Pothole Mix yet: the images are road-surface close-ups in a private bucket.
-2. Release the code as Apache-2.0 and the synthetic data and scenarios as CC BY 4.0. Release SegFormer weights only with the research-only notice, or release the `lraspp` weights trained on synthetic data only.
+2. Done: code released as Apache-2.0; the `lraspp` weights trained on synthetic data only are released (v1.0); SegFormer weights are not published.

@@ -15,9 +15,9 @@ dashcam video + GPS ─► S3 ─► EventBridge ─► Step Functions ─► AW
                               │
             Aurora Serverless v2 + PostGIS (defect register; one database per survey)
                │                                         │
-   CloudFront map (MapLibre + Amazon Location)    Agent: Strands + Amazon Nova Pro (9 grounded tools)
+   CloudFront map + approval console (Cognito)    Agent on Bedrock AgentCore Runtime: Strands + Amazon Nova Pro (9 grounded tools)
                                                   → request approval (Step Functions task token)
-                                                  → human approves (CLI, or the console) → mock ticket
+                                                  → human approves in the console (or CLI) → mock ticket
                                                   → next survey pass → verify_repair → verified / escalated
    Training: SageMaker GPU (NVIDIA A10G) → ONNX → OpenCV 5 evaluation on Graviton (Batch)
 ```
@@ -30,7 +30,9 @@ dashcam video + GPS ─► S3 ─► EventBridge ─► Step Functions ─► AW
 | Cloud pipeline | Upload → EventBridge → Step Functions → Batch (one container per clip, in parallel) → register → map; failure alarms by email | `infra/terraform/`, `src/patchwork/pipeline/` |
 | Register and verification | PostGIS register; matcher v2 links a detection to a known defect by chainage, lateral offset and area, one-to-one; a defect the next pass drives past without seeing is marked repaired ("not seen again") | `src/patchwork/register/` |
 | Agent | Ward Engineer's Assistant on Amazon Nova Pro: query, context (schools/hospitals/bus stops), existing-work check, clustering with a deterministic exposure score, materials, work order, approval request, re-inspection, repair verification. Every ID is validated by the tools and by a database trigger; the final answer is checked for unknown IDs | `src/patchwork/agent/` |
-| Human gate | Step Functions waits on a task token stored in the database, never shown to the model; approve files a **mock** ticket, reject records an override | `scripts/approve.py`, `viewer/console.html` |
+| Human gate | Step Functions waits on a task token stored in the database, never shown to the model; approve files a **mock** ticket, reject records an override. **Approval console** live at https://d3mt6jrs1ynczo.cloudfront.net/console.html (Cognito sign-in, HTTP API, Lambda; the approver's name comes from the sign-in token) | `viewer/console.html`, `src/patchwork/api/console.py`, `scripts/approve.py` |
+| Agent hosting | The same agent runs on **Amazon Bedrock AgentCore Runtime** (arm64 container, IAM-authenticated); `scripts/aws/invoke_agent.py` calls it | `docker/agent.Dockerfile`, `infra/terraform/modules/agent/` |
+| Released model | `seg-clean-v1`: LR-ASPP MobileNetV3 trained on synthetic data only, licence-clean, published as GitHub release v1.0 | [model card §9](MODEL-CARD.md) |
 | Evaluation | Metrics against ground truth, a no-rectification ablation, matcher v1 vs v2, run A/B, 40 live agent scenarios, CI on every push | `eval/`, `.github/workflows/ci.yml` |
 
 
@@ -55,9 +57,11 @@ dashcam video + GPS ─► S3 ─► EventBridge ─► Step Functions ─► AW
 | Ablation: area without the bird's-eye view (same true masks, one fixed m²/pixel) | worse than with it | 46.9% MAPE · vs 2.14% with OpenCV rectification; bias -45% (distant damage shrinks in the image); n=20 | ℹ️ |
 | Repair verification on filed work orders (verify_repair after the next pass) | correct verdicts | 8/8 correct · 6 filed packages → verified 2, escalated 1, still open 3; checked against truth | ✅ |
 | Idempotency: re-loading a processed pass | 0 new rows | 0 new observations, 0 new defects · 216 tracks re-loaded | ✅ |
+| REAL photos: RDD2022-India pothole boxes found (external, never trained on) | reported | 1% of boxes, 2% of images · 295 pothole boxes in 150 photos; false alarms on 43 of 150 clean photos; the model does not transfer to wide-angle Indian roadside photos | ❌ |
+| VLM context attributes (Amazon Nova) vs truth, on evidence images | beat a constant answer | water 77%, wheel path 58% accuracy · best model nova-pro-v1:0; always-'no' water scores 85%, always-'yes' wheel path 58%; not used for priorities (D-38) | ❌ |
 | Agent scenarios, live on Amazon Nova (planning, questions, adversarial, verification) | 0 ungrounded IDs (hard gate) | 39/40 passed · answers citing an unknown ID: 0; by category adversarial 12/12, existing_work 3/3, information 7/8, low_confidence 2/2, planning 12/12, verification 3/3; see eval/results/agent_scenarios.json | ✅ |
 
-_Generated 2026-10-16 03:39 UTC by `uv run python -m eval.report`._
+_Generated 2026-10-16 06:16 UTC by `uv run python -m eval.report`._
 <!-- METRICS:END -->
 
 ### 2.1 Midpoint → final, same held-out survey (world seed 11, 2 passes, 56.8 km)
@@ -106,6 +110,16 @@ The one failure (B07) is a real agent mistake: asked whether a defect was measur
 
 
 
+### 2.5 Real photos: the honest external check
+
+RDD2022-India (Arya et al.) has real photos from vehicles on Indian roads with pothole boxes; none were used for training. On a fixed sample of 150 pothole photos (295 boxes) and 150 clean photos, seg-v4 run through OpenCV 5 finds **1% of the pothole boxes (2% of the photos)** and raises a false alarm on **29% of the clean photos** (`eval/results/rdd_india.json`).
+
+The model does not transfer to this view. Its real training photos (Pothole Mix) are mostly close-ups of asphalt potholes, where it scores IoU 0.72; RDD's "potholes" are broken, often unpaved stretches seen at a distance in a wide-angle frame, and the synthetic dashcam is clean Mumbai asphalt. So the measurement chain (calibration → bird's-eye view → m², 2.1% with true outlines) is proven, and the detector is proven on close-ups and in simulation, but **not on real Indian dashcam footage**. Closing that gap needs pixel masks drawn on real Indian dashcam frames, which no open dataset provides; this is the first thing to do before any real deployment.
+
+### 2.6 Image descriptions with a VLM (Amazon Nova)
+
+Each defect's evidence image (dashcam crop with the outline | bird's-eye crop) was described by Amazon Nova Lite and Nova Pro with a fixed JSON schema (water pooling, wheel path, surface, near the road edge, looks like damage). Scored against the synthetic truth on 140 matched defects, neither model beats a constant answer: Nova Pro gets water pooling right 77% of the time (always "no" would score 85%), and both models call every defect "in the wheel path" (58%, the share that is). The descriptions are kept in the code and results (`perception/vlm.py`, `eval/results/vlm_attributes.json`) but **do not feed the priority score** (D-38): near-random inputs would make the plan worse while looking smarter.
+
 ## 3. Cost
 
 All usage was paid from the project's AWS credits; only first-party AWS services and Amazon models were used (decision D-27).
@@ -113,18 +127,18 @@ All usage was paid from the project's AWS credits; only first-party AWS services
 | Period | AWS usage | Source |
 |---|---|---|
 | 12–15 Oct (build, midpoint, CPU training, two surveys on seg-v2/v3) | **$19.67** | AWS Cost Explorer (`make cost-report`, [midpoint/02-COST-REPORT.md](midpoint/02-COST-REPORT.md)) |
-| 16 Oct (GPU training, final survey, agent evaluation) | **≈ $10** (estimate) | measured run times × list or Spot prices, below; Cost Explorer shows it within 24 h |
-| **Project total** | **≈ $30** | |
+| 16 Oct (GPU training ×2, final survey, agent evaluation, console, AgentCore, VLM and real-photo checks) | **≈ $12** (estimate) | measured run times × list or Spot prices, below; Cost Explorer shows it within 24 h |
+| **Project total** | **≈ $32** | |
 
 Estimate for 16 Oct, line by line:
 
 | Item | Measured | Price | ≈ Cost |
 |---|---|---|---|
-| SageMaker GPU training (`ml.g5.2xlarge`): trial + full run | 468 s + 3,977 s billable | $1.82/h | $2.25 |
+| SageMaker GPU training (`ml.g5.2xlarge`): seg-v4 trial + full run, licence-clean model | 468 s + 3,977 s + 1,352 s billable | $1.82/h | $2.93 |
 | Batch Graviton Spot: final survey (2 passes, 10 clips each) + OpenCV evaluation of the model | 33,000 s × 4 vCPU perceive, 18 min × 32 vCPU evaluation, assembly | Spot, $0.41/h per 32 vCPU | $0.6–1.6 |
-| Amazon Nova Pro: 40-scenario suite (twice), road-wide plan, verification, run A/B | ≈ 1.4 M tokens, mostly input | $0.94 / $3.76 per M | ≈ $1.4 |
+| Amazon Nova Pro / Lite: 40-scenario suite (three runs), road-wide plan, verification, run A/B, AgentCore runs, VLM evaluation (280 images) | ≈ 2.4 M tokens, mostly input | Pro $0.94 / $3.76 per M; Lite $0.07 / $0.28 | ≈ $2.3 |
 | Development workstation (EC2, us-east-1) | one day | $0.15/h | ≈ $3.6 |
-| Aurora Serverless v2, S3, CloudWatch, ECR, Lambda-free pipeline | | | ≈ $1 |
+| Aurora Serverless v2, S3, CloudWatch, ECR, Batch evaluation jobs, Lambda/API Gateway/Cognito, AgentCore | | mostly free tier | ≈ $1.5 |
 
 **Cost per km processed (perception compute):** pass 1 took **663 s of 4-vCPU Graviton Spot per km** → **$0.0095/km** (target < $0.02). The midpoint model needed 147 s/km ($0.0021/km); SegFormer-B2 is slower on CPU but much more accurate, and stays under the target.
 
@@ -135,13 +149,12 @@ Stated plainly, so nobody has to find it:
 
 | Item | Status |
 |---|---|
-| **Real-world capture** | None. The surveys are simulated on real OpenStreetMap geometry; the model learns from real pothole photos (Pothole Mix). Results on real dashcam video are not measured (decision D-01). |
+| **Real-world capture** | None. The surveys are simulated on real OpenStreetMap geometry. On real Indian roadside photos (RDD2022-India) the detector finds 1% of potholes (§2.5); it works on close-up pothole photos and in simulation, not yet on real Indian dashcam views. |
 | **Repair verification** | "Repaired" means *not seen again* on a later pass that drove past. A repair patch that the model still detects as damage is reported as still present. An appearance check (patch texture) was tried on the midpoint survey and did not separate patches from potholes, so it was not built. |
-| **Approval console** | Built (Cognito sign-in → HTTP API → Lambda, `viewer/console.html`) but **not deployed**: it creates a public sign-in page, so the owner switches it on (`enable_console = true`, D-34). The same approvals work through `scripts/approve.py`. |
-| **AgentCore** | Not used. The agent runs with Strands + Amazon Nova from the development machine; its tools are plain Python over the Aurora Data API and would move behind AgentCore Gateway unchanged. |
-| **VLM attributes** | Not built. Context comes from rules and OpenStreetMap points of interest. |
+| **VLM attributes** | Built and scored; no better than a constant answer on our images, so not used for priorities (§2.6). |
+| **AgentCore** | The agent runs on AgentCore Runtime. AgentCore Gateway and Memory are not used: the tools run inside the agent's container (D-37). |
 | **Passes** | 2 passes evaluated (pass 3 is rendered); the plan's 8 passes were not generated. |
-| **Model weights** | Not released (research-only training data and encoder licence); see [DATA-LICENSES.md](DATA-LICENSES.md). |
+| **Model weights** | The licence-clean `seg-clean-v1` is released (works on the synthetic survey only). The better `seg-v4` SegFormer weights are not released (research-only training data and encoder licence); see [DATA-LICENSES.md](DATA-LICENSES.md). |
 | **Teardown** | `make teardown` is written, not run on this account. |
 | **Tickets** | Every filed ticket is a mock (`MOCK-…`). Nothing is sent to any authority. |
 
@@ -157,5 +170,5 @@ uv run python -m patchwork.synth --seed 7 --passes 1 --segment "Khan Abdul Gaffa
 uv run python -m eval.metrics.area --oracle data/synth/seed07/pass_1
 ```
 
-On AWS: `infra/terraform/bootstrap`, then `infra/terraform/envs/dev` (`terraform apply`); upload a pass with `scripts/aws/upload_pass.py`; plan repairs with `make agent-demo`; decide with `scripts/approve.py`; run the agent suite with `make scenarios`; remove everything with `make teardown`. The approval console is deployed with `terraform apply -var enable_console=true` (decision D-34).
+On AWS: `infra/terraform/bootstrap`, then `infra/terraform/envs/dev` (`terraform apply`); upload a pass with `scripts/aws/upload_pass.py`; plan repairs with `make agent-demo`; decide with `scripts/approve.py`; run the agent suite with `make scenarios`; remove everything with `make teardown`. The approval console is part of the stack (`enable_console`, on); the agent on AgentCore is called with `uv run python scripts/aws/invoke_agent.py "Plan repairs for Hughes Road."`.
 

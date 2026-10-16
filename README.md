@@ -55,8 +55,15 @@ Training: SageMaker GPU (NVIDIA A10G) → ONNX → scored through OpenCV 5 on Gr
 | Repair verdicts on filed work orders, checked against truth | **8/8** correct | ✅ |
 | Agent scenarios (live on Amazon Nova): answers citing an unknown ID | **0** | 0 (hard gate) ✅ |
 | Same defect recognised on the next pass (F1) | 0.80 | ≥ 0.90 ❌ |
+| **Real photos** (RDD2022-India, never trained on): pothole boxes found | **1%** (false alarms on 29% of clean photos) | reported ❌ |
 
 Full table, midpoint → final comparison, the closed loop on AWS, cost and known limits: [`docs/FINAL-REPORT.md`](docs/FINAL-REPORT.md). Model: [`docs/MODEL-CARD.md`](docs/MODEL-CARD.md).
+
+**The honest headline:** the measurement chain and the agent work end to end on AWS and are measured against exact truth, and the detector works on close-up pothole photos (IoU 0.72), but it does **not** yet transfer to real wide-angle Indian roadside photos (1% of potholes found). That needs pixel masks drawn on real Indian dashcam frames, which no open dataset has.
+
+**Live:** map https://d3mt6jrs1ynczo.cloudfront.net · approval console https://d3mt6jrs1ynczo.cloudfront.net/console.html (sign-in required) · the agent also runs on Amazon Bedrock AgentCore Runtime (`scripts/aws/invoke_agent.py`).
+
+**Released model:** `seg-clean-v1` (LR-ASPP MobileNetV3, trained on synthetic data only, licence-clean) in the [v1.0 release](https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol/releases/tag/v1.0); synthetic survey only, see [model card §9](docs/MODEL-CARD.md).
 
 **About the data.** The survey drives are simulated on the real OpenStreetMap geometry of Mumbai's Coastal Road, Worli Sea Face, Haji Ali and Marine Drive, so every defect's true area, position and repair status is known exactly. The segmentation model also learns from real pothole photos (Pothole Mix). See [`docs/DATA-LICENSES.md`](docs/DATA-LICENSES.md).
 
@@ -112,4 +119,4 @@ docs/              midpoint checkpoint pack, engineering plan, licences
 
 ## Licence
 
-Code: Apache-2.0 ([`LICENSE`](LICENSE)). The trained SegFormer weights are **not** included and are research-only because of their training data and pretrained encoder; see [`docs/DATA-LICENSES.md`](docs/DATA-LICENSES.md). Map data © OpenStreetMap contributors (ODbL).
+Code: Apache-2.0 ([`LICENSE`](LICENSE)). The licence-clean model `seg-clean-v1` is released under Apache-2.0 (v1.0 release). The better SegFormer weights are **not** published: research-only because of their training data and pretrained encoder; see [`docs/DATA-LICENSES.md`](docs/DATA-LICENSES.md). Map data © OpenStreetMap contributors (ODbL).

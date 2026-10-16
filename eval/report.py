@@ -300,6 +300,34 @@ def build_table() -> str:
                 f"{idem['tracks']} tracks re-loaded",
             )
         )
+    rdd = _load("rdd_india.json")
+    if rdd:
+        rows.append(
+            _row(
+                "REAL photos: RDD2022-India pothole boxes found (external, never trained on)",
+                "reported",
+                f"{rdd['box_recall']:.0%} of boxes, {rdd['image_recall']:.0%} of images",
+                False,
+                f"{rdd['d40_boxes']} pothole boxes in {rdd['pothole_images']} photos; false alarms on "
+                f"{rdd['false_alarm_images']} of {rdd['clean_images']} clean photos; the model does not transfer "
+                "to wide-angle Indian roadside photos",
+            )
+        )
+    vl = _load("vlm_attributes.json")
+    if vl:
+        best = max((k for k in vl if k.startswith("apac.")), key=lambda k: vl[k]["water_pooling"]["accuracy"])
+        w, h = vl[best]["water_pooling"], vl[best]["wheel_path"]
+        rows.append(
+            _row(
+                "VLM context attributes (Amazon Nova) vs truth, on evidence images",
+                "beat a constant answer",
+                f"water {w['accuracy']:.0%}, wheel path {h['accuracy']:.0%} accuracy",
+                False,
+                f"best model {best.split('.')[2]}; always-'no' water scores "
+                f"{1 - w['positives_in_truth'] / w['n']:.0%}, always-'yes' wheel path "
+                f"{h['positives_in_truth'] / h['n']:.0%}; not used for priorities (D-38)",
+            )
+        )
     scn = _load("agent_scenarios.json")
     if scn:
         rows.append(
