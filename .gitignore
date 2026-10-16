@@ -30,3 +30,11 @@ terraform.tfvars
 
 # Eval caches (regenerated)
 eval/results/cache/
+
+# Reviewer handouts with personal contact details, and the grant proposal (kept local)
+docs/midpoint/showcase/one-pager.html
+docs/midpoint/showcase/Patchwork-midpoint-summary.pdf
+/Proposal.pdf
+
+# Local model download copies (the models live in S3)
+runs/seg-*/

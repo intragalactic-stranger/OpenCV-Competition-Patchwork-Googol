@@ -65,5 +65,5 @@ docs/
 
 ## Source
 
-The original grant proposal is [`../Proposal.pdf`](../Proposal.pdf).
+The original grant proposal (`Proposal.pdf`) is kept by the author and is not part of the public repository.
 Where this build deliberately differs from it, the change is listed in [`plan/02-requirements.md`](plan/02-requirements.md#4-what-changed-from-the-proposal-and-why) and [`plan/11-decisions-and-risks.md`](plan/11-decisions-and-risks.md).

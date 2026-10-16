@@ -1,7 +1,7 @@
 service,usd
-Amazon Elastic Compute Cloud - Compute,2.1966
-Amazon Simple Storage Service,0.8599
-Amazon Relational Database Service,0.5708
-AWS Secrets Manager,0.0049
-Amazon EC2 Container Registry (ECR),0.0031
-Amazon Location Service,0.0001
+Amazon Elastic Compute Cloud - Compute,3.3747
+Amazon Simple Storage Service,1.0747
+Amazon Relational Database Service,0.9179
+AWS Secrets Manager,0.0316
+Amazon EC2 Container Registry (ECR),0.0239
+Amazon Location Service,0.0002
