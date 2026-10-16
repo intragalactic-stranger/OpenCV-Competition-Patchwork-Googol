@@ -6,7 +6,16 @@ OpenCV AI Competition 2026 · Agentic Vision track · Team Googol · Author: **G
 
 Patchwork turns ordinary dashcam video into a map of road defects. For every pothole, broken road edge or sunken patch it records where it is, **how many square metres are damaged**, how serious it is, and how much asphalt the repair needs. When the same road is driven again, Patchwork checks each defect and marks it unchanged, worse, new, or actually repaired. An AI assistant on Amazon Nova then groups the defects into repair work packages, puts the ones near schools and hospitals first, and drafts work orders. **A human engineer approves each one before anything is filed.**
 
-**Live map:** https://d3mt6jrs1ynczo.cloudfront.net (synthetic survey data, labelled as such)
+| Submission | Link |
+|---|---|
+| **Technical report** | [PDF](docs/submission/Patchwork-Technical-Report.pdf) · [Markdown](docs/submission/TECHNICAL-REPORT.md) |
+| **Video (3 min 41 s)** | https://d3mt6jrs1ynczo.cloudfront.net/video/patchwork-demo.mp4 |
+| **Live map** | https://d3mt6jrs1ynczo.cloudfront.net (synthetic survey data, labelled as such) |
+| **Approval console** | https://d3mt6jrs1ynczo.cloudfront.net/console.html (sign-in; judge login supplied with the submission) |
+| **Build, deploy, test** | [docs/submission/BUILD-DEPLOY-TEST.md](docs/submission/BUILD-DEPLOY-TEST.md) |
+| **Everything for judges** | [docs/submission/](docs/submission/README.md) |
+
+![Architecture](docs/submission/architecture.png)
 
 ---
 

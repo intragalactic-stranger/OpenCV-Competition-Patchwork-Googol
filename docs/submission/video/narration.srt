@@ -1,0 +1,51 @@
+1
+00:00:00,000 --> 00:00:16,500
+This is Patchwork, by Team Googol, Ganeshan Arumuganainar, for the OpenCV AI Competition twenty twenty-six, Agentic Vision track. Patchwork turns ordinary dashcam video into a measured register of road defects, and checks on the next drive whether each repair really happened.
+
+2
+00:00:16,500 --> 00:00:36,019
+In India, pothole-related crashes killed more than nine thousand four hundred people between twenty twenty and twenty twenty-four. Mumbai spent four hundred crore rupees filling potholes in twenty twenty-three, yet there is no process to verify that repairs were done. Detection is not the hard part. Measurement and accountability are.
+
+3
+00:00:36,019 --> 00:00:50,449
+Today an engineer hears: there is a pothole. With Patchwork they get its area in square metres, its severity and the asphalt it needs, a priority based on nearby schools and hospitals, a drafted work order that they approve, and proof on the next drive.
+
+4
+00:00:50,449 --> 00:01:11,550
+Video uploaded to S3 starts a Step Functions pipeline. AWS Batch on Graviton runs OpenCV five in parallel containers. Defects go to an Aurora PostGIS register and a public map. An agent on Amazon Nova, hosted on Bedrock AgentCore, plans the work, and a human approves every order in a signed-in console.
+
+5
+00:01:11,550 --> 00:01:34,550
+OpenCV five does the measuring. ChArUco calibration, a road-plane homography and one remap give a one-centimetre bird's-eye view. The segmentation transformer runs in the new DNN engine and matches onnxruntime; the classic engine cannot load it. With true outlines, area error is two percent. Without the bird's-eye view, it is forty-seven percent.
+
+6
+00:01:34,550 --> 00:01:53,810
+This is the live map on CloudFront: two hundred and sixty-four defects from two drives over twenty-eight kilometres of Mumbai roads. The largest, on Hughes Road, measures three point three nine square metres, high severity, with its evidence image. This one was not seen again on the second drive, so the register marks it repaired.
+
+7
+00:01:53,810 --> 00:02:10,500
+Here the agent on AgentCore plans repairs for Hughes Road. It queries the register, checks for existing work, clusters the defects, estimates materials, drafts work orders and requests approval. Every number comes from the database, and it cannot file anything itself.
+
+8
+00:02:10,500 --> 00:02:25,680
+The engineer signs in to the approval console, opens the most urgent package, reviews the defects, the materials and the drafted work order, and approves. Step Functions then files a mock ticket. A rejection would be recorded as an override.
+
+9
+00:02:25,680 --> 00:02:37,540
+After the next drive, the agent checks the filed orders. Of six approved packages, two were verified, one escalated and three are still open, and all eight verdicts were correct against ground truth.
+
+10
+00:02:37,540 --> 00:02:56,700
+On a held-out survey of fifty-seven kilometres: ninety-nine percent of defects found, area error under fourteen percent, a quarter of a false alarm per kilometre on a clean road, and less than one cent per kilometre to process. In forty scripted agent conversations, thirty-nine pass, and no answer ever cited a defect that does not exist.
+
+11
+00:02:56,700 --> 00:03:14,970
+We also show where it fails. On real roadside photos from Indian roads, the detector finds only one percent of potholes, because it learned from close-ups and synthetic roads. Look-alikes and fresh patches still cause false alarms. Closing this gap needs labelled Indian dashcam frames.
+
+12
+00:03:14,970 --> 00:03:31,390
+Faces and plates are blurred before storage. A human approves every order, the agent can only cite real defects, and filing is mocked. The whole stack is in Terraform, with least-privilege roles, alarms, dashboards, a budget guard and continuous integration.
+
+13
+00:03:31,390 --> 00:03:41,190
+Patchwork: measured, verified, human-approved road repair. The code, the technical report and the live demo are linked below. Thank you.

@@ -38,3 +38,4 @@ docs/midpoint/showcase/Patchwork-midpoint-summary.pdf
 
 # Local model download copies (the models live in S3)
 runs/seg-*/
+docs/submission/video/_work/
