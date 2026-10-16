@@ -24,8 +24,13 @@ IMAGE = "763104351884.dkr.ecr.ap-south-1.amazonaws.com/pytorch-training:2.8.0-gp
 
 
 def tf_output(name: str) -> str:
-    out = subprocess.run(["terraform", "output", "-json", name], cwd=ROOT / "infra/terraform/envs/dev",
-                         capture_output=True, text=True, check=True).stdout
+    out = subprocess.run(
+        ["terraform", "output", "-json", name],
+        cwd=ROOT / "infra/terraform/envs/dev",
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
     return json.loads(out)
 
 
@@ -48,6 +53,8 @@ def main() -> None:
     ap.add_argument("--lr", default="2e-4")
     ap.add_argument("--limit", default="")
     ap.add_argument("--init", default="")
+    ap.add_argument("--arch", default="segformer", choices=["segformer", "lraspp"])
+    ap.add_argument("--synthetic-only", action="store_true", help="licence-clean model (D-07)")
     ap.add_argument("--instance", default="ml.g5.2xlarge")
     ap.add_argument("--max-runtime-min", type=int, default=240)
     ap.add_argument("--wait", action="store_true")
@@ -77,16 +84,26 @@ def main() -> None:
         hp["limit"] = args.limit
     if args.init:
         hp["init"] = args.init
+    hp["arch"] = args.arch
+    if args.synthetic_only:
+        hp["synthetic-only"] = "1"
     sm.create_training_job(
         TrainingJobName=job,
         AlgorithmSpecification={"TrainingImage": IMAGE, "TrainingInputMode": "File"},
         RoleArn=role,
         HyperParameters=hp,
-        InputDataConfig=[{
-            "ChannelName": "train",
-            "DataSource": {"S3DataSource": {"S3DataType": "S3Prefix", "S3Uri": f"s3://{ds}/train/{args.data_version}/",
-                                            "S3DataDistributionType": "FullyReplicated"}},
-        }],
+        InputDataConfig=[
+            {
+                "ChannelName": "train",
+                "DataSource": {
+                    "S3DataSource": {
+                        "S3DataType": "S3Prefix",
+                        "S3Uri": f"s3://{ds}/train/{args.data_version}/",
+                        "S3DataDistributionType": "FullyReplicated",
+                    }
+                },
+            }
+        ],
         OutputDataConfig={"S3OutputPath": f"s3://{art}/sagemaker/output/"},
         CheckpointConfig={
             "S3Uri": f"s3://{art}/models/{args.version}/checkpoints/",

@@ -22,12 +22,18 @@ variable "db_name" {
 }
 
 variable "enable_console" {
-  description = "Deploy the approval console (Cognito sign-in, HTTP API, Lambda). Off until the owner turns it on."
+  description = "Deploy the approval console (Cognito sign-in, HTTP API, Lambda). Switched on by the owner on 2026-10-16."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "alert_emails" {
   description = "Who gets pipeline failure alarms (set in the git-ignored terraform.tfvars, like the budget alert)"
   type        = list(string)
+}
+
+variable "agent_image_tag" {
+  description = "Agent image tag in ECR; empty = create the repository only (first apply), then push, then set it"
+  type        = string
+  default     = "v1"
 }

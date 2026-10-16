@@ -124,6 +124,18 @@ module "alarms" {
   job_queue_name = module.batch.job_queue
 }
 
+module "agent" {
+  source                     = "../../modules/agent"
+  name                       = local.name
+  boundary_arn               = local.boundary_arn
+  db_cluster_arn             = module.db.cluster_arn
+  db_secret_arn              = module.db.secret_arn
+  db_name                    = var.db_name
+  approval_state_machine_arn = module.pipeline.approval_state_machine_arn
+  artifacts_bucket           = module.storage.bucket_names["artifacts"]
+  image_tag                  = var.agent_image_tag
+}
+
 output "buckets" { value = module.storage.bucket_names }
 output "ecr_repository_url" { value = module.batch.ecr_repository_url }
 output "job_queue" { value = module.batch.job_queue }
@@ -144,3 +156,5 @@ output "console" {
     auth_domain  = module.console[0].auth_domain
   } : null
 }
+output "agent_repository_url" { value = module.agent.repository_url }
+output "agent_runtime_arn" { value = module.agent.runtime_arn }

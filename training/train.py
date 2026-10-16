@@ -230,6 +230,11 @@ def main() -> None:
         action="store_true",
         help="GPU jobs: skip the slow CPU evaluation through OpenCV (run training.evaluate on Batch)",
     )
+    ap.add_argument(
+        "--synthetic-only",
+        action="store_true",
+        help="licence-clean model: train on our synthetic frames only (no Pothole Mix), D-07",
+    )
     ap.add_argument("--init", default=None, help="fine-tune: start from these weights (best.pt path or s3:// URI)")
     args = ap.parse_args()
 
@@ -245,6 +250,9 @@ def main() -> None:
     if args.limit:
         splits = {k: v[: args.limit] for k, v in splits.items()}
     train_names = splits["train"]
+    if args.synthetic_only:
+        train_names = [n for n in train_names if n.startswith("synth__")]
+        print(f"synthetic only: {len(train_names)} training images", flush=True)
     w = [args.synth_weight if n.startswith("synth__") else 1.0 for n in train_names]
     sampler = torch.utils.data.WeightedRandomSampler(w, num_samples=len(train_names), replacement=True)
     train_dl = DataLoader(
@@ -353,6 +361,7 @@ def main() -> None:
                 "best_score": best,
                 "history": history,
                 "train_images": len(train_names),
+                "synthetic_only": bool(args.synthetic_only),
                 "init": args.init,
                 "input": "RGB, ImageNet mean/std, HxW multiple of 32; logits at 1/4 (segformer) or 1/1 (lraspp)",
                 "hours": round((time.time() - t0) / 3600, 2),

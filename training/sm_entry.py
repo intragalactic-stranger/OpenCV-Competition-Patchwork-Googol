@@ -40,6 +40,8 @@ def main() -> None:
     ap.add_argument("--max-hours", default="3.5")
     ap.add_argument("--limit", default="")
     ap.add_argument("--init", default="")
+    ap.add_argument("--arch", default="segformer")
+    ap.add_argument("--synthetic-only", default="")
     args, _ = ap.parse_known_args()
 
     # one OpenCV only: the container may ship opencv-python 4.x, which would shadow OpenCV 5
@@ -87,6 +89,9 @@ def main() -> None:
         cmd += ["--limit", args.limit]
     if args.init:
         cmd += ["--init", args.init]
+    cmd += ["--arch", args.arch]
+    if args.synthetic_only:
+        cmd += ["--synthetic-only"]
     subprocess.run(cmd, check=True)
 
     import boto3

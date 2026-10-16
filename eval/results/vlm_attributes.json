@@ -1,0 +1,5082 @@
+{
+ "what": "pass-1 detections of the final survey matched to a true defect; truth from the generator",
+ "images": 140,
+ "apac.amazon.nova-lite-v1:0": {
+  "water_pooling": {
+   "n": 140,
+   "accuracy": 0.243,
+   "precision": 0.149,
+   "recall": 0.857,
+   "positives_in_truth": 21
+  },
+  "wheel_path": {
+   "n": 140,
+   "accuracy": 0.579,
+   "precision": 0.579,
+   "recall": 1.0,
+   "positives_in_truth": 81
+  },
+  "tokens": 160120,
+  "rows": [
+   {
+    "defect": "seed11-pass1-clip01-d0029",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 990
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0004",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0020",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0035",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 957
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0043",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Pothole in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0010",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0020",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0047",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 990
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0009",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1024
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0026",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0025",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0008",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 991
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0020",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage in the center of the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 959
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0006",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in centre of road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0045",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0023",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0060",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage in the centre of the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1025
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0022",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0042",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0013",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 990
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0015",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1024
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0063",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0010",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Pothole in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0031",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0005",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0022",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 957
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0032",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0055",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1200
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0056",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0019",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0033",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0018",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 958
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0000",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0011",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in road damage",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0029",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0021",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 958
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0036",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0025",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 991
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0008",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0008",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0019",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 957
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0018",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0026",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 957
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0030",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0057",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0023",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0004",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0037",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0047",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0008",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0012",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage in the centre of the lane",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 992
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0010",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0037",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0027",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1184
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0038",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1184
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0044",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole, no water",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0002",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 957
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0003",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1024
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0040",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0021",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1200
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0062",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0004",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0034",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0035",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0033",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damaged area with water pooling",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0045",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0059",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1023
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0028",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 957
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0018",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1184
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0007",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage in the centre of the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1202
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0019",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 958
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0014",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 991
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0010",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0013",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage in the center of the lane",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1025
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0023",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1201
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0053",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1023
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0048",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1215
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0024",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0012",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1057
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0034",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0021",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in road damage",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0023",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0017",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0040",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0021",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0022",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0006",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0034",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1200
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0016",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage in the centre of the lane",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 959
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0019",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0009",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0027",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0058",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0061",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0012",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 991
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0001",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1023
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0012",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 958
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0031",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1023
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0023",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1056
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0025",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1200
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0056",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0011",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0046",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 990
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0020",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0001",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0039",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0040",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 991
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0012",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1023
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0007",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0016",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0027",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small patch of missing asphalt",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0036",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small patch of damage",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1199
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0048",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0013",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0005",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0014",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0044",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1200
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0026",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 957
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0011",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0007",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 957
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0017",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1200
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0007",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0003",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage in the centre of the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1058
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0005",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0010",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0039",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0003",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole, no water",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0028",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1056
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0032",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0032",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 990
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0020",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1023
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0034",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0018",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 990
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0052",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "pooling water in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0029",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 990
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0044",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole, no water",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0039",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Puddle in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1216
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0018",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole in the road",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 991
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0033",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Small pothole, no water",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1024
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0004",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Water pooling in pothole",
+     "vlm_model": "apac.amazon.nova-lite-v1:0",
+     "vlm_tokens": 1023
+    }
+   }
+  ]
+ },
+ "apac.amazon.nova-pro-v1:0": {
+  "water_pooling": {
+   "n": 140,
+   "accuracy": 0.771,
+   "precision": 0.176,
+   "recall": 0.143,
+   "positives_in_truth": 21
+  },
+  "wheel_path": {
+   "n": 140,
+   "accuracy": 0.579,
+   "precision": 0.579,
+   "recall": 1.0,
+   "positives_in_truth": 81
+  },
+  "tokens": 160497,
+  "rows": [
+   {
+    "defect": "seed11-pass1-clip01-d0029",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 991
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0004",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0020",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0035",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 960
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0043",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely from vehicle impact.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1221
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0010",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0020",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0047",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely from wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 995
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0009",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage detected near road edge, likely from vehicle impact.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1029
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0026",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage detected near road edge, likely pothole.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1221
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0025",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0008",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 993
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0020",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 959
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0006",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in tyre tracks, not near edge.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1221
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0045",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0023",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage is wet and in wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0060",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1026
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0022",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely pothole.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1220
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0042",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0013",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 993
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0015",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1025
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0063",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0010",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0031",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely from vehicle impact.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1221
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0005",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage detected near road edge.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0022",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 959
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0032",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Cracks in asphalt, likely from wear.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1220
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0055",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Cracks near the road edge, likely from wear.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1206
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0056",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Cracks in the wheel path, not near the edge.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1223
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0019",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0033",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in wheel path with water pooling.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1220
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0018",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 959
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0000",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0011",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0029",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely from wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1221
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0021",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 960
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0036",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0025",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 992
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0008",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0008",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0019",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely from wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 962
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0018",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0026",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 958
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0030",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Cracked asphalt in wheel path, not near edge.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1222
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0057",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely from vehicle impact.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1221
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0023",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0004",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Cracked asphalt in wheel path",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0037",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Cracks in asphalt, likely due to wear or temperature changes.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1224
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0047",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Cracks in asphalt near road edge",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0008",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0012",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely from wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 995
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0010",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0037",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0027",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely from vehicle impact.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1189
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0038",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1187
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0044",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0002",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 959
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0003",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1025
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0040",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0021",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1203
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0062",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0004",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0034",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0035",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage is in the wheel path, likely from wear.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1222
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0033",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in wheel path with water pooling.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1220
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0045",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0059",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1025
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0028",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 960
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0018",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely from vehicle impact.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1189
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0007",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Cracks in wheel path, not near edge.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1205
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0019",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 959
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0014",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely from vehicle impact.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 995
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0010",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Cracked asphalt in wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0013",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1025
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0023",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1202
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0053",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1025
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0048",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Cracked asphalt in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1220
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0024",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage is wet and in wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0012",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1059
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0034",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0021",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage is wet and in wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0023",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0017",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0040",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0021",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0022",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage is a pothole with water pooling",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0006",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0034",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1203
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0016",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely from vehicle impact.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 962
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0019",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0009",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0027",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near edge, in wheel path, with water pooling.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1223
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0058",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0061",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage is in the wheel path near the road edge.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1222
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0012",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage detected near road edge.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 991
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0001",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Crack in the asphalt, likely from wear and tear.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1029
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0012",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 960
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0031",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1025
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0023",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1059
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0025",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1202
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0056",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Cracked asphalt in wheel path, not near edge.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1222
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0011",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0046",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 993
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0020",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0001",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0039",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near edge, water pooling",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1217
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0040",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 992
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0012",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1025
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0007",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0016",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in wheel path, appears genuine.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1220
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0027",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0036",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1203
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0048",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0013",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage is a pothole in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1222
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0005",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0014",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage in right tyre track, not near edge.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1221
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0044",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage is a pothole with water pooling.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1204
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0026",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage in right tyre track, not near edge.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 962
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0011",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0007",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 959
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0017",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1202
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0007",
+    "truth": {
+     "water": true,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0003",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1059
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0005",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0010",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip06-d0039",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0003",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0028",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1058
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0032",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0032",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage is a pothole with water pooling.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 994
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip01-d0020",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge, likely from vehicle impact.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1028
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0034",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the left wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip09-d0018",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": false,
+     "note": "Outlined area is a wet sheen, not actual damage.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 998
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0052",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": true,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near edge, wet sheen",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip05-d0029",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 991
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0044",
+    "truth": {
+     "water": true,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1219
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0039",
+    "truth": {
+     "water": false,
+     "wheel_path": false,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1218
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip00-d0018",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "primary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": true,
+     "looks_like_damage": true,
+     "note": "Damage near road edge in wheel path.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 993
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip07-d0033",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1025
+    }
+   },
+   {
+    "defect": "seed11-pass1-clip08-d0004",
+    "truth": {
+     "water": false,
+     "wheel_path": true,
+     "profile": "secondary"
+    },
+    "vlm": {
+     "water_pooling": false,
+     "wheel_path": true,
+     "surface": "asphalt",
+     "near_road_edge": false,
+     "looks_like_damage": true,
+     "note": "Damage detected in the right tyre track.",
+     "vlm_model": "apac.amazon.nova-pro-v1:0",
+     "vlm_tokens": 1026
+    }
+   }
+  ]
+ }
+}
