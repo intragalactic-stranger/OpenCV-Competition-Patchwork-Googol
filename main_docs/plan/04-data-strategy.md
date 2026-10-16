@@ -9,7 +9,7 @@
 ## 1. Principles
 
 1. **Open data for appearance, synthetic for truth.** Real images teach the model what Indian potholes look like. Synthetic passes give exact area, position and repair status, which no open dataset has.
-2. **Every byte has a licence noted** in `data/raw/<source>/SOURCE.md` before it is used, and summarised in [`docs/DATA-LICENSES.md`](../DATA-LICENSES.md).
+2. **Every byte has a licence noted** in `data/raw/<source>/SOURCE.md` before it is used, and summarised in [`main_docs/DATA-LICENSES.md`](../DATA-LICENSES.md).
 3. **Everything synthetic is seeded and reproducible**: `make synth SEED=… PASS=…` regenerates identical data.
 4. **Privacy holds even for open data.** Every real image goes through the same face and plate blur before it is stored in our buckets.
 
@@ -116,6 +116,6 @@ s3://patchwork-<acct>-artifacts/
    overlays/<defect_obs_id>.png
    traces/<agent_run_id>.json
    workorders/<package_id>.pdf
-   reports/                             evaluation outputs used by docs/midpoint
+   reports/                             evaluation outputs used by main_docs/midpoint
 s3://patchwork-<acct>-datasets/       open datasets mirrored for SageMaker (Intelligent-Tiering)
 ```

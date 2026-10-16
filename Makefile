@@ -7,14 +7,14 @@ help:
 	@echo "setup        create .venv (Python 3.12) and install deps"
 	@echo "check        lint + unit tests"
 	@echo "smoke        OpenCV 5 smoke test (DNN ENGINE_NEW, ChArUco, YuNet, ORB)"
-	@echo "cost-report  regenerate docs/midpoint/02-COST-REPORT.md from Cost Explorer"
-	@echo "services-inventory  list deployed tagged resources into docs/midpoint/03-SERVICES-USED.md"
-	@echo "eval-midpoint  regenerate the results table in docs/midpoint/04-RESULTS-AND-OUTPUTS.md"
+	@echo "cost-report  regenerate main_docs/midpoint/02-COST-REPORT.md from Cost Explorer"
+	@echo "services-inventory  list deployed tagged resources into main_docs/midpoint/03-SERVICES-USED.md"
+	@echo "eval-midpoint  regenerate the results table in main_docs/midpoint/04-RESULTS-AND-OUTPUTS.md"
 	@echo "world        build the survey corridor (OpenStreetMap) and the camera calibration"
 	@echo "bootstrap    one-time AWS: Terraform state bucket + real-spend budget"
 	@echo "images       build the arm64 pipeline, training and agent images and push them to ECR"
 	@echo "deploy       terraform apply of the whole stack (infra/terraform/envs/dev)"
-	@echo "report       regenerate the final results table (docs/FINAL-REPORT.md)"
+	@echo "report       regenerate the final results table (main_docs/FINAL-REPORT.md)"
 	@echo "scenarios    run the 40 live agent scenarios (Amazon Nova)"
 	@echo "teardown     remove every Patchwork resource (asks first)"
 
@@ -41,7 +41,7 @@ services-inventory:
 eval-midpoint:
 	$(PY) -m eval.report
 
-# demo helpers (see docs/midpoint/05-DEMO-GUIDE.md)
+# demo helpers (see main_docs/midpoint/05-DEMO-GUIDE.md)
 MODEL ?= seg-v3
 upload-demo:
 	$(PY) scripts/aws/upload_pass.py --seed 11 --pass 1 --model $(MODEL) --clips 5,6 --run demo-$$(date +%H%M%S)

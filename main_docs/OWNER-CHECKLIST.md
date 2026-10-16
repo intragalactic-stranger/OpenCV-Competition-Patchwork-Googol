@@ -4,8 +4,8 @@ All paths are from the repo root `/home/ubuntu/opencv/`.
 
 ## 0. Final submission (2026-10-16)
 
-- [ ] Open `docs/FINAL-REPORT.md`: what was built, results vs targets, the closed loop on AWS, cost, limits
-- [ ] Open `docs/MODEL-CARD.md`: the final model (seg-v4)
+- [ ] Open `main_docs/FINAL-REPORT.md`: what was built, results vs targets, the closed loop on AWS, cost, limits
+- [ ] Open `main_docs/MODEL-CARD.md`: the final model (seg-v4)
 - [ ] Submit the repository link: https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol
 - [x] Approval console switched on: https://d3mt6jrs1ynczo.cloudfront.net/console.html
 - [ ] Sign in once as `ward-engineer` with the temporary password from the chat and set your own password (14+ characters, upper, lower, number). Two Hughes Road packages planned by the agent on AgentCore are waiting for you
@@ -15,10 +15,10 @@ The sections below are the midpoint review guide, kept as it was.
 
 ## A. Before the review (about 30 minutes, in this order)
 
-- [ ] 1. `docs/midpoint/showcase/README.md`: what is in the showcase folder (1 minute)
-- [ ] 2. `docs/midpoint/showcase/Patchwork-midpoint-demo.mp4`: watch the 3-minute video once
-- [ ] 3. `docs/midpoint/showcase/Patchwork-midpoint-slides.pdf`: flip through the 14 slides
-- [ ] 4. `docs/midpoint/09-REVIEWER-WALKTHROUGH.md`: **the most important one.** What to show, what to say, and answers to likely questions
+- [ ] 1. `main_docs/midpoint/showcase/README.md`: what is in the showcase folder (1 minute)
+- [ ] 2. `main_docs/midpoint/showcase/Patchwork-midpoint-demo.mp4`: watch the 3-minute video once
+- [ ] 3. `main_docs/midpoint/showcase/Patchwork-midpoint-slides.pdf`: flip through the 14 slides
+- [ ] 4. `main_docs/midpoint/09-REVIEWER-WALKTHROUGH.md`: **the most important one.** What to show, what to say, and answers to likely questions
 - [ ] 5. Open the live map, https://d3mt6jrs1ynczo.cloudfront.net, and click a few dots
 
 ## B. During the review
@@ -31,17 +31,17 @@ The sections below are the midpoint review guide, kept as it was.
 
 | They ask about… | Open |
 |---|---|
-| What is done, what is left | `docs/midpoint/01-PROGRESS-REPORT.md` |
-| The numbers (accuracy, false alarms, cost per km) | `docs/midpoint/04-RESULTS-AND-OUTPUTS.md` |
-| How the credits were used, and the second-half estimate | `docs/midpoint/08-SERVICE-MAPPINGS.md` |
-| The cost table straight from AWS billing | `docs/midpoint/02-COST-REPORT.md` |
-| Which AWS services, and why | `docs/midpoint/03-SERVICES-USED.md` |
-| The trained model | `docs/midpoint/07-MODEL-CARD.md` |
-| What the second half will build | `docs/midpoint/06-NEXT-STEPS.md` |
-| A live demo, step by step | `docs/midpoint/05-DEMO-GUIDE.md` |
-| Data licences | `docs/DATA-LICENSES.md` |
+| What is done, what is left | `main_docs/midpoint/01-PROGRESS-REPORT.md` |
+| The numbers (accuracy, false alarms, cost per km) | `main_docs/midpoint/04-RESULTS-AND-OUTPUTS.md` |
+| How the credits were used, and the second-half estimate | `main_docs/midpoint/08-SERVICE-MAPPINGS.md` |
+| The cost table straight from AWS billing | `main_docs/midpoint/02-COST-REPORT.md` |
+| Which AWS services, and why | `main_docs/midpoint/03-SERVICES-USED.md` |
+| The trained model | `main_docs/midpoint/07-MODEL-CARD.md` |
+| What the second half will build | `main_docs/midpoint/06-NEXT-STEPS.md` |
+| A live demo, step by step | `main_docs/midpoint/05-DEMO-GUIDE.md` |
+| Data licences | `main_docs/DATA-LICENSES.md` |
 
-You don't need `docs/plan/` for the review. It is the engineering detail behind everything above.
+You don't need `main_docs/plan/` for the review. It is the engineering detail behind everything above.
 
 ## D. Account tasks (account owner only)
 

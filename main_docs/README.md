@@ -1,4 +1,25 @@
-# Patchwork: documentation map
+# Patchwork: main_docs (all documentation in one place)
+
+**Start here for the competition:** [`submission/README.md`](submission/README.md): every requirement and judging criterion mapped to its evidence.
+
+| Open | What it is |
+|---|---|
+| [`submission/Patchwork-Technical-Report.pdf`](submission/Patchwork-Technical-Report.pdf) · [`.md`](submission/TECHNICAL-REPORT.md) | **Technical report**: problem, users, architecture, OpenCV 5, AWS, evaluation, failures, responsible use |
+| [`submission/architecture.png`](submission/architecture.png) | Architecture diagram (OpenCV 5, AWS, agent, human control) |
+| [`submission/BUILD-DEPLOY-TEST.md`](submission/BUILD-DEPLOY-TEST.md) | Pinned dependencies; build, deploy and test instructions |
+| [`submission/failure_gallery.jpg`](submission/failure_gallery.jpg) | Failure cases |
+| `submission/video/patchwork-demo.mp4` (git-ignored; online: https://d3mt6jrs1ynczo.cloudfront.net/video/patchwork-demo.mp4) · [`narration.srt`](submission/video/narration.srt) | 3:41 narrated video and its captions |
+| [`FINAL-REPORT.md`](FINAL-REPORT.md) | Full generated results table, midpoint → final, closed loop, cost, limits |
+| [`MODEL-CARD.md`](MODEL-CARD.md) | Segmentation models: seg-v4 (SegFormer-B2) and the released licence-clean seg-clean-v1 |
+| [`DATA-LICENSES.md`](DATA-LICENSES.md) | Every dataset, model and map used, with its licence |
+| [`assets/`](assets/) | Final figures: area scatter, run A/B, live-map screenshots |
+| [`plan/`](plan/) | Engineering plan, phase checklists, decision log D-01…D-40 |
+| [`midpoint/`](midpoint/) | Midpoint checkpoint pack (kept as it was), incl. its showcase video and slides |
+| [`OWNER-CHECKLIST.md`](OWNER-CHECKLIST.md) | The owner's to-do list |
+
+---
+
+## Documentation map (details)
 
 > **Patchwork** turns ordinary dashcam video into a measured, map-linked register of road defects (potholes, edge breaks, depressions).
 > For each defect it records **how many square metres are damaged** and **whether the defect was actually repaired**.
@@ -22,7 +43,7 @@
 ## Two folders, two audiences
 
 ```
-docs/
+main_docs/
 ├── FINAL-REPORT.md     the final submission report: built, results vs targets, cost, limits, reproduce
 ├── MODEL-CARD.md       the final segmentation model (seg-v4, SegFormer-B2 on GPU)
 ├── OWNER-CHECKLIST.md  the ordered list: what to open before and during the review, and your AWS tasks

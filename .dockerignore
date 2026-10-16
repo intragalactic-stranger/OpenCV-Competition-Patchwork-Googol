@@ -1,7 +1,7 @@
 **
 !pyproject.toml
 !uv.lock
-!docs/README.md
+!main_docs/README.md
 !src/**
 !data/corridor/**
 **/__pycache__

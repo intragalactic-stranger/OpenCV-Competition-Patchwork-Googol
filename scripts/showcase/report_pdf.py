@@ -1,5 +1,5 @@
 # ruff: noqa: E501  (embedded CSS)
-"""Technical report → PDF (docs/submission/Patchwork-Technical-Report.pdf), from the Markdown source.
+"""Technical report → PDF (main_docs/submission/Patchwork-Technical-Report.pdf), from the Markdown source.
 
   uv run --with markdown --with playwright python scripts/showcase/report_pdf.py
 Relative links become GitHub links so they work from the PDF; images are embedded.
@@ -14,9 +14,9 @@ import markdown
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[2]
-SRC = ROOT / "docs" / "submission" / "TECHNICAL-REPORT.md"
-OUT = ROOT / "docs" / "submission" / "Patchwork-Technical-Report.pdf"
-GH = "https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol/blob/main/docs/submission/"
+SRC = ROOT / "main_docs" / "submission" / "TECHNICAL-REPORT.md"
+OUT = ROOT / "main_docs" / "submission" / "Patchwork-Technical-Report.pdf"
+GH = "https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol/blob/main/main_docs/submission/"
 CSS = """
 @page { size: A4; margin: 16mm 15mm 16mm 15mm; }
 body { font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 10pt; line-height: 1.42; color: #1d2733; }

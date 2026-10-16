@@ -7,7 +7,7 @@ The console scene signs in with a temporary account (created and deleted by this
 priority-1 Hughes Road work order planned by the agent on AgentCore, which files a MOCK ticket.
 
   uv run --with playwright --with imageio-ffmpeg python scripts/showcase/final_video.py
-Output: docs/submission/video/patchwork-demo.mp4 (+ narration.srt)
+Output: main_docs/submission/video/patchwork-demo.mp4 (+ narration.srt)
 """
 
 from __future__ import annotations
@@ -25,13 +25,13 @@ import imageio_ffmpeg
 from playwright.sync_api import Page, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "docs" / "submission" / "video"
+OUT = ROOT / "main_docs" / "submission" / "video"
 WORK = OUT / "_work"
 URL = "https://d3mt6jrs1ynczo.cloudfront.net"
 POOL = "ap-south-1_OIFsAzJwW"
 W, H = 1920, 1080
 FF = imageio_ffmpeg.get_ffmpeg_exe()
-A = ROOT / "docs"
+A = ROOT / "main_docs"
 
 CSS = """
 *{box-sizing:border-box} body{margin:0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1d2733}

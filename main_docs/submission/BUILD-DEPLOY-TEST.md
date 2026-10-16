@@ -75,4 +75,4 @@ Remove everything: `make teardown` (empties the buckets, `terraform destroy`, th
 | Agent: run A/B | `make ablation` | AWS |
 | VLM attributes vs truth | `uv run python scripts/vlm_attributes.py --eval --models apac.amazon.nova-lite-v1:0 apac.amazon.nova-pro-v1:0` | AWS |
 | Accessibility | axe-core run against the live pages (results in `eval/results/accessibility.json`) | browser |
-| Results table | `make report` → `docs/FINAL-REPORT.md` | result files |
+| Results table | `make report` → `main_docs/FINAL-REPORT.md` | result files |

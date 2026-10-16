@@ -1,4 +1,4 @@
-"""Failure cases, side by side, for the final report (docs/submission/failure_gallery.jpg).
+"""Failure cases, side by side, for the final report (main_docs/submission/failure_gallery.jpg).
 
 Row 1: synthetic survey (final run): two false alarms (no true defect within the match gate) and one fresh repair
        patch that the model still segments as damage (so the repair is reported as still present).
@@ -26,7 +26,7 @@ from patchwork.perception.segment import Segmenter
 
 ROOT = Path(__file__).resolve().parents[2]
 ART = "patchwork-682839842398-artifacts"
-OUT = ROOT / "docs" / "submission" / "failure_gallery.jpg"
+OUT = ROOT / "main_docs" / "submission" / "failure_gallery.jpg"
 TILE_W, TILE_H = 560, 300
 
 

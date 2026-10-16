@@ -10,4 +10,4 @@
 
 ## Exit criteria
 - Demo guide steps 1–8 run end to end on the CloudFront URL
-- Dashboard screenshot in `docs/midpoint/assets/` (or a final-report asset)
+- Dashboard screenshot in `main_docs/midpoint/assets/` (or a final-report asset)

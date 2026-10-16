@@ -1,7 +1,7 @@
 """Figure of one pipeline execution, drawn from the Step Functions execution history (no console screenshot).
 
   uv run python scripts/figures/sfn_run.py [--execution ARN]   (default: latest SUCCEEDED execution)
-Writes docs/midpoint/assets/sfn_run.png: the state graph with each state's duration and status, plus the Batch
+Writes main_docs/midpoint/assets/sfn_run.png: the state graph with each state's duration and status, plus the Batch
 array children's durations.
 """
 
@@ -77,7 +77,7 @@ def main() -> None:
     for s in ("top", "right", "left"):
         ax.spines[s].set_visible(False)
     fig.tight_layout()
-    out = ROOT / "docs" / "midpoint" / "assets" / "sfn_run.png"
+    out = ROOT / "main_docs" / "midpoint" / "assets" / "sfn_run.png"
     fig.savefig(out, dpi=150)
     print(f"wrote {out} ({len(rows)} bars, {total:.1f} min)")
 

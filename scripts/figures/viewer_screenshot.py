@@ -17,7 +17,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--url", default="https://d3mt6jrs1ynczo.cloudfront.net")
     ap.add_argument("--click-largest", action="store_true", help="open the popup of the largest defect")
-    ap.add_argument("--out", type=Path, default=ROOT / "docs" / "midpoint" / "assets" / "viewer.png")
+    ap.add_argument("--out", type=Path, default=ROOT / "main_docs" / "midpoint" / "assets" / "viewer.png")
     args = ap.parse_args()
     with sync_playwright() as p:
         b = p.chromium.launch(args=["--use-gl=swiftshader", "--enable-webgl", "--ignore-gpu-blocklist"])

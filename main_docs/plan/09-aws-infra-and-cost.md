@@ -108,6 +108,6 @@ At 2,000 km/month: Batch ≈ $18, S3 ≈ $25, Aurora ≈ $45, Bedrock ≈ $30, o
 
 ## 5. Cost reporting for the grant (`scripts/cost_report.py`, `make cost-report`)
 1. `ce:GetCostAndUsage`, DAILY + MONTHLY, `UnblendedCost`, grouped by `SERVICE`, filter `Tag Project=patchwork`. Also unfiltered account total and EC2 (dev box) cost by instance ID via resource-level data, if enabled.
-2. Writes `docs/midpoint/02-COST-REPORT.md` (between markers) + `docs/midpoint/assets/cost_by_service.png` + CSV.
+2. Writes `main_docs/midpoint/02-COST-REPORT.md` (between markers) + `main_docs/midpoint/assets/cost_by_service.png` + CSV.
 3. Adds **km processed** (from the register) → cost per km, and spend by phase (tag `Phase`).
 4. Before the tag is active (first 24 h), it falls back to the service-level account view and says so.

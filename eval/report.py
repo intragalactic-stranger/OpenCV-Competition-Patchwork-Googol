@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "eval" / "results"
-DOC = ROOT / "docs" / "FINAL-REPORT.md"
+DOC = ROOT / "main_docs" / "FINAL-REPORT.md"
 
 
 def _load(name: str) -> dict | None:
@@ -351,7 +351,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--midpoint", action="store_true", help="regenerate the frozen midpoint table")
     if ap.parse_args().midpoint:
-        RES, DOC = RES / "midpoint", ROOT / "docs" / "midpoint" / "04-RESULTS-AND-OUTPUTS.md"
+        RES, DOC = RES / "midpoint", ROOT / "main_docs" / "midpoint" / "04-RESULTS-AND-OUTPUTS.md"
     text = DOC.read_text()
     pat = re.compile(r"(<!-- METRICS:BEGIN -->\n).*?(\n<!-- METRICS:END -->)", re.S)
     if not pat.search(text):

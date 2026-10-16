@@ -179,4 +179,4 @@ Midpoint → final on the same survey: recall 0.94 → 0.99, area error 27.8% �
 
 ## 11. Reproduce
 
-See [BUILD-DEPLOY-TEST.md](BUILD-DEPLOY-TEST.md): local quick start (no AWS), full AWS deployment in ten steps, and every test and evaluation command. Design decisions with reasons: `docs/plan/11-decisions-and-risks.md` (D-01 to D-40).
+See [BUILD-DEPLOY-TEST.md](BUILD-DEPLOY-TEST.md): local quick start (no AWS), full AWS deployment in ten steps, and every test and evaluation command. Design decisions with reasons: `main_docs/plan/11-decisions-and-risks.md` (D-01 to D-40).

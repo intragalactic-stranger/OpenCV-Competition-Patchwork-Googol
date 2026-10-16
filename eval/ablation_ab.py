@@ -6,7 +6,8 @@ rolled back afterwards, so run A cannot influence run B (e.g. through the existi
 never reaches the real register. If the plan does not change, the agent is not using the vision.
 
   uv run python -m eval.ablation_ab [--defect-id ID] [--area-b 3.1]
-Writes docs/assets/ablation_ab.md and eval/results/ablation_ab.json (the midpoint run is kept in docs/midpoint).
+Writes main_docs/assets/ablation_ab.md and eval/results/ablation_ab.json
+(the midpoint run is kept in main_docs/midpoint).
 """
 
 from __future__ import annotations
@@ -21,7 +22,7 @@ from patchwork.register.dataapi import Register
 from patchwork.schema.models import DefectType, Material, severity_v1
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_MD = ROOT / "docs" / "assets" / "ablation_ab.md"
+OUT_MD = ROOT / "main_docs" / "assets" / "ablation_ab.md"
 
 
 def pick_defect(reg: Register) -> dict:

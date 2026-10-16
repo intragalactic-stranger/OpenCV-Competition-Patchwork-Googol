@@ -1,5 +1,5 @@
 """Same look-alike frames (no damage in them) through seg-v2 and seg-v3: what the hard-negative fine-tune changed.
--> docs/midpoint/assets/hard_neg_compare.jpg
+-> main_docs/midpoint/assets/hard_neg_compare.jpg
 
   uv run python scripts/figures/hard_neg_compare.py --before runs/seg-v2/model.onnx --after runs/seg-v3/model.onnx \
       --data data/train/v3-hardval
@@ -58,7 +58,7 @@ def main() -> None:
     def row(ps: list[np.ndarray]) -> np.ndarray:
         return np.hstack([cv2.copyMakeBorder(p, 0, 6, 0, 4, cv2.BORDER_CONSTANT, value=(255, 255, 255)) for p in ps])
 
-    out = ROOT / "docs" / "midpoint" / "assets" / "hard_neg_compare.jpg"
+    out = ROOT / "main_docs" / "midpoint" / "assets" / "hard_neg_compare.jpg"
     cv2.imwrite(str(out), np.vstack([row(top), row(bot)]), [cv2.IMWRITE_JPEG_QUALITY, 88])
     print(f"wrote {out}; frames: {[c[1] for c in chosen]}")
 

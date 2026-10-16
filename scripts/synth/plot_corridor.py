@@ -1,4 +1,4 @@
-"""Render the survey corridor map (docs/midpoint/assets/corridor_map.png)."""
+"""Render the survey corridor map (main_docs/midpoint/assets/corridor_map.png)."""
 
 import json
 import sys
@@ -65,7 +65,7 @@ def main() -> None:
         fontsize=6,
         color="#666",
     )
-    out = ROOT / "docs" / "midpoint" / "assets" / "corridor_map.png"
+    out = ROOT / "main_docs" / "midpoint" / "assets" / "corridor_map.png"
     fig.tight_layout()
     fig.savefig(out, dpi=140)
     print(out)

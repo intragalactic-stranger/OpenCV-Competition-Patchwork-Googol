@@ -1,4 +1,5 @@
-"""Measured vs true area for every matched defect (end-to-end, model masks) -> docs/midpoint/assets/area_scatter.png
+"""Measured vs true area for every matched defect (end-to-end, model masks)
+-> main_docs/midpoint/assets/area_scatter.png
 
 uv run python scripts/figures/area_scatter.py [eval/results/end_to_end.json]
 """
@@ -55,7 +56,7 @@ def main() -> None:
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     fig.tight_layout()
-    out = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "docs" / "midpoint" / "assets" / "area_scatter.png"
+    out = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "main_docs" / "midpoint" / "assets" / "area_scatter.png"
     fig.savefig(out, dpi=150)
     print(f"wrote {out}")
 

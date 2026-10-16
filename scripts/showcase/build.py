@@ -3,7 +3,7 @@
 
   uv run --with playwright --with imageio-ffmpeg python scripts/showcase/build.py [--no-video]
 
-Output: docs/midpoint/showcase/
+Output: main_docs/midpoint/showcase/
   Patchwork-midpoint-slides.pdf     the deck (one page per slide)
   Patchwork-midpoint-demo.mp4       screen recording: live map in use, then the slides (git-ignored, large)
   screenshots/NN-*.png              every slide and every map view as a picture
@@ -21,7 +21,7 @@ from pathlib import Path
 from playwright.sync_api import Page, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "docs" / "midpoint" / "showcase"
+OUT = ROOT / "main_docs" / "midpoint" / "showcase"
 SHOTS = OUT / "screenshots"
 URL = "https://d3mt6jrs1ynczo.cloudfront.net"
 W, H = 1600, 900

@@ -1,6 +1,6 @@
 # 10: Roadmap
 
-Two halves. **The first half ends at the grant checkpoint** (the midpoint pack in `docs/midpoint/`).
+Two halves. **The first half ends at the grant checkpoint** (the midpoint pack in `main_docs/midpoint/`).
 
 > **Status (2026-10-16): both halves delivered; see [FINAL-REPORT](../FINAL-REPORT.md).** Midpoint status (2026-10-14): the first half was done. Phases 0–4 and 5a met their exit criteria, with the deviations recorded in each [phase checklist](phases/) and the decision log. Two midpoint metrics missed their targets (area MAPE 27.8% vs ≤ 20%; real-photo IoU 0.50 vs aim 0.55); both are in the second-half plan ([midpoint/06](../midpoint/06-NEXT-STEPS.md)).
 
@@ -19,7 +19,7 @@ P0 Foundations ─► P1 Data & synthetic world ─► P2 Geometry ─► P3 Mod
 | **3** | Segmentation model | Model trained on Batch (CPU, D-25), ONNX, OpenCV 5 ENGINE_NEW, severity | Parity ≤ 1e-3; mIoU real/synthetic reported; end-to-end MAPE ≤ 20% on D1 | [phase-3](phases/phase-3.md) |
 | **4** | Register + cloud pipeline | Terraform stack; S3 → SFN → Batch → Aurora; map viewer | Full-corridor pass processed on AWS; idempotent re-run; viewer URL live | [phase-4](phases/phase-4.md) |
 | **5a** | Agent slice (midpoint SHOULD) | 5 tools, AgentCore, approval gate, run A/B ablation | A/B plans differ; approve → mock filing; reject → stops | [phase-5](phases/phase-5.md) |
-| ★ | **Grant checkpoint** | `docs/midpoint/*` filled from real outputs; cost report generated; demo rehearsed | Every `[[TBD]]` replaced by a script; demo guide dry-run passes | [midpoint](../midpoint/00-MIDPOINT-SCOPE.md) |
+| ★ | **Grant checkpoint** | `main_docs/midpoint/*` filled from real outputs; cost report generated; demo rehearsed | Every `[[TBD]]` replaced by a script; demo guide dry-run passes | [midpoint](../midpoint/00-MIDPOINT-SCOPE.md) |
 | **5b** | Full agent | Remaining 5 tools, memory, PDF polish, failure handling | 40-scenario harness runs | [phase-5](phases/phase-5.md) |
 | **6** | Verification + context | Cross-pass registration, statuses, verify_repair, VLM attributes | Re-ID F1 ≥ 0.90; status acc ≥ 0.90 on D3 | [phase-6](phases/phase-6.md) |
 | **7** | Console + observability | Web console, approvals UI, CloudWatch dashboard | Full demo flow in the browser | [phase-7](phases/phase-7.md) |
@@ -28,7 +28,7 @@ P0 Foundations ─► P1 Data & synthetic world ─► P2 Geometry ─► P3 Mod
 
 ## Working rhythm
 - Each phase ends with a **demo + review**: I show the output, and you approve before the next phase starts.
-- `docs/midpoint/01-PROGRESS-REPORT.md` is updated at the end of every work session.
+- `main_docs/midpoint/01-PROGRESS-REPORT.md` is updated at the end of every work session.
 - Decisions and deviations go into `11-decisions-and-risks.md` the day they are made.
 
 ## Calendar (indicative; adjust to your checkpoint date)

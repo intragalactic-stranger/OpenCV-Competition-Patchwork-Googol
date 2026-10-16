@@ -8,14 +8,14 @@ Patchwork turns ordinary dashcam video into a map of road defects. For every pot
 
 | Submission | Link |
 |---|---|
-| **Technical report** | [PDF](docs/submission/Patchwork-Technical-Report.pdf) · [Markdown](docs/submission/TECHNICAL-REPORT.md) |
+| **Technical report** | [PDF](main_docs/submission/Patchwork-Technical-Report.pdf) · [Markdown](main_docs/submission/TECHNICAL-REPORT.md) |
 | **Video (3 min 41 s)** | https://d3mt6jrs1ynczo.cloudfront.net/video/patchwork-demo.mp4 |
 | **Live map** | https://d3mt6jrs1ynczo.cloudfront.net (synthetic survey data, labelled as such) |
 | **Approval console** | https://d3mt6jrs1ynczo.cloudfront.net/console.html (sign-in; judge login supplied with the submission) |
-| **Build, deploy, test** | [docs/submission/BUILD-DEPLOY-TEST.md](docs/submission/BUILD-DEPLOY-TEST.md) |
-| **Everything for judges** | [docs/submission/](docs/submission/README.md) |
+| **Build, deploy, test** | [main_docs/submission/BUILD-DEPLOY-TEST.md](main_docs/submission/BUILD-DEPLOY-TEST.md) |
+| **Everything for judges** | [main_docs/submission/](main_docs/submission/README.md) |
 
-![Architecture](docs/submission/architecture.png)
+![Architecture](main_docs/submission/architecture.png)
 
 ---
 
@@ -66,15 +66,15 @@ Training: SageMaker GPU (NVIDIA A10G) → ONNX → scored through OpenCV 5 on Gr
 | Same defect recognised on the next pass (F1) | 0.80 | ≥ 0.90 ❌ |
 | **Real photos** (RDD2022-India, never trained on): pothole boxes found | **1%** (false alarms on 29% of clean photos) | reported ❌ |
 
-Full table, midpoint → final comparison, the closed loop on AWS, cost and known limits: [`docs/FINAL-REPORT.md`](docs/FINAL-REPORT.md). Model: [`docs/MODEL-CARD.md`](docs/MODEL-CARD.md).
+Full table, midpoint → final comparison, the closed loop on AWS, cost and known limits: [`main_docs/FINAL-REPORT.md`](main_docs/FINAL-REPORT.md). Model: [`main_docs/MODEL-CARD.md`](main_docs/MODEL-CARD.md).
 
 **The honest headline:** the measurement chain and the agent work end to end on AWS and are measured against exact truth, and the detector works on close-up pothole photos (IoU 0.72), but it does **not** yet transfer to real wide-angle Indian roadside photos (1% of potholes found). That needs pixel masks drawn on real Indian dashcam frames, which no open dataset has.
 
 **Live:** map https://d3mt6jrs1ynczo.cloudfront.net · approval console https://d3mt6jrs1ynczo.cloudfront.net/console.html (sign-in required) · the agent also runs on Amazon Bedrock AgentCore Runtime (`scripts/aws/invoke_agent.py`).
 
-**Released model:** `seg-clean-v1` (LR-ASPP MobileNetV3, trained on synthetic data only, licence-clean) in the [v1.0 release](https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol/releases/tag/v1.0); synthetic survey only, see [model card §9](docs/MODEL-CARD.md).
+**Released model:** `seg-clean-v1` (LR-ASPP MobileNetV3, trained on synthetic data only, licence-clean) in the [v1.0 release](https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol/releases/tag/v1.0); synthetic survey only, see [model card §9](main_docs/MODEL-CARD.md).
 
-**About the data.** The survey drives are simulated on the real OpenStreetMap geometry of Mumbai's Coastal Road, Worli Sea Face, Haji Ali and Marine Drive, so every defect's true area, position and repair status is known exactly. The segmentation model also learns from real pothole photos (Pothole Mix). See [`docs/DATA-LICENSES.md`](docs/DATA-LICENSES.md).
+**About the data.** The survey drives are simulated on the real OpenStreetMap geometry of Mumbai's Coastal Road, Worli Sea Face, Haji Ali and Marine Drive, so every defect's true area, position and repair status is known exactly. The segmentation model also learns from real pothole photos (Pothole Mix). See [`main_docs/DATA-LICENSES.md`](main_docs/DATA-LICENSES.md).
 
 ## Quick start
 
@@ -96,7 +96,7 @@ uv run python -m patchwork.pipeline.runner perceive data/synth/seed07/pass_1/cli
 uv run python -m patchwork.pipeline.runner assemble data/synth/seed07/pass_1 --model path/to/model.onnx --out runs/local --overlays
 ```
 
-AWS: `infra/terraform/bootstrap` (state bucket and budget alarm), then `infra/terraform/envs/dev` (VPC, S3, ECR, Batch, Step Functions, Aurora, CloudFront). Every resource is tagged `Project=patchwork`; every IAM role carries the `patchwork-boundary` permissions boundary. Step-by-step: [`docs/plan/09-aws-infra-and-cost.md`](docs/plan/09-aws-infra-and-cost.md) and [`docs/midpoint/05-DEMO-GUIDE.md`](docs/midpoint/05-DEMO-GUIDE.md).
+AWS: `infra/terraform/bootstrap` (state bucket and budget alarm), then `infra/terraform/envs/dev` (VPC, S3, ECR, Batch, Step Functions, Aurora, CloudFront). Every resource is tagged `Project=patchwork`; every IAM role carries the `patchwork-boundary` permissions boundary. Step-by-step: [`main_docs/plan/09-aws-infra-and-cost.md`](main_docs/plan/09-aws-infra-and-cost.md) and [`main_docs/midpoint/05-DEMO-GUIDE.md`](main_docs/midpoint/05-DEMO-GUIDE.md).
 
 ## Repository layout
 
@@ -114,18 +114,18 @@ eval/              metrics, run A/B ablation, report generator
 infra/terraform/   bootstrap + dev environment modules
 docker/            arm64 Batch and training images
 viewer/            static MapLibre map
-docs/              midpoint checkpoint pack, engineering plan, licences
+main_docs/         ALL documentation: submission pack, final report, model card, licences, plan, midpoint
 ```
 
 ## Documentation
 
-- [`docs/FINAL-REPORT.md`](docs/FINAL-REPORT.md): **the final report** (start here)
-- [`docs/README.md`](docs/README.md): map of all documents
-- [`docs/midpoint/09-REVIEWER-WALKTHROUGH.md`](docs/midpoint/09-REVIEWER-WALKTHROUGH.md): the story, in the order to show it
-- [`docs/MODEL-CARD.md`](docs/MODEL-CARD.md): the segmentation model
-- [`docs/midpoint/08-SERVICE-MAPPINGS.md`](docs/midpoint/08-SERVICE-MAPPINGS.md): every AWS service, what it does and what it cost
-- [`docs/plan/`](docs/plan/): architecture, data strategy, schema, perception, agent design, evaluation plan, decision log
+- [`main_docs/FINAL-REPORT.md`](main_docs/FINAL-REPORT.md): **the final report** (start here)
+- [`main_docs/README.md`](main_docs/README.md): map of all documents
+- [`main_docs/midpoint/09-REVIEWER-WALKTHROUGH.md`](main_docs/midpoint/09-REVIEWER-WALKTHROUGH.md): the story, in the order to show it
+- [`main_docs/MODEL-CARD.md`](main_docs/MODEL-CARD.md): the segmentation model
+- [`main_docs/midpoint/08-SERVICE-MAPPINGS.md`](main_docs/midpoint/08-SERVICE-MAPPINGS.md): every AWS service, what it does and what it cost
+- [`main_docs/plan/`](main_docs/plan/): architecture, data strategy, schema, perception, agent design, evaluation plan, decision log
 
 ## Licence
 
-Code: Apache-2.0 ([`LICENSE`](LICENSE)). The licence-clean model `seg-clean-v1` is released under Apache-2.0 (v1.0 release). The better SegFormer weights are **not** published: research-only because of their training data and pretrained encoder; see [`docs/DATA-LICENSES.md`](docs/DATA-LICENSES.md). Map data © OpenStreetMap contributors (ODbL).
+Code: Apache-2.0 ([`LICENSE`](LICENSE)). The licence-clean model `seg-clean-v1` is released under Apache-2.0 (v1.0 release). The better SegFormer weights are **not** published: research-only because of their training data and pretrained encoder; see [`main_docs/DATA-LICENSES.md`](main_docs/DATA-LICENSES.md). Map data © OpenStreetMap contributors (ODbL).

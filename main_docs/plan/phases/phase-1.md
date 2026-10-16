@@ -11,9 +11,9 @@
 - [ ] Optional: IndiaRDD2022 (Roboflow, CC BY 4.0): skipped, Pothole Mix covers the need for masks
 - [x] Class map: **one `damage` class** (pothole, edge break, depression) + background, cracks = ignore (255). Written as `class_map.json` next to every model. Defect type comes from shape rules, not the network
 - [ ] Blur pass over real images before upload: **not done for Pothole Mix** (road-surface close-ups, private bucket). Privacy blur was verified on RDD-India instead. To do before any public release (Phase 9)
-- [x] Licences consolidated in [`docs/DATA-LICENSES.md`](../../DATA-LICENSES.md) (`data/` is git-ignored, so the file lives in `docs/`)
+- [x] Licences consolidated in [`main_docs/DATA-LICENSES.md`](../../DATA-LICENSES.md) (`data/` is git-ignored, so the file lives in `main_docs/`)
 
-### Corridor (`synth/corridor.py`): done, 28.6 km loop, 33 segments, 84 POIs (`docs/midpoint/assets/corridor_map.png`)
+### Corridor (`synth/corridor.py`): done, 28.6 km loop, 33 segments, 84 POIs (`main_docs/midpoint/assets/corridor_map.png`)
 - [x] Overpass download (`scripts/data/fetch_osm.py`) → loop routed through named-road waypoints on the directed road graph → 28.6 km polyline
 - [x] Road segments with `name`, `highway` class, `is_control` (Coastal Road), `is_tunnel`
 - [x] POIs within 200 m: schools, hospitals, bus stops → `data/corridor/poi.geojson`
@@ -32,7 +32,7 @@
 - [x] `render.py`: frame = warp(ground) + sky/buildings + distortion + photometrics; GT masks
 - [x] `charuco.py`: rendered calibration views
 - [x] CLI: `python -m patchwork.synth --seed 7 --passes 1,2,3 [--segment NAME | --s-start/--s-end] [--fps 15] [--clip-m 3000]`
-- [x] QA: contact sheet (`docs/midpoint/assets/synth_contact_sheet.jpg`) · [ ] GT-mask overlay video snippet (not done)
+- [x] QA: contact sheet (`main_docs/midpoint/assets/synth_contact_sheet.jpg`) · [ ] GT-mask overlay video snippet (not done)
 
 ### Datasets D1–D4 (starter for the midpoint)
 - [x] D1: two worlds with exact areas. Held-out world `seed11`: **179 defects** in pass 1 (120 potholes, 34 edge breaks, 25 depressions) → 251 visible defect instances over 2 passes; `seed07` is the training world

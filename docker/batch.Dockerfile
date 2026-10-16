@@ -8,7 +8,7 @@ WORKDIR /app
 
 # dependencies first (cached layer), then the project (editable, so ROOT-relative paths resolve to /app)
 COPY pyproject.toml uv.lock ./
-COPY docs/README.md docs/README.md
+COPY main_docs/README.md main_docs/README.md
 RUN uv sync --frozen --no-dev --group aws --no-install-project
 COPY src ./src
 COPY data/corridor ./data/corridor

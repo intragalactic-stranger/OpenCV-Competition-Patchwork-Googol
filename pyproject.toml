@@ -2,7 +2,7 @@
 name = "patchwork"
 version = "0.1.0"
 description = "Road defect register that measures damaged area (m²) with OpenCV 5 and verifies repairs; agentic work orders on AWS."
-readme = "docs/README.md"
+readme = "main_docs/README.md"
 requires-python = ">=3.12,<3.13"
 license = { text = "Apache-2.0" }
 dependencies = [

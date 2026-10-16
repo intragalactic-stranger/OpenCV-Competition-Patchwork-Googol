@@ -7,7 +7,7 @@ ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never PYTHONUNBU
 WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
-COPY docs/README.md docs/README.md
+COPY main_docs/README.md main_docs/README.md
 RUN uv sync --frozen --no-dev --group aws --group agent --no-install-project
 COPY src ./src
 RUN uv sync --frozen --no-dev --group aws --group agent

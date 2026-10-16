@@ -13,7 +13,7 @@
 - [x] On approve → **mock** ticket (`MOCK-…`) + package `filed`; on reject → `rejected` + override recorded · [ ] `schedule_reinspection` row (5b)
 - [~] Work order as **Markdown** in S3 (quantities, assumptions, rationale, confidence, defect IDs; all numbers from the DB). PDF with photo + BEV overlay: 5b
 - [x] Trace capture: every tool call, its arguments and result → `eval/results/agent/<run>.json` and `s3://…-artifacts/traces/`
-- [x] **`eval/ablation_ab.py`** → `docs/midpoint/assets/ablation_ab.md`: on `seg-v3` pipeline output, 0.35 → 3.10 m² changes priority 2 → 1 and hot-mix 0.046 → 0.401 t
+- [x] **`eval/ablation_ab.py`** → `main_docs/midpoint/assets/ablation_ab.md`: on `seg-v3` pipeline output, 0.35 → 3.10 m² changes priority 2 → 1 and hot-mix 0.046 → 0.401 t
 
 **Exit 5a:** A/B produce different priorities and actions; approve → ticket logged; reject → nothing filed; an unknown ID → rejected. **All four met** (2026-10-14: approve → `MOCK-aea1bb9b…`, reject → override recorded; road-wide demo, 24 packages).
 

@@ -1,9 +1,9 @@
-"""Regenerate docs/midpoint/02-COST-REPORT.md from AWS Cost Explorer.
+"""Regenerate main_docs/midpoint/02-COST-REPORT.md from AWS Cost Explorer.
 
 - Project spend: resources tagged Project=patchwork, grouped by service and by Phase tag.
 - If the cost-allocation tag is not active yet (first ~24 h), falls back to the account-wide view and says so.
 - Kilometres processed are read from eval/results/km_processed.json (written by the pipeline) to give cost/km.
-- Also writes docs/midpoint/assets/cost.csv and cost_by_service.png.
+- Also writes main_docs/midpoint/assets/cost.csv and cost_by_service.png.
 
 Usage:  make cost-report   [--start 2026-10-12] [--end YYYY-MM-DD]
 """
@@ -19,8 +19,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "docs" / "midpoint" / "02-COST-REPORT.md"
-ASSETS = ROOT / "docs" / "midpoint" / "assets"
+REPORT = ROOT / "main_docs" / "midpoint" / "02-COST-REPORT.md"
+ASSETS = ROOT / "main_docs" / "midpoint" / "assets"
 E2E_FILE = ROOT / "eval" / "results" / "end_to_end.json"
 PERCEIVE_VCPU = 4  # patchwork-perceive job definition
 PROJECT_START = "2026-10-12"

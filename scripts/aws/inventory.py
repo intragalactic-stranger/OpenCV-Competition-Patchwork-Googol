@@ -13,7 +13,7 @@ from pathlib import Path
 import boto3
 
 ROOT = Path(__file__).resolve().parents[2]
-DOC = ROOT / "docs" / "midpoint" / "03-SERVICES-USED.md"
+DOC = ROOT / "main_docs" / "midpoint" / "03-SERVICES-USED.md"
 
 
 def resources(region: str) -> list[str]:

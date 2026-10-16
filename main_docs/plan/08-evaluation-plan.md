@@ -22,7 +22,7 @@ Built like a production evaluation system: **fixed datasets, a regression suite 
 | Ungrounded claims | Count of defect IDs in drafts/PDFs that are not in the DB; **must be 0** | `eval/agent/grounding.py` |
 | Cost per km | Cost Explorer (tag `Project=patchwork`, processing services) ÷ km processed | `scripts/cost_report.py` |
 
-All metrics write `eval/results/<run_id>/metrics.json`. `eval/report.py` renders the table with ✅/❌ against the targets into `docs/midpoint/04-RESULTS-AND-OUTPUTS.md` (between `<!-- METRICS:BEGIN -->` / `<!-- METRICS:END -->` markers).
+All metrics write `eval/results/<run_id>/metrics.json`. `eval/report.py` renders the table with ✅/❌ against the targets into `main_docs/midpoint/04-RESULTS-AND-OUTPUTS.md` (between `<!-- METRICS:BEGIN -->` / `<!-- METRICS:END -->` markers).
 
 ## 2. The 40 agent scenarios (`eval/agent/scenarios/*.yaml`)
 

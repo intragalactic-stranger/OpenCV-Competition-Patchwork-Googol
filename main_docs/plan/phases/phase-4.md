@@ -37,7 +37,7 @@
 |---|---|
 | Full-corridor pass processed end to end on AWS | `make upload-pass PASS=1` → SFN success → rows in Aurora |
 | Idempotency | Re-upload the same clip → 0 new rows; Spot-interruption simulation (kill job) → retry → no duplicates |
-| Viewer live | CloudFront URL shows defects; screenshot to `docs/midpoint/assets/` |
+| Viewer live | CloudFront URL shows defects; screenshot to `main_docs/midpoint/assets/` |
 | Processing time and cost per km | Reported in the progress report (from metrics + Cost Explorer) |
 
 ## Exit status at the midpoint (2026-10-14)

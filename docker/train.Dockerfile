@@ -7,7 +7,7 @@ ENV UV_COMPILE_BYTECODE=0 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never PYTHONUNBU
 WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
-COPY docs/README.md docs/README.md
+COPY main_docs/README.md main_docs/README.md
 RUN uv sync --frozen --no-dev --group aws --group train --no-install-project
 ENV PATH=/app/.venv/bin:$PATH
 # bake the ImageNet encoder so jobs do not depend on the Hugging Face Hub at run time

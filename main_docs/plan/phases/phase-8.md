@@ -9,7 +9,7 @@
 - [x] Baseline: area without rectification (same true masks, one fixed m²/pixel scale) → 46.9% MAPE vs 2.1% with the bird's-eye view · [ ] desk-estimated manual survey cost
 - [x] Ablations: no IPM (above), matcher v1 vs v2, OpenCV `ENGINE_CLASSIC` (cannot load the model), run A/B (measured area changes the plan) · [ ] no VLM (no VLM built)
 - [x] RDD2022-India external check on real photos, box level (`eval/metrics/rdd_india.py`, D-40)
-- [x] `eval/report.py` → results table into `docs/FINAL-REPORT.md` (and the frozen midpoint table)
+- [x] `eval/report.py` → results table into `main_docs/FINAL-REPORT.md` (and the frozen midpoint table)
 - [x] GitHub Actions (`.github/workflows/ci.yml`): lint, unit tests, OpenCV 5 smoke test, scenario re-score from recorded traces with the ungrounded-ID hard gate, `terraform fmt` + `validate`
 
 ## Exit criteria

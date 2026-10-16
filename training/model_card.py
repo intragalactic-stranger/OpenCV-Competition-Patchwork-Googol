@@ -1,4 +1,4 @@
-"""Fill section 7 of docs/midpoint/07-MODEL-CARD.md from a finished training run, and publish the headline
+"""Fill section 7 of main_docs/midpoint/07-MODEL-CARD.md from a finished training run, and publish the headline
 numbers to eval/results/segmentation.json (read by eval/report.py for the midpoint results table).
 
   uv run python -m training.model_card s3://patchwork-<acct>-artifacts/models/seg-v1   (or a local run dir)
@@ -14,7 +14,8 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DOC = ROOT / "docs" / "MODEL-CARD.md"  # the final model; the midpoint card (seg-v3) is docs/midpoint/07-MODEL-CARD.md
+# the final model; the midpoint card (seg-v3) is main_docs/midpoint/07-MODEL-CARD.md
+DOC = ROOT / "main_docs" / "MODEL-CARD.md"
 SPLIT_NAMES = {
     "test_real": "Real photos, held-out test split (Pothole Mix test)",
     "val_real": "Real photos, validation split (Pothole Mix val)",

@@ -7,7 +7,7 @@
 
 | Area | Status | Notes |
 |---|---|---|
-| Planning & design docs | ✅ | `docs/plan/*`, `docs/midpoint/*`, decisions D-01…D-30 |
+| Planning & design docs | ✅ | `main_docs/plan/*`, `main_docs/midpoint/*`, decisions D-01…D-30 |
 | Repo, environment, tests | ✅ | Python 3.12 (uv); `make check` (lint + tests) |
 | OpenCV 5 | ✅ | The **trained** SegFormer-B0 runs in `ENGINE_NEW`, identical to onnxruntime (2.0e-5); `ENGINE_CLASSIC` cannot load it |
 | AWS guardrails | ✅ | Permissions boundary on every role; **real money paid $0.00**, all usage on promotional credits; `patchwork-real-spend` alarm |
@@ -83,5 +83,5 @@ See [`plan/02-requirements.md §4`](../plan/02-requirements.md#4-what-changed-fr
 | 2026-10-13 (b) | Aurora register, Step Functions pipeline, viewer, agent slice + approval gate; `seg-v2` trained; held-out survey (2 passes) through the cloud; end-to-end metrics, false-positive analysis; register within-pass linking fix |
 | 2026-10-13 (c) | Service mappings + second-half projection (`08`), reviewer walkthrough (`09`); hard-negative mining; `seg-v3` fine-tune; survey re-run on `seg-v3`; before/after figures; cost report accounts for data-transfer credits |
 | 2026-10-14 | Register reset (owner-authorised) and rebuilt from the `seg-v3` survey (278 defects); viewer republished; run A/B and road-wide agent demo re-run on `seg-v3`; approve/reject exercised; 25 orphaned approval workflows from the old demo stopped |
-| 2026-10-14 (b) | Docs audit: phase checklists 0–5 brought up to the as-built state (deviations and open items marked), `docs/DATA-LICENSES.md` added, "as built" notes on plan pages 03/04/08/09/10, schema tagged `schema-v1.1`. Open items found: Pothole Mix not yet privacy-blurred, `lraspp` licence-clean model not trained, failure alarms and a re-upload idempotency test not yet run (all second half / Phase 9) |
+| 2026-10-14 (b) | Docs audit: phase checklists 0–5 brought up to the as-built state (deviations and open items marked), `main_docs/DATA-LICENSES.md` added, "as built" notes on plan pages 03/04/08/09/10, schema tagged `schema-v1.1`. Open items found: Pothole Mix not yet privacy-blurred, `lraspp` licence-clean model not trained, failure alarms and a re-upload idempotency test not yet run (all second half / Phase 9) |
 | 2026-10-16 | **Second half delivered; see [FINAL-REPORT](../FINAL-REPORT.md).** SegFormer-B2 trained on SageMaker GPU (`seg-v4`); matcher v2 and pass closing; full agent toolset; 40-scenario suite; failure alarms; final survey through the cloud on a fresh register database; repair verification loop; CI on GitHub |

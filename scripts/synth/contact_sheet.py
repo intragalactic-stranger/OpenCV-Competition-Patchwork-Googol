@@ -19,7 +19,7 @@ COLORS = {"pothole": (40, 40, 230), "edge_break": (30, 180, 250), "depression": 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("clip_dir", type=Path)
-    ap.add_argument("--out", type=Path, default=ROOT / "docs" / "midpoint" / "assets" / "synth_contact_sheet.jpg")
+    ap.add_argument("--out", type=Path, default=ROOT / "main_docs" / "midpoint" / "assets" / "synth_contact_sheet.jpg")
     ap.add_argument("--n", type=int, default=8)
     args = ap.parse_args()
 

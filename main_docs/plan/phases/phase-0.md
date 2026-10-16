@@ -30,12 +30,12 @@
 - [x] `scripts/cost_report.py` skeleton runs (even with $0)
 
 ### Docs
-- [x] `docs/README.md`, `docs/plan/*`, `docs/plan/phases/*`, `docs/midpoint/*`
+- [x] `main_docs/README.md`, `main_docs/plan/*`, `main_docs/plan/phases/*`, `main_docs/midpoint/*`
 
 ## Findings (2026-10-12)
 - **OpenCV 5.0.0** installed from PyPI as `opencv-contrib-python-headless==5.0.0.93` (x86_64 and aarch64 wheels both exist, so the same version runs on Graviton).
 - Engine selection API: `cv2.dnn.readNetFromONNX(path, engine)` with `cv2.dnn.ENGINE_AUTO=3`, `ENGINE_CLASSIC=1`, `ENGINE_NEW=2`, plus **`ENGINE_ORT=4`** (an onnxruntime-backed engine, which is useful as a fallback).
-- A SegFormer-like graph (Conv, LayerNorm, attention MatMul/Softmax, Resize to input size, **dynamic H×W**) loads in `ENGINE_NEW` and matches onnxruntime to **≤ 4e-6**. **`ENGINE_CLASSIC` fails to import it** (Shape on a dynamic input), which confirms the proposal's reason for OpenCV 5. Evidence: `docs/midpoint/assets/opencv5_smoke.md`.
+- A SegFormer-like graph (Conv, LayerNorm, attention MatMul/Softmax, Resize to input size, **dynamic H×W**) loads in `ENGINE_NEW` and matches onnxruntime to **≤ 4e-6**. **`ENGINE_CLASSIC` fails to import it** (Shape on a dynamic input), which confirms the proposal's reason for OpenCV 5. Evidence: `main_docs/midpoint/assets/opencv5_smoke.md`.
 - ChArUco through a distorted synthetic camera: RMS 0.17 px, fx error 0.04%, k1 −0.2797 vs −0.28.
 - The dev box is a **t3a.xlarge in us-east-1** (not ap-south-1), so see D-13.
 

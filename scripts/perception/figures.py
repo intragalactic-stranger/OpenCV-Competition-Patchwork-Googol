@@ -1,4 +1,4 @@
-"""Evidence figures for docs/midpoint/assets: calibration.png and bev_measure.png."""
+"""Evidence figures for main_docs/midpoint/assets: calibration.png and bev_measure.png."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from patchwork.perception.ipm import IPM, camera_from_calibration  # noqa: E402
 from patchwork.perception.measure import measure_bev, truncated_in_image  # noqa: E402
 from patchwork.perception.pose import PitchEstimator  # noqa: E402
 
-ASSETS = ROOT / "docs" / "midpoint" / "assets"
+ASSETS = ROOT / "main_docs" / "midpoint" / "assets"
 SYN = ROOT / "data" / "synth" / "seed07"
 CAL = ROOT / "data" / "calib" / "cam01-v1.json"
 

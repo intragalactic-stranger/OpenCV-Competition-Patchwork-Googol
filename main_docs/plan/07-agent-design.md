@@ -60,7 +60,7 @@ The model is asked to *explain* the ranking in the work order. The score itself 
 2. **Run A**: agent with the real register row.
 3. **Run B**: the *same* everything, except the observation is substituted with 3.1 m², high (a DB fixture swap, recorded in the trace).
 4. Expected: A → routine patch, priority 3, no escalation. B → larger reinstatement, priority 1, notify the executive engineer, barricade flag.
-5. Output: a side-by-side HTML/Markdown diff of both traces (tool calls, arguments, final plan), saved to `docs/midpoint/assets/ablation_ab.*`.
+5. Output: a side-by-side HTML/Markdown diff of both traces (tool calls, arguments, final plan), saved to `main_docs/midpoint/assets/ablation_ab.*`.
 6. **If the plan does not change, the agent is not using the vision.** This is a failing test.
 
 ## 7. Failure handling

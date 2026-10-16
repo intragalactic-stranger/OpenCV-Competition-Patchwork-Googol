@@ -1,6 +1,6 @@
 """Defect record schema v1: the contract between perception, the register and the agent.
 
-Mirrors docs/plan/05-defect-record-schema.md and schema/ddl.sql; tests/test_schema.py keeps them in sync.
+Mirrors main_docs/plan/05-defect-record-schema.md and schema/ddl.sql; tests/test_schema.py keeps them in sync.
 Changes after the `schema-v1` tag are additive only (new nullable fields) and need a decision-log entry.
 """
 
