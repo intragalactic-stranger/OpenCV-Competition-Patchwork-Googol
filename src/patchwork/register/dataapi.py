@@ -35,7 +35,9 @@ from patchwork.schema.models import (
 ROOT = Path(__file__).resolve().parents[3]
 REGION = "ap-south-1"
 DDL = ROOT / "src" / "patchwork" / "schema" / "ddl.sql"
-PIPELINE_VERSION = "0.2"
+PIPELINE_VERSION = "0.3"
+# Same default as the Terraform variable `db_name` (decision D-33); `patchwork` keeps the midpoint survey.
+DEFAULT_DB = "patchwork_final"
 LINK_M = 8.0  # v1 rule (midpoint): same road, within 8 m. Kept for the before/after comparison in eval.
 # v2 rule (register/match.py): gates on chainage, lateral offset and area, one-to-one assignment per clip.
 # Links are only made to defects last seen on an EARLIER pass: two tracks of one pass are separate defects
@@ -89,7 +91,7 @@ class Register:
             ][0]
             cluster_arn, secret_arn = c["DBClusterArn"], c["MasterUserSecret"]["SecretArn"]
         self.cluster_arn, self.secret_arn = cluster_arn, secret_arn
-        self.database = database or os.environ.get("PATCHWORK_DB_NAME", "patchwork")
+        self.database = database or os.environ.get("PATCHWORK_DB_NAME", DEFAULT_DB)
         self.tx: str | None = None
 
     # A transaction lets the agent scenario suite run real tools on the real register and then roll back,
