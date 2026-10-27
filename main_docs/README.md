@@ -8,7 +8,9 @@
 | [`submission/architecture.png`](submission/architecture.png) | Architecture diagram (OpenCV 5, AWS, agent, human control) |
 | [`submission/BUILD-DEPLOY-TEST.md`](submission/BUILD-DEPLOY-TEST.md) | Pinned dependencies; build, deploy and test instructions |
 | [`submission/failure_gallery.jpg`](submission/failure_gallery.jpg) | Failure cases |
-| `submission/video/patchwork-demo.mp4` (git-ignored; online: https://d3mt6jrs1ynczo.cloudfront.net/video/patchwork-demo.mp4) · [`narration.srt`](submission/video/narration.srt) | 3:41 narrated video and its captions |
+| https://youtu.be/VupHYPRwLks (mirror: https://d3mt6jrs1ynczo.cloudfront.net/video/patchwork-demo.mp4; file git-ignored at `submission/video/patchwork-demo.mp4`) · [`narration.srt`](submission/video/narration.srt) | 3:41 narrated video and its captions |
+| [`submission/agent-workflow.png`](submission/agent-workflow.png) | Agent workflow: perception → decision → action → verification (Agentic Vision evidence) |
+| [`submission/gallery/`](submission/gallery/) · [`PROJECT-STORY.md`](submission/PROJECT-STORY.md) | Devpost gallery images, thumbnails and project story |
 | [`FINAL-REPORT.md`](FINAL-REPORT.md) | Full generated results table, midpoint → final, closed loop, cost, limits |
 | [`MODEL-CARD.md`](MODEL-CARD.md) | Segmentation models: seg-v4 (SegFormer-B2) and the released licence-clean seg-clean-v1 |
 | [`DATA-LICENSES.md`](DATA-LICENSES.md) | Every dataset, model and map used, with its licence |
