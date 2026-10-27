@@ -21,26 +21,18 @@ Plenty of apps can put a dot on a map where a pothole is. What a ward engineer a
 **OpenCV 5 perception**, running in parallel containers on AWS Batch (Graviton Spot):
 
 - ChArUco calibration (`aruco.CharucoDetector`, `calibrateCamera`): 0.16 px reprojection error.
-- A road-plane homography, with undistortion folded into a single `remap`, gives a 1 cm/pixel bird's-eye view. A ground point $(X, Y)$ maps to the image as
-
-$$
-\tilde{\mathbf{x}} \sim K\,[\,\mathbf{r}_1\;\; \mathbf{r}_2\;\; \mathbf{t}\,]\begin{pmatrix} X \\ Y \\ 1 \end{pmatrix},
-$$
-
-  so a damaged area is simply $A = N_{\text{px}} \cdot (0.01\,\text{m})^2$ on the rectified mask, fused as a median over several frames.
+- A road-plane homography, with undistortion folded into a single `remap`, gives a 1 cm/pixel bird's-eye view. A ground point (X, Y) maps to the image as `x ~ K [r1 r2 t] (X, Y, 1)`, so a damaged area is simply `A = N_pixels × (0.01 m)²` on the rectified mask, fused as a median over several frames.
 - Camera pitch per frame from lane lines (`Canny`, `HoughLinesP`); frame triage with `Laplacian` sharpness and `calcOpticalFlowPyrLK` visual odometry on the road plane; privacy blur with **YuNet** (`FaceDetectorYN`) and a plate/text detector *before anything is stored*.
-- Segmentation: a **SegFormer-B2** transformer exported to ONNX with dynamic shapes and run in **OpenCV 5's new DNN engine** (`readNetFromONNX(..., ENGINE_NEW)`). It matches onnxruntime to $3.2\times10^{-5}$; the classic engine cannot load the graph at all.
+- Segmentation: a **SegFormer-B2** transformer exported to ONNX with dynamic shapes and run in **OpenCV 5's new DNN engine** (`readNetFromONNX(..., ENGINE_NEW)`). It matches onnxruntime to 3.2 × 10⁻⁵; the classic engine cannot load the graph at all.
 - Measurement with `findContours` and `minAreaRect`; localisation with a Kalman filter and RTS smoother over GNSS plus optical-flow odometry.
 
 **Training.** SegFormer-B2 on a SageMaker GPU (NVIDIA A10G) in about an hour, then scored through OpenCV 5 on Graviton, the runtime we actually deploy.
 
 **Agent.** Strands + Amazon Nova Pro, hosted on **Amazon Bedrock AgentCore Runtime**, with 9 grounded tools. Priority uses a deterministic, auditable exposure score:
 
-$$
-E = w_{\text{sev}}\,\bigl(1+\ln(1+A)\bigr)\,w_{\text{road}}\,\bigl(1 + 0.5\,\mathbb{1}_{\text{school}} + 0.5\,\mathbb{1}_{\text{hospital}} + 0.3\,\mathbb{1}_{\text{bus stop}}\bigr)\, m_{\text{wheel}}\, m_{\text{water}},
-$$
+`E = severity weight × (1 + ln(1 + A)) × road weight × (1 + 0.5·school + 0.5·hospital + 0.3·bus stop) × 1.3 if in a wheel path × 1.2 if holding water`
 
-where $A$ is the measured area in m², the context indicators count schools and hospitals within 150 m and bus stops within 50 m, and $m_{\text{wheel}}=1.3$, $m_{\text{water}}=1.2$ when a defect is known to sit in a wheel path or hold water (otherwise 1).
+where A is the measured area in m², and the context terms are 1 when a school or hospital is within 150 m or a bus stop within 50 m.
 
 **Cloud.** S3 → EventBridge → Step Functions → Batch → Aurora Serverless v2 + PostGIS → CloudFront map; approval via a Step Functions task token, Cognito, API Gateway and Lambda; CloudWatch dashboards (including the **human override rate**) and alarms; everything in Terraform, with CI on every push.
 
