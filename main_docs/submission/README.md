@@ -7,10 +7,20 @@
 | Technical report (problem, users, architecture, OpenCV 5, AWS, evaluation, limitations, responsible use) | [TECHNICAL-REPORT.md](TECHNICAL-REPORT.md) · PDF: [Patchwork-Technical-Report.pdf](Patchwork-Technical-Report.pdf) |
 | Judge-accessible code repository | https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol (public, Apache-2.0, release [v1.0](https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol/releases/tag/v1.0)) |
 | Pinned dependencies + build, deployment and test instructions | [BUILD-DEPLOY-TEST.md](BUILD-DEPLOY-TEST.md) · `uv.lock`, [`requirements.lock.txt`](../../requirements.lock.txt), Terraform lock file, exact container tags · `make setup / check / smoke / images / deploy / teardown` |
-| Architecture diagram (OpenCV 5, AWS, agent) | [architecture.png](architecture.png) (source: [architecture.html](architecture.html)) |
+| Architecture diagram (OpenCV 5, AWS, agent) | [architecture.png](architecture.png) (source: [architecture.html](architecture.html)) · agent workflow: [agent-workflow.png](agent-workflow.png) |
 | Working web endpoint | Map (public): https://d3mt6jrs1ynczo.cloudfront.net · Approval console (sign-in): https://d3mt6jrs1ynczo.cloudfront.net/console.html, judge login supplied privately with the submission form · Agent on Bedrock AgentCore: `scripts/aws/invoke_agent.py` |
-| Video, under 5 minutes (team, application working, architecture, principal results) | https://d3mt6jrs1ynczo.cloudfront.net/video/patchwork-demo.mp4 (3 min 41 s, narrated, captioned; also attached to release v1.0; captions: [narration.srt](video/narration.srt)) |
+| Video, under 5 minutes (team, application working, architecture, principal results) | https://youtu.be/VupHYPRwLks · mirror https://d3mt6jrs1ynczo.cloudfront.net/video/patchwork-demo.mp4 (3 min 41 s, narrated, captioned; also attached to release v1.0; captions: [narration.srt](video/narration.srt)) |
 | Evaluation evidence with failure cases and limitations | Report §7 · generated table in [FINAL-REPORT.md](../FINAL-REPORT.md) · [failure_gallery.jpg](failure_gallery.jpg) · result files in `eval/results/` |
+
+## Agentic Vision Award → evidence
+
+| Required | Where |
+|---|---|
+| Agent workflow diagram (perception, decision/orchestration, action) | [agent-workflow.png](agent-workflow.png) · report §12 |
+| Trace showing OpenCV 5 output changes a later decision, tool call or action | Run A/B: 0.20 → 3.10 m² changes priority 3 → 1 and hot-mix 0.025 → 0.401 t; traces `eval/results/agent/ablation-*-6DZ5GM.json`; report §12 |
+| Task success, failure handling, observability, human control | Report §12 table: 39/40 scenarios, 12/12 adversarial, 0 ungrounded IDs, 8/8 repair verdicts; operations dashboard with override rate; approval gate |
+
+The Best Use of COOL Award is not claimed: Patchwork uses the standard OpenCV 5.0.0 build on Graviton, not COOL.
 
 ## Judging criteria → evidence
 

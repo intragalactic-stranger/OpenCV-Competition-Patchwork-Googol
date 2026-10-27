@@ -7,7 +7,7 @@
 | Code | [https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol](https://github.com/intragalactic-stranger/OpenCV-Competition-Patchwork-Googol) (Apache-2.0; release v1.0) |
 | Live map | [https://d3mt6jrs1ynczo.cloudfront.net](https://d3mt6jrs1ynczo.cloudfront.net) |
 | Approval console | [https://d3mt6jrs1ynczo.cloudfront.net/console.html](https://d3mt6jrs1ynczo.cloudfront.net/console.html) (judge login supplied with the submission) |
-| Video (under 5 min) | [https://d3mt6jrs1ynczo.cloudfront.net/video/patchwork-demo.mp4](https://d3mt6jrs1ynczo.cloudfront.net/video/patchwork-demo.mp4) |
+| Video (3 min 41 s) | [https://youtu.be/VupHYPRwLks](https://youtu.be/VupHYPRwLks) (mirror: [CloudFront](https://d3mt6jrs1ynczo.cloudfront.net/video/patchwork-demo.mp4)) |
 | Build, deploy, test | [BUILD-DEPLOY-TEST.md](BUILD-DEPLOY-TEST.md) |
 
 ## Summary
@@ -180,3 +180,30 @@ Midpoint → final on the same survey: recall 0.94 → 0.99, area error 27.8% �
 ## 11. Reproduce
 
 See [BUILD-DEPLOY-TEST.md](BUILD-DEPLOY-TEST.md): local quick start (no AWS), full AWS deployment in ten steps, and every test and evaluation command. Design decisions with reasons: `main_docs/plan/11-decisions-and-risks.md` (D-01 to D-40).
+
+## 12. Agentic Vision Award: evidence
+
+**Agent workflow diagram** (perception → decision and orchestration → action → verification):
+
+![Agent workflow](agent-workflow.png)
+
+**OpenCV 5 output changes a later decision, tool call and action (run A/B).** Same defect, same prompt, Amazon Nova Pro at temperature 0, each run in its own rolled-back database transaction; the only difference is the area that OpenCV 5 measured.
+
+| | Run A: measured | Run B: area changed |
+|---|---|---|
+| Measured area | 0.20 m² | 3.10 m² |
+| Exposure score (decision) | 1.77 | 14.47 |
+| Priority (decision) | 3 | **1** |
+| Hot-mix in the work order (action) | 0.025 t | **0.401 t** |
+| Tool calls | query_defects → check_existing_tickets → cluster_into_packages → estimate_materials → draft_work_order → request_human_approval | same |
+
+Full traces (every tool call, argument and result): `eval/results/agent/ablation-A-6DZ5GM.json`, `ablation-B-6DZ5GM.json`; summary `main_docs/assets/ablation_ab.md`. A second trace, of the agent running on AgentCore: `main_docs/submission/evidence/agentcore-hughes-road.json`.
+
+**Evaluation of task success, failure handling, observability and human control.**
+
+| Aspect | Evidence |
+|---|---|
+| Task success | 40 live scenarios: **39/40** (planning 12/12, verification 3/3, existing work 3/3, low confidence 2/2, read-only questions 7/8); road-wide plan of 21 packages, each cited once; closed loop: 6 approved → 2 verified, 1 escalated, 3 open, **8/8 verdicts correct** against truth (`eval/results/agent_scenarios.json`, `repair_verification.json`) |
+| Failure handling | 12/12 adversarial scenarios (fake IDs → `UNGROUNDED_ID`, out-of-range thickness → `OUT_OF_RANGE`, fake SYSTEM override, "file it yourself", depth questions, token disclosure, invented potholes, off-topic); **0 answers citing an unknown ID** (hard gate in CI); low-confidence packages → options + re-inspection; model-side errors retried once and recorded; the console waits for a paused database instead of failing; Step Functions approvals time out after 7 days |
+| Observability | Full trace of every agent run saved to S3; CloudWatch operations dashboard: agent runs, tool calls, **ungrounded IDs**, AgentCore invocations / errors / latency, Nova tokens, console API 4xx/5xx/latency, **decisions and override rate**; alarms on failed pipeline or approval executions and Batch jobs → email |
+| Human control | No filing tool; the approval token is stored server-side and never reaches the model; every work order waits for a named engineer in a Cognito-protected console; rejections recorded as overrides with the engineer's name; filing goes to a mock endpoint only |

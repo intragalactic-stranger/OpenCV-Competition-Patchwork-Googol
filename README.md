@@ -9,7 +9,7 @@ Patchwork turns ordinary dashcam video into a map of road defects. For every pot
 | Submission | Link |
 |---|---|
 | **Technical report** | [PDF](main_docs/submission/Patchwork-Technical-Report.pdf) · [Markdown](main_docs/submission/TECHNICAL-REPORT.md) |
-| **Video (3 min 41 s)** | https://d3mt6jrs1ynczo.cloudfront.net/video/patchwork-demo.mp4 |
+| **Video (3 min 41 s)** | https://youtu.be/VupHYPRwLks (mirror: https://d3mt6jrs1ynczo.cloudfront.net/video/patchwork-demo.mp4) |
 | **Live map** | https://d3mt6jrs1ynczo.cloudfront.net (synthetic survey data, labelled as such) |
 | **Approval console** | https://d3mt6jrs1ynczo.cloudfront.net/console.html (sign-in; judge login supplied with the submission) |
 | **Build, deploy, test** | [main_docs/submission/BUILD-DEPLOY-TEST.md](main_docs/submission/BUILD-DEPLOY-TEST.md) |
